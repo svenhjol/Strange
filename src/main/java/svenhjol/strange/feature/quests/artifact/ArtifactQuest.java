@@ -74,44 +74,6 @@ public class ArtifactQuest extends Quest {
         this.method = artifact.method();
         this.lootTables = artifact.lootTables();
         this.artifact = new ArtifactItem(artifact.item(), artifact.chance());
-
-//        var entries = ResourceListManager.entries(manager, "quests/artifact");
-//
-//        // Populate the loot tables.
-//        var lootTableEntries = definition.pair(definition.artifactLootTables(), random());
-//        var lootTableEntry = lootTableEntries.getFirst();
-//        var lootTableAmount = lootTableEntries.getSecond();
-//        var lootTables = LinkedResourceList.load(entries.getOrDefault(lootTableEntry, new LinkedList<>()));
-//
-//        if (lootTables.isEmpty()) {
-//            throw new RuntimeException("Loot table list is empty");
-//        }
-//
-//        Collections.shuffle(lootTables);
-//        for (var i = 0; i < Math.min(Math.min(Quests.maxQuestRequirements, lootTableAmount), lootTables.size()); i++) {
-//            this.lootTables.add(lootTables.get(i));
-//        }
-//
-//        // Populate the artifact items.
-//        List<Item> defaultItems = LinkedItemList.load(entries.getOrDefault(DEFAULT_ARTIFACT_ITEMS, new LinkedList<>()));
-//        List<Item> artifactItems = new ArrayList<>();
-//
-//        // Artifact items defined in the definition.
-//        for (var itemEntry : definition.artifactItems()) {
-//            artifactItems.addAll(LinkedItemList.load(entries.getOrDefault(itemEntry, new LinkedList<>())));
-//        }
-//
-//        if (artifactItems.isEmpty()) {
-//            if (defaultItems.isEmpty()) {
-//                throw new RuntimeException("No custom or default items, cannot continue");
-//            }
-//            log().debug(getClass(), "Using default artifact items list");
-//            artifactItems = defaultItems;
-//        }
-//
-//        Collections.shuffle(artifactItems);
-//        var stack = new ItemStack(artifactItems.get(0));
-//        artifact = new ArtifactItem(stack);
     }
 
     @Override

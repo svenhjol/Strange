@@ -19,13 +19,14 @@ import svenhjol.charmony.base.Mods;
 import svenhjol.charmony.helper.MobHelper;
 import svenhjol.charmony.iface.ILog;
 import svenhjol.strange.Strange;
-import svenhjol.strange.data.LinkedResourceList;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.Requirement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class BattleQuest extends Quest {
     static final String QUEST_PREFIX = "strange_battle_";
@@ -163,54 +164,6 @@ public class BattleQuest extends Quest {
         for (var mob : mobs) {
             this.targets.add(new BattleTarget(mob, effects));
         }
-
-//        List<MobEffectInstance> effects = new ArrayList<>();
-//
-//        // Populate default effects. The default effects are added to every battle mob.
-//        var entries = ResourceListManager.entries(manager, "quests/battle");
-//        var defaultKey = new ResourceLocation(Strange.ID, "default_battle_effects");
-//        var defaultEffectList = tryLoad(entries, defaultKey);
-//        populateEffects(effects, defaultEffectList);
-//
-//        // Populate custom effects.
-//        var customEffects = definition.pair(definition.battleEffects(), random());
-//        var effect = customEffects.getFirst();
-//        var effectTotal = customEffects.getSecond();
-//
-//        var effectList = LinkedResourceList.load(entries.getOrDefault(effect, new LinkedList<>()));
-//        if (!effectList.isEmpty()) {
-//            Collections.shuffle(effectList);
-//
-//            for (var i = 0; i < effectTotal; i++) {
-//                if (i < effectList.size()) {
-//                    populateEffects(effects, List.of(effectList.get(i)));
-//                } else {
-//                    populateEffects(effects, List.of(effectList.get(random().nextInt(effectList.size()))));
-//                }
-//            }
-//        }
-//
-//        // Populate entities.
-//        var mobs = definition.pair(definition.battle(), random());
-//        var mob = mobs.getFirst();
-//        var mobTotal = mobs.getSecond();
-//
-//        var mobList = LinkedEntityTypeList.load(entries.getOrDefault(mob, new LinkedList<>()));
-//        if (mobList.isEmpty()) {
-//            throw new RuntimeException("Entity list is empty");
-//        }
-//
-//        Collections.shuffle(mobList);
-//
-//        for (int i = 0; i < Math.min(Quests.maxQuestRequirements, mobTotal); i++) {
-//            EntityType<?> entity;
-//            if (i < mobList.size()) {
-//                entity = mobList.get(i);
-//            } else {
-//                entity = mobList.get(random().nextInt(mobList.size()));
-//            }
-//            targets.add(new BattleTarget(entity, effects));
-//        }
     }
 
     private boolean isInVillage(ServerPlayer player) {
@@ -271,27 +224,6 @@ public class BattleQuest extends Quest {
 
     private ILog log() {
         return Mods.common(Strange.ID).log();
-    }
-
-    private LinkedList<ResourceLocation> tryLoad(Map<ResourceLocation, LinkedList<ResourceLocation>> entries, ResourceLocation... keys) {
-        for (var key : keys) {
-            var list = LinkedResourceList.load(entries.getOrDefault(key, new LinkedList<>()));
-            if (!list.isEmpty()) {
-                log().debug(getClass(), "Using list for key " + key);
-                return list;
-            }
-        }
-        return new LinkedList<>();
-    }
-
-    private void populateEffects(List<MobEffectInstance> effects, List<ResourceLocation> list) {
-        for (var effectId : list) {
-            var effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
-            if (effect == null) continue;
-
-            var amplifier = Math.max(0, Math.min(3, villagerLevel() - 2));
-            effects.add(new MobEffectInstance(effect, 100000, amplifier)); // Some silly duration so it doesn't run out
-        }
     }
 
     public class BattleTarget implements Requirement {

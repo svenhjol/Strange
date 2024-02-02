@@ -59,27 +59,6 @@ public class HuntQuest extends Quest {
         for (var pair : mobs) {
             this.targets.add(new HuntTarget(pair.getFirst(), pair.getSecond()));
         }
-
-
-//        var entries = ResourceListManager.entries(manager, "quests/hunt");
-//
-//        // Populate the mobs.
-//        var mobEntries = definition.pair(definition.hunt(), random());
-//        var mobEntry = mobEntries.getFirst();
-//        var mobAmount = mobEntries.getSecond();
-//
-//        var targets = LinkedEntityTypeList.load(entries.getOrDefault(mobEntry, new LinkedList<>()));
-//        if (targets.isEmpty()) {
-//            throw new RuntimeException("Entity list is empty");
-//        }
-//
-//        Collections.shuffle(targets);
-//        var selection = Math.min(Math.min(Quests.maxQuestRequirements, targets.size()), villagerLevel() + random().nextInt(2));
-//
-//        for (int i = 0; i < selection; i++) {
-//            var entity = targets.get(i);
-//            this.targets.add(new HuntTarget(entity, mobAmount / selection));
-//        }
     }
 
     public class HuntTarget implements Requirement {

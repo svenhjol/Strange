@@ -51,26 +51,6 @@ public class GatherQuest extends Quest {
         for (var pair : items) {
             this.items.add(new GatherItem(pair.getFirst(), pair.getSecond()));
         }
-
-//        var entries = ResourceListManager.entries(manager, "quests/gather");
-//
-//        // Populate the items.
-//        var itemEntries = definition.pair(definition.gather(), random());
-//        var itemEntry = itemEntries.getFirst();
-//        var itemAmount = itemEntries.getSecond();
-//
-//        var items = LinkedItemList.load(entries.getOrDefault(itemEntry, new LinkedList<>()));
-//        if (items.isEmpty()) {
-//            throw new RuntimeException("Item list is empty");
-//        }
-//
-//        Collections.shuffle(items);
-//        var selection = Math.min(Math.min(Quests.maxQuestRequirements, items.size()), villagerLevel() + random.nextInt(2));
-//
-//        for (var i = 0; i < selection; i++) {
-//            var stack = new ItemStack(items.get(i));
-//            this.items.add(new GatherItem(stack, itemAmount / selection));
-//        }
     }
 
     public class GatherItem implements Requirement {
