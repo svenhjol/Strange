@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -126,6 +127,18 @@ public class Quests extends CommonFeature {
 
             if (!invalid.isEmpty()) {
                 invalid.forEach(q -> removeQuest(serverPlayer, q));
+            }
+        }
+    }
+
+    /**
+     * Called by PlayerMixin to add a check whenever the player picks up an item.
+     * @see svenhjol.strange.mixin.quests.PlayerMixin
+     */
+    public static void handleItemPickup(LivingEntity entity, ItemEntity item) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            for (var quest : getPlayerQuests(serverPlayer).all()) {
+                quest.playerPickup(item.getItem());
             }
         }
     }

@@ -51,6 +51,10 @@ public abstract class Quest {
     protected boolean dirty; // transient
     protected RandomSource random; // transient
 
+    public Quest quest() {
+        return this;
+    }
+
     public String id() {
         return id;
     }
@@ -262,6 +266,10 @@ public abstract class Quest {
     }
 
     public void entityLeave(Entity entity) {
+        // no op
+    }
+
+    public void playerPickup(ItemStack stack) {
         // no op
     }
 

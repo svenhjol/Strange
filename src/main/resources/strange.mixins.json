@@ -11,6 +11,7 @@
     "piglin_pointing.PiglinAiMixin",
     "piglin_pointing.PiglinMixin",
     "quests.BrushableBlockEntityMixin",
+    "quests.PlayerMixin",
     "quests.VillagerMixin",
     "respawn_anchors_work_everywhere.RespawnAnchorBlockMixin"
   ],

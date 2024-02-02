@@ -38,6 +38,14 @@ public class ArtifactQuest extends Quest {
     }
 
     @Override
+    public void playerPickup(ItemStack stack) {
+        if (!artifact.discovered && isArtifact(this, stack)) {
+            log().debug(getClass(), "Player has discovered the artifact");
+            artifact.discovered = true;
+        }
+    }
+
+    @Override
     public Optional<ItemStack> addToLootTable(ResourceLocation lootTableId, RandomSource random) {
         if (player == null) {
             return Optional.empty();
@@ -99,6 +107,18 @@ public class ArtifactQuest extends Quest {
         return Mods.common(Strange.ID).log();
     }
 
+    public static boolean isArtifact(Quest quest, ItemStack stack) {
+        var tag = stack.getTag();
+        if (tag == null) return false;
+
+        if (tag.contains(ArtifactItem.CUSTOM_TAG)) {
+            var itemId = tag.getString(ArtifactItem.CUSTOM_TAG);
+            return itemId.equals(quest.id());
+        }
+
+        return false;
+    }
+
     public class ArtifactItem implements Requirement {
         static final String ITEM_TAG = "item";
         static final String CUSTOM_TAG = "strange_artifact";
@@ -130,11 +150,7 @@ public class ArtifactQuest extends Quest {
 
         @Override
         public boolean satisfied() {
-            var satisfied = remaining() == 0;
-            if (satisfied && !discovered) {
-                discovered = true;
-            }
-            return satisfied;
+            return remaining() == 0;
         }
 
         @Override
@@ -159,16 +175,8 @@ public class ArtifactQuest extends Quest {
 
                 for (var invItem : inventory) {
                     if (remainder <= 0) continue;
-
-                    var tag = invItem.getTag();
-                    if (tag == null) continue;
-
-                    if (tag.contains(CUSTOM_TAG)) {
-                        var questId = id();
-                        var itemId = tag.getString(CUSTOM_TAG);
-                        if (itemId.equals(questId)) {
-                            remainder -= 1;
-                        }
+                    if (isArtifact(quest(), invItem)) {
+                        remainder -= 1;
                     }
                 }
             }
@@ -188,17 +196,10 @@ public class ArtifactQuest extends Quest {
                 for (var invItem : player.getInventory().items) {
                     if (remainder <= 0) continue;
 
-                    var tag = invItem.getTag();
-                    if (tag == null) continue;
-
-                    if (tag.contains(CUSTOM_TAG)) {
-                        var questId = id();
-                        var itemId = tag.getString(CUSTOM_TAG);
-                        if (itemId.equals(questId)) {
-                            var decrement = Math.min(remainder, invItem.getCount());
-                            remainder -= decrement;
-                            invItem.shrink(decrement);
-                        }
+                    if (isArtifact(quest(), invItem)) {
+                        var decrement = Math.min(remainder, invItem.getCount());
+                        remainder -= decrement;
+                        invItem.shrink(decrement);
                     }
                 }
             }
