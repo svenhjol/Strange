@@ -108,7 +108,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     }
 
     public int getPagedOfferHeight() {
-        return 70;
+        return 68;
     }
 
     public int getPagedActiveHeight() {
@@ -153,8 +153,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         if (player == null) return;
 
         // Quest icon and title
-        guiGraphics.renderFakeItem(questIcon, midX + xOffset - 5, yOffset - 5);
-        guiGraphics.drawString(font, questTitle, midX + xOffset + 15, yOffset, titleColor, false);
+        guiGraphics.renderFakeItem(questIcon, midX + xOffset - 5, yOffset - 3);
+        guiGraphics.drawString(font, questTitle, midX + xOffset + 15, yOffset + 2, titleColor, false);
 
         // Box around the quest details
         guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, offerBorderColor);
@@ -170,6 +170,13 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
         renderRequirements(guiGraphics, -155 + xt + 8, yOffset + 18, mouseX, mouseY);
         renderRewards(guiGraphics, -155 + xt + 8, yOffset + 38, mouseX, mouseY);
+
+        // Draw loyalty star and number of loyalty points required
+        if (quest.loyalty() > 0) {
+            var str = Component.literal(String.valueOf(quest.loyalty()));
+            guiGraphics.drawString(font, str, (midX + 148) - font.width(str), yOffset + 3, titleColor, false);
+            guiGraphics.blitSprite(QuestsResources.STAR, midX + 150, yOffset + 2, 9, 9);
+        }
 
         if (!renderedButtons) {
             var button = new QuestsButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);

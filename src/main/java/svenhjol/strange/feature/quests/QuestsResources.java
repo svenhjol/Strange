@@ -35,6 +35,7 @@ public class QuestsResources {
     public static final ResourceLocation EXPERT_SCROLL = new ResourceLocation(Strange.ID, "scroll/expert_scroll");
     public static final ResourceLocation MASTER_SCROLL = new ResourceLocation(Strange.ID, "scroll/master_scroll");
     public static final ResourceLocation TICK = new ResourceLocation(Strange.ID, "quest/tick");
+    public static final ResourceLocation STAR = new ResourceLocation(Strange.ID, "quest/star");
     public static final String QUEST_OFFERS_TITLE_KEY = "gui.strange.quests.quest_offers";
     public static final String EPIC_QUEST_TITLE_KEY = "gui.strange.quests.epic_quest_title";
     public static final String EPIC_QUEST_TITLE_WITH_PROFESSION_KEY = "gui.strange.quests.epic_quest_title_with_profession";

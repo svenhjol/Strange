@@ -51,12 +51,18 @@ public class QuestOffersScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTitle(guiGraphics, midX, 10);
 
-        var yOffset = 30;
+
+        // Render villager loyalty
+        var yOffset = 28;
+
+
+
         for (int i = 0; i < renderers.size(); i++) {
             var renderer = renderers.get(i);
             renderer.renderPagedOffer(guiGraphics, yOffset, mouseX, mouseY);
             yOffset += renderer.getPagedOfferHeight();
         }
+
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
