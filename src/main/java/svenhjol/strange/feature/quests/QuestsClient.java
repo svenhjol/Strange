@@ -89,6 +89,10 @@ public class QuestsClient extends ClientFeature {
         return getPlayerQuests(player).get(questId);
     }
 
+    public static int getLoyalty(UUID villagerUuid) {
+        return Math.min(Quests.maxVillagerLoyalty, VILLAGER_LOYALTY.getOrDefault(villagerUuid, 0));
+    }
+
     private void handleAbandonQuest(Player player, Quest quest) {
         if (!player.level().isClientSide) return;
         var minecraft = Minecraft.getInstance();
@@ -170,20 +174,16 @@ public class QuestsClient extends ClientFeature {
         var midX = merchantScreen.width / 2;
         var midY = merchantScreen.height / 2;
 
-        RequestVillagerQuests.send(villagerUuid);
-        RequestVillagerLoyalty.send(villagerUuid);
+        requestVillagerQuests(villagerUuid);
+        requestVillagerLoyalty(villagerUuid);
 
         villagerQuestsButton = new VillagerQuestsButton(midX - (VillagerQuestsButton.WIDTH / 2), midY + 92, b -> {
             screen.onClose();
-            openQuestOffers(villagerUuid, villagerProfession, villagerLevel);
+            openQuestOffersScreen(villagerUuid, villagerProfession, villagerLevel);
         });
         villagerQuestsButton.active = false;
 
         ScreenHelper.addRenderableWidget(merchantScreen, villagerQuestsButton);
-    }
-
-    protected void openQuestOffers(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
-        Minecraft.getInstance().setScreen(new QuestOffersScreen(villagerUuid, villagerProfession, villagerLevel));
     }
 
     public static void handleSyncPlayerQuests(SyncPlayerQuests message, Player player) {
@@ -235,6 +235,19 @@ public class QuestsClient extends ClientFeature {
     public static void openQuestsScreen(int page) {
         Minecraft.getInstance().setScreen(new QuestsScreen(page));
     }
+
+    public static void openQuestOffersScreen(UUID villagerUuid, VillagerProfession villagerProfession, int villagerLevel) {
+        Minecraft.getInstance().setScreen(new QuestOffersScreen(villagerUuid, villagerProfession, villagerLevel));
+    }
+
+    public static void requestVillagerQuests(UUID villagerUuid) {
+        RequestVillagerQuests.send(villagerUuid);
+    }
+
+    public static void requestVillagerLoyalty(UUID villagerUuid) {
+        RequestVillagerLoyalty.send(villagerUuid);
+    }
+
 
     public static ILog log() {
         return Mods.client(Strange.ID).log();

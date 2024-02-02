@@ -50,6 +50,7 @@ public class Quests extends CommonFeature {
     public static int maxQuestRewards = 5;
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
+    public static int maxVillagerLoyalty = 128;
     public static boolean allowLowerVillagerLevels = true;
     public static boolean loyaltyIncreasesWhenVillagerLevelMatches = true;
 
@@ -146,12 +147,17 @@ public class Quests extends CommonFeature {
         VILLAGER_LOYALTY.put(villagerUuid, current + amount);
     }
 
+    public static void decreaseLoyalty(UUID villagerUuid, int amount) {
+        var current = getLoyalty(villagerUuid);
+        VILLAGER_LOYALTY.put(villagerUuid, Math.max(0, current - amount));
+    }
+
     public static void resetLoyalty(UUID villagerUuid) {
         VILLAGER_LOYALTY.put(villagerUuid, 0);
     }
 
     public static int getLoyalty(UUID villagerUuid) {
-        return VILLAGER_LOYALTY.getOrDefault(villagerUuid, 0);
+        return Math.min(Quests.maxVillagerLoyalty, VILLAGER_LOYALTY.getOrDefault(villagerUuid, 0));
     }
 
     public static void removeQuest(ServerPlayer player, Quest quest) {
@@ -316,7 +322,7 @@ public class Quests extends CommonFeature {
 
         // When the player accepts a quest with loyalty greater than 1, reset the loyalty.
         if (quest.loyalty() > 1) {
-            resetLoyalty(villagerUuid);
+            decreaseLoyalty(villagerUuid, quest.loyalty());
         }
 
         // Fire the AcceptQuestEvent on the server side.
