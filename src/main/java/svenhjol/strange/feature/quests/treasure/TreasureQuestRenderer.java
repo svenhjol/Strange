@@ -33,7 +33,7 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
 
     @Override
     public ItemStack getQuestIcon() {
-        return new ItemStack(Items.SPYGLASS);
+        return new ItemStack(Items.CHEST);
     }
 
     @Override
