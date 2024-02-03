@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.artifact;
+package svenhjol.strange.feature.quests.treasure;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -8,9 +8,9 @@ import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
-import svenhjol.strange.feature.quests.artifact.ArtifactQuest.ArtifactItem;
+import svenhjol.strange.feature.quests.treasure.TreasureQuest.TreasureItem;
 
-public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
+public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
     @Override
     public int getPagedOfferHeight() {
         return super.getPagedOfferHeight();
@@ -23,12 +23,12 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
 
     @Override
     public Component getRequirementText() {
-        return QuestsResources.ARTIFACT_REQUIREMENT_TEXT;
+        return QuestsResources.TREASURE_REQUIREMENT_TEXT;
     }
 
     @Override
     public Component getRewardText() {
-        return QuestsResources.ARTIFACT_REWARD_TEXT;
+        return QuestsResources.TREASURE_REWARD_TEXT;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ArtifactQuestRenderer extends BaseQuestRenderer<ArtifactQuest> {
         xo += 2;
 
         for (var requirement : quest.requirements()) {
-            if (requirement instanceof ArtifactItem i) {
+            if (requirement instanceof TreasureItem i) {
                 Component label;
                 if (showRemaining) {
                     label = TextHelper.translatable("gui.strange.quests.remaining", Math.max(0, i.total() - i.remaining()), i.total());

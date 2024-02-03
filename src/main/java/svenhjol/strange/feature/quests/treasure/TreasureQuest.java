@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.artifact;
+package svenhjol.strange.feature.quests.treasure;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -21,16 +21,16 @@ import svenhjol.strange.feature.quests.Requirement;
 
 import java.util.*;
 
-public class ArtifactQuest extends Quest {
-    static final String ARTIFACT_TAG = "artifact";
+public class TreasureQuest extends Quest {
+    static final String TREASURE_TAG = "treasure";
     static final String LOOT_TABLES_TAG = "loot_tables";
 
-    ArtifactItem artifact;
+    TreasureItem treasure;
     List<ResourceLocation> lootTables = new ArrayList<>();
 
     @Override
     public List<? extends Requirement> requirements() {
-        return List.of(artifact);
+        return List.of(treasure);
     }
 
     public List<ResourceLocation> lootTables() {
@@ -39,9 +39,9 @@ public class ArtifactQuest extends Quest {
 
     @Override
     public void playerPickup(ItemStack stack) {
-        if (!artifact.discovered && isArtifact(this, stack)) {
-            log().debug(getClass(), "Player has discovered the artifact");
-            artifact.discovered = true;
+        if (!treasure.discovered && isTreasure(this, stack)) {
+            log().debug(getClass(), "Player has discovered the treasure");
+            treasure.discovered = true;
         }
     }
 
@@ -51,14 +51,14 @@ public class ArtifactQuest extends Quest {
             return Optional.empty();
         }
 
-        if (!artifact.discovered && inProgress() && !lootTables.isEmpty()) {
+        if (!treasure.discovered && inProgress() && !lootTables.isEmpty()) {
             for (var lootTable : lootTables) {
                 if (lootTable.equals(lootTableId)) {
-                    if (random.nextDouble() < artifact.chance) {
-                        log().debug(getClass(), "Adding the artifact to the loot pool");
-                        return Optional.of(artifact.item.copy());
+                    if (random.nextDouble() < treasure.chance) {
+                        log().debug(getClass(), "Adding the treasure to the loot pool");
+                        return Optional.of(treasure.item.copy());
                     } else {
-                        log().debug(getClass(), "Did not pass chance check, skipping artifact loot generation");
+                        log().debug(getClass(), "Did not pass chance check, skipping treasure loot generation");
                     }
                 }
             }
@@ -68,18 +68,18 @@ public class ArtifactQuest extends Quest {
 
     @Override
     protected void makeRequirements(QuestDefinition definition) {
-        var artifact = definition.artifact().take(random());
+        var treasure = definition.treasure().take(random());
 
-        this.lootTables = artifact.lootTables();
-        this.artifact = new ArtifactItem(artifact.item(), artifact.chance());
+        this.lootTables = treasure.lootTables();
+        this.treasure = new TreasureItem(treasure.item(), treasure.chance());
     }
 
     @Override
     public void loadAdditional(CompoundTag tag) {
-        var artifactTag = tag.getCompound(ARTIFACT_TAG);
-        var item = new ArtifactItem();
-        item.load(artifactTag);
-        artifact = item;
+        var treasureTag = tag.getCompound(TREASURE_TAG);
+        var item = new TreasureItem();
+        item.load(treasureTag);
+        treasure = item;
 
         lootTables.clear();
         var list = tag.getList(LOOT_TABLES_TAG, 8);
@@ -91,9 +91,9 @@ public class ArtifactQuest extends Quest {
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        var artifactTag = new CompoundTag();
-        artifact.save(artifactTag);
-        tag.put(ARTIFACT_TAG, artifactTag);
+        var treasureTag = new CompoundTag();
+        treasure.save(treasureTag);
+        tag.put(TREASURE_TAG, treasureTag);
 
         var list = new ListTag();
         for (var lootTable : lootTables) {
@@ -107,21 +107,21 @@ public class ArtifactQuest extends Quest {
         return Mods.common(Strange.ID).log();
     }
 
-    public static boolean isArtifact(Quest quest, ItemStack stack) {
+    public static boolean isTreasure(Quest quest, ItemStack stack) {
         var tag = stack.getTag();
         if (tag == null) return false;
 
-        if (tag.contains(ArtifactItem.CUSTOM_TAG)) {
-            var itemId = tag.getString(ArtifactItem.CUSTOM_TAG);
+        if (tag.contains(TreasureItem.CUSTOM_TAG)) {
+            var itemId = tag.getString(TreasureItem.CUSTOM_TAG);
             return itemId.equals(quest.id());
         }
 
         return false;
     }
 
-    public class ArtifactItem implements Requirement {
+    public class TreasureItem implements Requirement {
         static final String ITEM_TAG = "item";
-        static final String CUSTOM_TAG = "strange_artifact";
+        static final String CUSTOM_TAG = "strange_trasure";
         static final String CHANCE_TAG = "chance";
         static final String DISCOVERED_TAG = "discovered";
 
@@ -129,9 +129,9 @@ public class ArtifactQuest extends Quest {
         public double chance;
         public boolean discovered;
 
-        private ArtifactItem() {}
+        private TreasureItem() {}
 
-        public ArtifactItem(ItemStack item, double chance) {
+        public TreasureItem(ItemStack item, double chance) {
             var questId = id();
             addRandomEnchantment(item);
             item.getOrCreateTag().putString(CUSTOM_TAG, questId);
@@ -175,7 +175,7 @@ public class ArtifactQuest extends Quest {
 
                 for (var invItem : inventory) {
                     if (remainder <= 0) continue;
-                    if (isArtifact(quest(), invItem)) {
+                    if (isTreasure(quest(), invItem)) {
                         remainder -= 1;
                     }
                 }
@@ -196,7 +196,7 @@ public class ArtifactQuest extends Quest {
                 for (var invItem : player.getInventory().items) {
                     if (remainder <= 0) continue;
 
-                    if (isArtifact(quest(), invItem)) {
+                    if (isTreasure(quest(), invItem)) {
                         var decrement = Math.min(remainder, invItem.getCount());
                         remainder -= decrement;
                         invItem.shrink(decrement);

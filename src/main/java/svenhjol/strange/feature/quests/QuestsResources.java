@@ -14,9 +14,9 @@ public class QuestsResources {
     public static final Component QUESTS_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.quests");
     public static final Component NO_QUESTS_TEXT = TextHelper.translatable("gui.strange.quests.no_quests");
     public static final Component VILLAGER_QUESTS_BUTTON_TEXT = TextHelper.translatable("gui.strange.quests.villager_quests");
-    public static final Component ARTIFACT_TEXT = TextHelper.translatable("gui.strange.quests.artifact");
-    public static final Component ARTIFACT_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.artifact_requirement");
-    public static final Component ARTIFACT_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.artifact_reward");
+    public static final Component TREASURE_TEXT = TextHelper.translatable("gui.strange.quests.treasure");
+    public static final Component TREASURE_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.treasure_requirement");
+    public static final Component TREASURE_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.treasure_reward");
     public static final Component GATHER_TEXT = TextHelper.translatable("gui.strange.quests.gather");
     public static final Component GATHER_REQUIREMENT_TEXT = TextHelper.translatable("gui.strange.quests.gather_requirement");
     public static final Component GATHER_REWARD_TEXT = TextHelper.translatable("gui.strange.quests.gather_reward");

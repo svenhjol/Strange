@@ -8,7 +8,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import svenhjol.strange.feature.quests.artifact.ArtifactDefinition;
+import svenhjol.strange.feature.quests.treasure.TreasureDefinition;
 import svenhjol.strange.feature.quests.battle.BattleDefinition;
 import svenhjol.strange.feature.quests.gather.GatherDefinition;
 import svenhjol.strange.feature.quests.hunt.HuntDefinition;
@@ -35,7 +35,7 @@ public class QuestDefinition {
     private String type;
     private List<String> professions = new ArrayList<>();
     private List<String> required_features = new ArrayList<>();
-    private List<Map<String, Object>> artifact = new ArrayList<>();
+    private List<Map<String, Object>> treasure = new ArrayList<>();
     private List<Map<String, Object>> battle = new ArrayList<>();
     private List<Map<String, Object>> gather = new ArrayList<>();
     private List<Map<String, Object>> hunt = new ArrayList<>();
@@ -89,9 +89,9 @@ public class QuestDefinition {
         return required_features.stream().map(this::tryParse).toList();
     }
 
-    public DefinitionList<ArtifactDefinition> artifact() {
-        return artifact.stream()
-            .map(m -> new ArtifactDefinition(this).fromMap(m))
+    public DefinitionList<TreasureDefinition> treasure() {
+        return treasure.stream()
+            .map(m -> new TreasureDefinition(this).fromMap(m))
             .collect(Collectors.toCollection(DefinitionList::new));
     }
 

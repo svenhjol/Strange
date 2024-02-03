@@ -1,4 +1,4 @@
-package svenhjol.strange.feature.quests.artifact;
+package svenhjol.strange.feature.quests.treasure;
 
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -12,20 +12,20 @@ import svenhjol.strange.feature.quests.BaseDefinition;
 
 import java.util.*;
 
-public class ArtifactDefinition extends BaseDefinition<ArtifactDefinition> {
-    static final ResourceLocation DEFAULT_ARTIFACT_ITEMS = new ResourceLocation(Strange.ID, "default_artifact_items");
+public class TreasureDefinition extends BaseDefinition<TreasureDefinition> {
+    static final ResourceLocation DEFAULT_TREASURE_ITEMS = new ResourceLocation(Strange.ID, "default_treasure_items");
     private ResourceLocation list;
     private int amount = 1;
     private double chance = 1.0d;
     private List<ResourceLocation> items = new ArrayList<>();
 
-    public ArtifactDefinition(QuestDefinition definition) {
+    public TreasureDefinition(QuestDefinition definition) {
         super(definition);
-        items.add(DEFAULT_ARTIFACT_ITEMS);
+        items.add(DEFAULT_TREASURE_ITEMS);
     }
 
     @Override
-    public ArtifactDefinition fromMap(Map<String, Object> map) {
+    public TreasureDefinition fromMap(Map<String, Object> map) {
         for (var entry : map.entrySet()) {
             var key = entry.getKey();
             var val = entry.getValue();
@@ -55,7 +55,7 @@ public class ArtifactDefinition extends BaseDefinition<ArtifactDefinition> {
 
     @Override
     protected String dataDir() {
-        return "quests/artifact";
+        return "quests/treasure";
     }
 
     public double chance() {

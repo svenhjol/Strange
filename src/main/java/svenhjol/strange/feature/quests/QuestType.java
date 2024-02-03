@@ -2,10 +2,10 @@ package svenhjol.strange.feature.quests;
 
 import net.minecraft.network.chat.Component;
 import svenhjol.charmony.helper.TextHelper;
-import svenhjol.strange.feature.quests.artifact.ArtifactQuestRenderer;
+import svenhjol.strange.feature.quests.treasure.TreasureQuestRenderer;
 import svenhjol.strange.feature.quests.battle.BattleQuestRenderer;
 import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
-import svenhjol.strange.feature.quests.artifact.ArtifactQuest;
+import svenhjol.strange.feature.quests.treasure.TreasureQuest;
 import svenhjol.strange.feature.quests.gather.GatherQuestRenderer;
 import svenhjol.strange.feature.quests.hunt.HuntQuestRenderer;
 import svenhjol.strange.feature.quests.gather.GatherQuest;
@@ -14,7 +14,7 @@ import svenhjol.strange.feature.quests.battle.BattleQuest;
 
 @SuppressWarnings("unchecked")
 public enum QuestType {
-    ARTIFACT(ArtifactQuest.class, ArtifactQuestRenderer.class, TextHelper.translatable("gui.strange.quests.artifact")),
+    TREASURE(TreasureQuest.class, TreasureQuestRenderer.class, TextHelper.translatable("gui.strange.quests.treasure")),
     BATTLE(BattleQuest.class, BattleQuestRenderer.class, TextHelper.translatable("gui.strange.quests.battle")),
     GATHER(GatherQuest.class, GatherQuestRenderer.class, TextHelper.translatable("gui.strange.quests.gather")),
     HUNT(HuntQuest.class, HuntQuestRenderer.class, TextHelper.translatable("gui.strange.quests.hunt"));

@@ -1,10 +1,10 @@
 {
-  "type": "artifact",
+  "type": "treasure",
   "level": 1,
   "professions": [
     "farmer"
   ],
-  "artifact": [
+  "treasure": [
     {
       "list": "fishing_loot_tables",
       "amount": 2,

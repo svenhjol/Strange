@@ -1,8 +1,8 @@
 {
-  "type": "artifact",
+  "type": "treasure",
   "level": 3,
   "loyalty": 3,
-  "artifact": [
+  "treasure": [
     {
       "list": "shipwreck_loot_tables",
       "amount": 2,
