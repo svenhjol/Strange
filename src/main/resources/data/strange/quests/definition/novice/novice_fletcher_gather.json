@@ -1,0 +1,43 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "fletcher"
+  ],
+  "gather": [
+    {
+      "list": "common_fletcher_items",
+      "amount": 10
+    },
+    {
+      "list": "coal",
+      "amount": 10
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emeralds",
+      "amount": 1
+    },
+    {
+      "list": "stone_tools",
+      "amount": 1
+    },
+    {
+      "list": "tools",
+      "amount": 1
+    },
+    {
+      "list": "cooked_foods",
+      "amount": 3
+    },
+    {
+      "list": "overworld_stone_slabs",
+      "amount": 12
+    },
+    {
+      "list": "cooking_blocks",
+      "amount": 1
+    }
+  ]
+}

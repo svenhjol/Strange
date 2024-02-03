@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "copper",
+    "exposed_copper",
+    "weathered_copper",
+    "oxidized_copper"
+  ]
+}

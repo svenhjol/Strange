@@ -64,7 +64,7 @@ public class TreasureDefinition extends BaseDefinition<TreasureDefinition> {
 
     public ItemStack item() {
         if (items.isEmpty()) {
-            throw new RuntimeException("Items list is empty");
+            throw new RuntimeException("Treasure item list is empty: " + items);
         }
 
         var copy = new ArrayList<>(items);
@@ -72,7 +72,7 @@ public class TreasureDefinition extends BaseDefinition<TreasureDefinition> {
 
         var items = LinkedItemList.load(entries().getOrDefault(copy.get(0), new LinkedList<>()));
         if (items.isEmpty()) {
-            throw new RuntimeException("Items list is empty");
+            throw new RuntimeException("Treasure item list is empty: " + items);
         }
 
         Util.shuffle(items, random());
@@ -84,7 +84,7 @@ public class TreasureDefinition extends BaseDefinition<TreasureDefinition> {
 
         var lootTables = LinkedResourceList.load(entries().getOrDefault(list, new LinkedList<>()));
         if (lootTables.isEmpty()) {
-            throw new RuntimeException("Loot table list is empty");
+            throw new RuntimeException("Treasure loot table list is empty: " + list);
         }
 
         Util.shuffle(lootTables, random());

@@ -74,7 +74,7 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
 
         var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
         if (items.isEmpty()) {
-            throw new RuntimeException("Item list is empty");
+            throw new RuntimeException("Reward item list is empty: " + list);
         }
 
         if (weight < 0) {

@@ -68,7 +68,7 @@ public class BattleDefinition extends BaseDefinition<BattleDefinition> {
 
         var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
         if (mobs.isEmpty()) {
-            throw new RuntimeException("Entity list is empty");
+            throw new RuntimeException("Battle entity list is empty: " + list);
         }
 
         Util.shuffle(mobs, random());

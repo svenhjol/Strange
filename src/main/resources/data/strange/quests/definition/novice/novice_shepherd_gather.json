@@ -1,0 +1,39 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "shepherd"
+  ],
+  "gather": [
+    {
+      "list": "common_shepherd_items",
+      "amount": 10
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emeralds",
+      "amount": 1
+    },
+    {
+      "list": "stone_tools",
+      "amount": 1
+    },
+    {
+      "list": "tools",
+      "amount": 1
+    },
+    {
+      "list": "cooked_foods",
+      "amount": 3
+    },
+    {
+      "list": "overworld_wooden_slabs",
+      "amount": 12
+    },
+    {
+      "list": "crafting_tables",
+      "amount": 1
+    }
+  ]
+}

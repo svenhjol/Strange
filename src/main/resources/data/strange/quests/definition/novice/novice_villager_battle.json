@@ -1,20 +1,35 @@
 {
   "type": "battle",
   "level": 1,
+  "loyalty": 2,
   "battle": [
     {
       "list": "common_hostile_mobs",
-      "amount": 2
+      "amount": 3
     }
   ],
   "reward_items": [
     {
-      "list": "emerald_rewards",
-      "amount": "4-7"
+      "list": "emeralds",
+      "amount": "1-3"
     },
     {
-      "list": "iron_armor_rewards",
-      "amount": 2
+      "list": "stone_tools",
+      "amount": 1
+    },
+    {
+      "list": "leather_armor",
+      "amount": 1
+    },
+    {
+      "list": "chainmail_armor",
+      "amount": 1,
+      "chance": 0.5
+    },
+    {
+      "list": "iron_tools",
+      "amount": 1,
+      "chance": 0.25
     }
   ]
 }

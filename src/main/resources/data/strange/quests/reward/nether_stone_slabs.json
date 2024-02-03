@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "nether_brick_slab",
+    "quartz_slab",
+    "smooth_quartz_slab",
+    "red_nether_brick_slab",
+    "blackstone_slab",
+    "polished_blackstone_brick_slab",
+    "polished_blackstone_slab"
+  ]
+}

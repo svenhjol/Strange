@@ -1,21 +1,16 @@
 {
   "type": "gather",
   "level": 1,
+  "professions": [
+    "mason"
+  ],
   "gather": [
     {
       "list": "common_stone_blocks",
       "amount": 10
     },
     {
-      "list": "common_mob_drops",
-      "amount": 10
-    },
-    {
-      "list": "uncooked_foods",
-      "amount": 10
-    },
-    {
-      "list": "common_flowers",
+      "list": "clay",
       "amount": 10
     },
     {
@@ -29,24 +24,24 @@
       "amount": 1
     },
     {
-      "list": "beds",
-      "amount": 1
-    },
-    {
-      "list": "campfires",
-      "amount": 1
-    },
-    {
-      "list": "lanterns",
-      "amount": 1
-    },
-    {
       "list": "stone_tools",
       "amount": 1
     },
     {
-      "list": "wools",
-      "amount": 3
+      "list": "tools",
+      "amount": 1
+    },
+    {
+      "list": "stonecutters",
+      "amount": 1
+    },
+    {
+      "list": "overworld_stone_slabs",
+      "amount": 12
+    },
+    {
+      "list": "leather_armor",
+      "amount": 1
     }
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "librarian"
+  ],
+  "gather": [
+    {
+      "list": "book_ingredients",
+      "amount": 10
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emeralds",
+      "amount": 1
+    },
+    {
+      "list": "stone_tools",
+      "amount": 1
+    },
+    {
+      "list": "candles",
+      "amount": 3
+    },
+    {
+      "list": "overworld_wooden_slabs",
+      "amount": 12
+    },
+    {
+      "list": "lecterns",
+      "amount": 1
+    }
+  ]
+}

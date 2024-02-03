@@ -1,0 +1,35 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "loyalty": 5,
+  "epic": true,
+  "hunt": [
+    {
+      "list": "common_hostile_mobs",
+      "amount": 15
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emeralds",
+      "amount": "4-7"
+    },
+    {
+      "list": "iron_tools",
+      "amount": 3
+    },
+    {
+      "list": "iron_armor",
+      "amount": 3
+    },
+    {
+      "list": "iron_tools",
+      "amount": 3
+    },
+    {
+      "list": "chainmail_armor",
+      "amount": 3
+    }
+  ],
+  "reward_experience": 5
+}

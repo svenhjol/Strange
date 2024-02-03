@@ -5,18 +5,38 @@
   "epic": true,
   "gather": [
     {
-      "list": "starter_items",
-      "amount": 20
+      "list": "common_raw_ores",
+      "amount": 64
+    },
+    {
+      "list": "common_planks",
+      "amount": 64
+    },
+    {
+      "list": "uncooked_foods",
+      "amount": 32
     }
   ],
   "reward_items": [
     {
-      "list": "iron_tool_rewards",
-      "amount": 2
+      "list": "emeralds",
+      "amount": "4-7"
     },
     {
-      "list": "iron_armor_rewards",
-      "amount": 2
+      "list": "fences",
+      "amount": 15
+    },
+    {
+      "list": "fence_gates",
+      "amount": 15
+    },
+    {
+      "list": "iron_ingot",
+      "amount": 10
+    },
+    {
+      "list": "gold_ingot",
+      "amount": 10
     }
   ],
   "reward_experience": 5

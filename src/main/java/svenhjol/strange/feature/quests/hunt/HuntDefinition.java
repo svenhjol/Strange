@@ -59,7 +59,7 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
 
         var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
         if (mobs.isEmpty()) {
-            throw new RuntimeException("Entity list is empty");
+            throw new RuntimeException("Hunt entity list is empty: " + list);
         }
 
         Util.shuffle(mobs, random());

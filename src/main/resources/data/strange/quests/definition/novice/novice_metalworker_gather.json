@@ -1,0 +1,49 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "armorer",
+    "toolsmith",
+    "weaponsmith"
+  ],
+  "gather": [
+    {
+      "list": "coal",
+      "amount": 10
+    },
+    {
+      "list": "common_stone_blocks",
+      "amount": 10
+    },
+    {
+      "list": "common_raw_ores",
+      "amount": 10
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "emeralds",
+      "amount": 1
+    },
+    {
+      "list": "stone_tools",
+      "amount": 1
+    },
+    {
+      "list": "tools",
+      "amount": 1
+    },
+    {
+      "list": "cooked_foods",
+      "amount": 3
+    },
+    {
+      "list": "overworld_stone_slabs",
+      "amount": 12
+    },
+    {
+      "list": "crafting_tables",
+      "amount": 1
+    }
+  ]
+}

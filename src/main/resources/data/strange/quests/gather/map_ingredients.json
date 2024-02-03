@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "iron_ingot",
+    "redstone",
+    "paper",
+    "sugar_cane"
+  ]
+}

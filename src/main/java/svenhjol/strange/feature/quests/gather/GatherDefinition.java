@@ -59,7 +59,7 @@ public class GatherDefinition extends BaseDefinition<GatherDefinition> {
 
         var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
         if (items.isEmpty()) {
-            throw new RuntimeException("Item list is empty");
+            throw new RuntimeException("Gather item list is empty: " + list);
         }
 
         var max = Math.min(

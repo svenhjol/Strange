@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "chicken",
+    "beef",
+    "mutton",
+    "feather",
+    "leather",
+    "white_wool",
+    "egg"
+  ]
+}

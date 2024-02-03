@@ -9,14 +9,20 @@
   ],
   "reward_items": [
     {
-      "list": "leather_armor_rewards",
-      "amount": 2,
-      "chance": 1.0
+      "list": "emeralds",
+      "amount": "1-3"
     },
     {
-      "list": "stone_tool_rewards",
-      "amount": 2,
-      "chance": 1.0
+      "list": "leather_armor",
+      "amount": 1
+    },
+    {
+      "list": "stone_tools",
+      "amount": 1
+    },
+    {
+      "list": "iron_nuggets",
+      "amount": 9
     }
   ]
 }
