@@ -93,7 +93,6 @@ public class QuestOffersScreen extends Screen {
         }
 
         if (minecraft.player != null) {
-            QuestsClient.requestVillagerQuests(villagerUuid);
             QuestsClient.requestVillagerLoyalty(villagerUuid);
         }
     }

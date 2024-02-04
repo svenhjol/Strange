@@ -1,27 +1,23 @@
 {
   "type": "gather",
-  "level": 1,
+  "level": 3,
   "professions": [
     "butcher"
   ],
   "gather": [
     {
       "list": "strange:uncooked_foods",
-      "amount": 7
-    },
-    {
-      "list": "strange:coal",
-      "amount": 15
+      "amount": 20
     }
   ],
   "reward_items": [
     {
       "list": "strange:emeralds",
-      "amount": "2-3"
+      "amount": "10-12"
     },
     {
-      "list": "strange:stews",
-      "amount": "2-4"
+      "list": "strange:cooked_foods",
+      "amount": "8-12"
     }
   ]
 }

@@ -2,13 +2,9 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "butcher"
+    "armorer"
   ],
   "gather": [
-    {
-      "list": "strange:uncooked_foods",
-      "amount": 7
-    },
     {
       "list": "strange:coal",
       "amount": 15
@@ -20,8 +16,8 @@
       "amount": "2-3"
     },
     {
-      "list": "strange:stews",
-      "amount": "2-4"
+      "list": "strange:iron_armor",
+      "amount": "1-2"
     }
   ]
 }

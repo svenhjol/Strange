@@ -6,29 +6,29 @@
   ],
   "gather": [
     {
-      "list": "book_ingredients",
+      "list": "strange:book_ingredients",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": 1
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "candles",
+      "list": "strange:candles",
       "amount": 3
     },
     {
-      "list": "overworld_wooden_slabs",
+      "list": "strange:overworld_wooden_slabs",
       "amount": 12
     },
     {
-      "list": "lecterns",
+      "list": "strange:lecterns",
       "amount": 1
     }
   ]

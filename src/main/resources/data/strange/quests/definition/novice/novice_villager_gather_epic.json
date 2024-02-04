@@ -5,37 +5,37 @@
   "epic": true,
   "gather": [
     {
-      "list": "common_raw_ores",
+      "list": "strange:common_raw_ores",
       "amount": 64
     },
     {
-      "list": "common_planks",
+      "list": "strange:common_planks",
       "amount": 64
     },
     {
-      "list": "uncooked_foods",
+      "list": "strange:uncooked_foods",
       "amount": 32
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": "4-7"
     },
     {
-      "list": "fences",
+      "list": "strange:fences",
       "amount": 15
     },
     {
-      "list": "fence_gates",
+      "list": "strange:fence_gates",
       "amount": 15
     },
     {
-      "list": "iron_ingot",
+      "list": "strange:iron_ingots",
       "amount": 10
     },
     {
-      "list": "gold_ingot",
+      "list": "strange:gold_ingots",
       "amount": 10
     }
   ],

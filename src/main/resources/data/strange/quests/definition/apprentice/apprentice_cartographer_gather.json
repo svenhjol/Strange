@@ -1,0 +1,49 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "cartographer"
+  ],
+  "gather": [
+    {
+      "list": "strange:glass",
+      "amount": 25
+    },
+    {
+      "list": "strange:compasses",
+      "amount": 5
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "strange:emeralds",
+      "amount": "5-7"
+    },
+    {
+      "list": "strange:maps",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.ocean_ruin_warm",
+      "structure": "minecraft:ocean_ruin_warm"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.ocean_ruin_cold",
+      "structure": "minecraft:ocean_ruin_cold"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.mineshaft",
+      "structure": "minecraft:mineshaft"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.pillager_outpost",
+      "structure": "minecraft:pillager_outpost"
+    }
+  ]
+}

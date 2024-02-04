@@ -69,7 +69,7 @@ public interface SimpleObjectParser {
 
     default ResourceLocation parseResourceLocation(Object r) {
         if (!(r instanceof String str)) {
-            throw new RuntimeException("Could not parse string");
+            throw new RuntimeException("Could not parse string: " + r);
         }
 
         return new ResourceLocation(str);
@@ -77,7 +77,7 @@ public interface SimpleObjectParser {
 
     default List<ResourceLocation> parseResourceLocationList(Object rs) {
         if (!(rs instanceof String str)) {
-            throw new RuntimeException("Could not parse string");
+            throw new RuntimeException("Could not parse string: " + rs);
         }
 
         return Arrays.stream(str.split(",")).map(this::parseResourceLocation).toList();

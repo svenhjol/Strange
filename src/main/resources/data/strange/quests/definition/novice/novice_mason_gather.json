@@ -6,41 +6,41 @@
   ],
   "gather": [
     {
-      "list": "common_stone_blocks",
+      "list": "strange:common_stone_blocks",
       "amount": 10
     },
     {
-      "list": "clay",
+      "list": "strange:clay",
       "amount": 10
     },
     {
-      "list": "coal",
+      "list": "strange:coal",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": 1
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "tools",
+      "list": "strange:tools",
       "amount": 1
     },
     {
-      "list": "stonecutters",
+      "list": "strange:stonecutters",
       "amount": 1
     },
     {
-      "list": "overworld_stone_slabs",
+      "list": "strange:overworld_stone_slabs",
       "amount": 12
     },
     {
-      "list": "leather_armor",
+      "list": "strange:leather_armor",
       "amount": 1
     }
   ]

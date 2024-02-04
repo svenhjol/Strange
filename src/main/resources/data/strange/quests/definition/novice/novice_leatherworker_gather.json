@@ -6,37 +6,37 @@
   ],
   "gather": [
     {
-      "list": "common_leatherworker_items",
+      "list": "strange:common_leatherworker_items",
       "amount": 10
     },
     {
-      "list": "uncooked_foods",
+      "list": "strange:uncooked_foods",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": 1
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "tools",
+      "list": "strange:tools",
       "amount": 1
     },
     {
-      "list": "candles",
+      "list": "strange:candles",
       "amount": 3
     },
     {
-      "list": "overworld_wooden_slabs",
+      "list": "strange:overworld_wooden_slabs",
       "amount": 12
     },
     {
-      "list": "lecterns",
+      "list": "strange:lecterns",
       "amount": 1
     }
   ]

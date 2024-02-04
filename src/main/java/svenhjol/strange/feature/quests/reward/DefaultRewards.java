@@ -6,7 +6,9 @@ import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Quests;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DefaultRewards {
@@ -15,10 +17,12 @@ public class DefaultRewards {
 
     public DefaultRewards(Quest quest, QuestDefinition definition) {
         var random = quest.random();
-        var extra = random.nextDouble() < 0.25d ? 1 : 0;
 
         var items = definition.rewardItems().stream()
             .flatMap(i -> i.items().stream()).collect(Collectors.toCollection(ArrayList::new));
+
+        // Assign the current quest to each item.
+        items.forEach(i -> i.setQuest(quest));
 
         var functions = definition.rewardItemFunctions().stream()
             .map(RewardItemFunctionDefinition::function).collect(Collectors.toCollection(ArrayList::new));
@@ -28,18 +32,27 @@ public class DefaultRewards {
             var emptyFunctionDefinition = new RewardItemFunctionDefinition(definition);
             var emptyFunctionParameters = new RewardItemFunctionParameters(emptyFunctionDefinition);
 
-            Quests.REWARD_ITEM_FUNCTIONS.byId("enchant_item", emptyFunctionParameters);
-            Quests.REWARD_ITEM_FUNCTIONS.byId("enchant_book", emptyFunctionParameters);
+            functions.add(Quests.REWARD_ITEM_FUNCTIONS.byId("enchant_item", emptyFunctionParameters));
+            functions.add(Quests.REWARD_ITEM_FUNCTIONS.byId("enchant_book", emptyFunctionParameters));
         }
 
-        // Assign the current quest to each item.
-        items.forEach(i -> i.setQuest(quest));
+        Map<String, List<RewardItemFunction>> functionCounts = new HashMap<>();
 
-        // Apply all functions to each item.
-        items.forEach(i -> functions.forEach(f -> f.apply(i)));
+        for (var func : functions) {
+            functionCounts.computeIfAbsent(func.id(), a -> new ArrayList<>()).add(func);
+        }
+
+        for (String s : functionCounts.keySet()) {
+            var funcs = functionCounts.get(s);
+            if (funcs.size() > 1) {
+                Util.shuffle(funcs, random);
+            }
+            var func = funcs.get(0);
+            items.forEach(func::apply);
+        }
 
         // We want a subset of the possible items.
-        var max = Math.min(definition.level() + extra, Quests.maxQuestRewards);
+        var max = Math.min(definition.level(), Quests.maxQuestRewards);
         Util.shuffle(items, random);
         rewardItems = items.subList(0, Math.min(max, items.size()));
 

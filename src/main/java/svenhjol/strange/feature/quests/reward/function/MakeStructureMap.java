@@ -15,8 +15,6 @@ import svenhjol.strange.feature.quests.reward.RewardItem;
 import svenhjol.strange.feature.quests.reward.RewardItemFunction;
 import svenhjol.strange.feature.quests.reward.RewardItemFunctionParameters;
 
-import java.util.List;
-
 public class MakeStructureMap implements RewardItemFunction {
     public static final String ID = "make_structure_map";
 
@@ -39,26 +37,21 @@ public class MakeStructureMap implements RewardItemFunction {
         var stack = reward.stack;
         var random = quest.random();
 
-        if (params.structures.isEmpty()) {
-            return;
-        }
-
         if (random.nextDouble() < params.chance && stack.is(Items.MAP)) {
             if (quest.player() instanceof ServerPlayer serverPlayer) {
                 var pos = serverPlayer.blockPosition();
                 var level = (ServerLevel)serverPlayer.level();
-                var selected = params.structures.get(random.nextInt(params.structures.size()));
 
                 // TODO: this is copypasta from Runestones#tryLocate. Move to helper?
-                var structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(selected);
+                var structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(params.structure);
                 if (structure == null) {
-                    throw new RuntimeException("Could not get structure from registry: " + params.structures);
+                    throw new RuntimeException("Could not get structure from registry: " + params.structure);
                 }
 
                 var set = HolderSet.direct(Holder.direct(structure));
                 var result = level.getChunkSource().getGenerator().findNearestMapStructure(level, set, pos, 100, true);
                 if (result == null) {
-                    throw new RuntimeException("Could not locate structure: " + params.structures);
+                    throw new RuntimeException("Could not locate structure: " + params.structure);
                 }
 
                 var targetPos = result.getFirst();
@@ -74,12 +67,12 @@ public class MakeStructureMap implements RewardItemFunction {
     public static class MakeMapParameters {
         public final double chance;
         public final String title;
-        public final List<ResourceLocation> structures;
+        public final ResourceLocation structure;
 
         public MakeMapParameters(RewardItemFunctionParameters params) {
             this.chance = params.getDouble("chance", 1.0d);
             this.title = params.getString("title", "filled_map.strange.default");
-            this.structures = params.getResourceLocationList("structures", List.of());
+            this.structure = params.getResourceLocation("structure", new ResourceLocation("village"));
         }
     }
 }

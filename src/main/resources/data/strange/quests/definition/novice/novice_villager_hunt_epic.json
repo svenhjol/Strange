@@ -5,29 +5,29 @@
   "epic": true,
   "hunt": [
     {
-      "list": "common_hostile_mobs",
+      "list": "strange:common_hostile_mobs",
       "amount": 15
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": "4-7"
     },
     {
-      "list": "iron_tools",
+      "list": "strange:iron_tools",
       "amount": 3
     },
     {
-      "list": "iron_armor",
+      "list": "strange:iron_armor",
       "amount": 3
     },
     {
-      "list": "iron_tools",
+      "list": "strange:iron_tools",
       "amount": 3
     },
     {
-      "list": "chainmail_armor",
+      "list": "strange:chainmail_armor",
       "amount": 3
     }
   ],

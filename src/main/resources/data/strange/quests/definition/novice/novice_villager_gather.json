@@ -3,49 +3,49 @@
   "level": 1,
   "gather": [
     {
-      "list": "common_stone_blocks",
+      "list": "strange:common_stone_blocks",
       "amount": 10
     },
     {
-      "list": "common_mob_drops",
+      "list": "strange:common_mob_drops",
       "amount": 10
     },
     {
-      "list": "uncooked_foods",
+      "list": "strange:uncooked_foods",
       "amount": 10
     },
     {
-      "list": "common_flowers",
+      "list": "strange:common_flowers",
       "amount": 10
     },
     {
-      "list": "coal",
+      "list": "strange:coal",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": 1
     },
     {
-      "list": "beds",
+      "list": "strange:beds",
       "amount": 1
     },
     {
-      "list": "campfires",
+      "list": "strange:campfires",
       "amount": 1
     },
     {
-      "list": "lanterns",
+      "list": "strange:lanterns",
       "amount": 1
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "wools",
+      "list": "strange:wools",
       "amount": 3
     }
   ]

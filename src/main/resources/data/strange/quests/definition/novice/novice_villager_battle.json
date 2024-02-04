@@ -4,30 +4,30 @@
   "loyalty": 2,
   "battle": [
     {
-      "list": "common_hostile_mobs",
+      "list": "strange:common_hostile_mobs",
       "amount": 3
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": "1-3"
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "leather_armor",
+      "list": "strange:leather_armor",
       "amount": 1
     },
     {
-      "list": "chainmail_armor",
+      "list": "strange:chainmail_armor",
       "amount": 1,
       "chance": 0.5
     },
     {
-      "list": "iron_tools",
+      "list": "strange:iron_tools",
       "amount": 1,
       "chance": 0.25
     }

@@ -1,0 +1,31 @@
+{
+  "type": "gather",
+  "level": 5,
+  "professions": [
+    "armorer"
+  ],
+  "gather": [
+    {
+      "list": "strange:coal",
+      "amount": 120
+    },
+    {
+      "list": "strange:iron_blocks",
+      "amount": 8
+    },
+    {
+      "list": "strange:copper_blocks",
+      "amount": 20
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "strange:emeralds",
+      "amount": "28-32"
+    },
+    {
+      "list": "strange:diamond_armor",
+      "amount": "2-3"
+    }
+  ]
+}

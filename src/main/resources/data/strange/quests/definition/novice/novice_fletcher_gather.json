@@ -6,37 +6,37 @@
   ],
   "gather": [
     {
-      "list": "common_fletcher_items",
+      "list": "strange:common_fletcher_items",
       "amount": 10
     },
     {
-      "list": "coal",
+      "list": "strange:coal",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": 1
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "tools",
+      "list": "strange:tools",
       "amount": 1
     },
     {
-      "list": "cooked_foods",
+      "list": "strange:cooked_foods",
       "amount": 3
     },
     {
-      "list": "overworld_stone_slabs",
+      "list": "strange:overworld_stone_slabs",
       "amount": 12
     },
     {
-      "list": "cooking_blocks",
+      "list": "strange:cooking_blocks",
       "amount": 1
     }
   ]

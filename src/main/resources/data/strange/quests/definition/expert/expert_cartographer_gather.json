@@ -1,0 +1,57 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "cartographer"
+  ],
+  "gather": [
+    {
+      "list": "strange:maps",
+      "amount": 12
+    },
+    {
+      "list": "strange:compasses",
+      "amount": 14
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "strange:emeralds",
+      "amount": "18-21"
+    },
+    {
+      "list": "strange:maps",
+      "amount": 1
+    },
+    {
+      "list": "strange:item_frames",
+      "amount": "4-6"
+    },
+    {
+      "list": "strange:banners",
+      "amount": "2-4"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.mansion",
+      "structure": "minecraft:mansion"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.monument",
+      "structure": "minecraft:monument"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.swamp_hut",
+      "structure": "minecraft:swamp_hut"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.igloo",
+      "structure": "minecraft:igloo"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "armorer"
+  ],
+  "gather": [
+    {
+      "list": "strange:coal",
+      "amount": 65
+    },
+    {
+      "list": "strange:iron_ingots",
+      "amount": 40
+    },
+    {
+      "list": "strange:copper_ingots",
+      "amount": 90
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "strange:emeralds",
+      "amount": "18-21"
+    },
+    {
+      "list": "strange:diamond_armor",
+      "amount": 1
+    }
+  ]
+}

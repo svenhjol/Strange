@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests.reward;
 
+import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.reward.function.EnchantBook;
 import svenhjol.strange.feature.quests.reward.function.EnchantItem;
 import svenhjol.strange.feature.quests.reward.function.MakeStructureMap;
@@ -8,24 +9,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RewardItemFunctions {
-    List<RewardItemFunction> functions = new ArrayList<>();
+    List<Class<? extends RewardItemFunction>> functionClasses = new ArrayList<>();
 
     public RewardItemFunctions() {
         populate();
     }
 
     public RewardItemFunction byId(String id, RewardItemFunctionParameters parameters) {
-        return functions.stream().filter(f -> f.id().equals(id))
-            .findFirst().orElseThrow()
-            .withParameters(parameters);
+        var clazz = functionClasses.stream().filter(f -> TextHelper.snakeToUpperCamel(id).equals(f.getSimpleName()))
+            .findFirst().orElseThrow();
+
+        RewardItemFunction inst;
+
+        try {
+            inst = clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return inst.withParameters(parameters);
     }
 
     /**
      * Add custom functions to this list. Populated when server starts.
      */
     void populate() {
-        functions.add(new EnchantBook());
-        functions.add(new EnchantItem());
-        functions.add(new MakeStructureMap());
+        functionClasses.add(EnchantBook.class);
+        functionClasses.add(EnchantItem.class);
+        functionClasses.add(MakeStructureMap.class);
     }
 }

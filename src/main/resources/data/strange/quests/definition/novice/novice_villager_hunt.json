@@ -3,25 +3,25 @@
   "level": 1,
   "hunt": [
     {
-      "list": "common_hostile_mobs",
+      "list": "strange:common_hostile_mobs",
       "amount": 3
     }
   ],
   "reward_items": [
     {
-      "list": "emeralds",
+      "list": "strange:emeralds",
       "amount": "1-3"
     },
     {
-      "list": "leather_armor",
+      "list": "strange:leather_armor",
       "amount": 1
     },
     {
-      "list": "stone_tools",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {
-      "list": "iron_nuggets",
+      "list": "strange:iron_nuggets",
       "amount": 9
     }
   ]

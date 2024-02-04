@@ -2,16 +2,12 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "butcher"
+    "cartographer"
   ],
   "gather": [
     {
-      "list": "strange:uncooked_foods",
-      "amount": 7
-    },
-    {
-      "list": "strange:coal",
-      "amount": 15
+      "list": "strange:paper",
+      "amount": 30
     }
   ],
   "reward_items": [
@@ -20,8 +16,8 @@
       "amount": "2-3"
     },
     {
-      "list": "strange:stews",
-      "amount": "2-4"
+      "list": "strange:maps",
+      "amount": "3-5"
     }
   ]
 }
