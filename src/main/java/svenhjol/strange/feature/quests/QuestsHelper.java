@@ -4,6 +4,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.npc.Villager;
@@ -50,11 +51,11 @@ public class QuestsHelper {
         return sublist;
     }
 
-    public static QuestList makeQuestsFromDefinitions(List<QuestDefinition> definitions, UUID villagerUuid) {
+    public static QuestList makeQuestsFromDefinitions(List<QuestDefinition> definitions, ServerPlayer player, UUID villagerUuid) {
         var quests = new QuestList();
 
         for (var definition : definitions) {
-            quests.add(Quest.create(definition, villagerUuid));
+            quests.add(Quest.create(definition, player, villagerUuid));
         }
 
         return quests;

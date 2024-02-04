@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -128,10 +129,10 @@ public abstract class Quest {
         return player;
     }
 
-    public static Quest create(QuestDefinition definition, UUID villagerUuid) {
+    public static Quest create(QuestDefinition definition, ServerPlayer player, UUID villagerUuid) {
         var type = definition.type();
         var quest = type.makeQuest();
-        quest.make(definition, villagerUuid);
+        quest.make(definition, player, villagerUuid);
         return quest;
     }
 
@@ -211,7 +212,7 @@ public abstract class Quest {
         saveAdditional(tag);
     }
 
-    protected void make(QuestDefinition definition, UUID villagerUuid) {
+    protected void make(QuestDefinition definition, ServerPlayer player, UUID villagerUuid) {
         this.id = makeId();
         this.type = definition.type();
         this.status = Status.NOT_STARTED;
@@ -222,6 +223,7 @@ public abstract class Quest {
         this.villagerUuid = villagerUuid;
         this.randomSeed = definition.seed();
         this.random = definition.random();
+        this.player = player;
 
         makeRequirements(definition);
         makeRewards(definition);

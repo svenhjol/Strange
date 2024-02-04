@@ -2,6 +2,7 @@ package svenhjol.strange.feature.quests.reward;
 
 import svenhjol.strange.feature.quests.reward.function.EnchantBook;
 import svenhjol.strange.feature.quests.reward.function.EnchantItem;
+import svenhjol.strange.feature.quests.reward.function.MakeStructureMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,5 +26,6 @@ public class RewardItemFunctions {
     void populate() {
         functions.add(new EnchantBook());
         functions.add(new EnchantItem());
+        functions.add(new MakeStructureMap());
     }
 }

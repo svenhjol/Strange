@@ -43,15 +43,10 @@ public class QuestDefinition {
     private List<Map<String, Object>> reward_item_functions = new ArrayList<>();
     private int reward_experience = 1;
 
-    public static QuestDefinition deserialize(String namespace, ResourceManager manager, Resource resource) {
+    public static QuestDefinition deserialize(String namespace, ResourceManager manager, Resource resource) throws IOException {
         BufferedReader reader;
 
-        try {
-            reader = resource.openAsReader();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        reader = resource.openAsReader();
         var def = new Gson().fromJson(reader, QuestDefinition.class);
 
         def.namespace = namespace;

@@ -32,11 +32,11 @@ public class DefaultRewards {
             Quests.REWARD_ITEM_FUNCTIONS.byId("enchant_book", emptyFunctionParameters);
         }
 
-        // Apply all functions to each item.
-        items.forEach(i -> functions.forEach(f -> f.apply(i)));
-
         // Assign the current quest to each item.
         items.forEach(i -> i.setQuest(quest));
+
+        // Apply all functions to each item.
+        items.forEach(i -> functions.forEach(f -> f.apply(i)));
 
         // We want a subset of the possible items.
         var max = Math.min(definition.level() + extra, Quests.maxQuestRewards);

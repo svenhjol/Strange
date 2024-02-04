@@ -72,10 +72,7 @@ public interface SimpleObjectParser {
             throw new RuntimeException("Could not parse string");
         }
 
-        var res = new ResourceLocation(str);
-        var ns = res.getNamespace();
-        var path = res.getPath();
-        return ns.equals("minecraft") ? new ResourceLocation(namespace(), path) : res;
+        return new ResourceLocation(str);
     }
 
     default List<ResourceLocation> parseResourceLocationList(Object rs) {

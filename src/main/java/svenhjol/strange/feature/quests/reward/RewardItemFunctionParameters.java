@@ -5,6 +5,7 @@ import net.minecraft.util.RandomSource;
 import svenhjol.strange.data.SimpleObjectParser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RewardItemFunctionParameters implements SimpleObjectParser {
@@ -50,5 +51,9 @@ public class RewardItemFunctionParameters implements SimpleObjectParser {
 
     public ResourceLocation getResourceLocation(String key, ResourceLocation def) {
         return parseResourceLocation(map.getOrDefault(key, def));
+    }
+
+    public List<ResourceLocation> getResourceLocationList(String keys, List<ResourceLocation> def) {
+        return parseResourceLocationList(map.getOrDefault(keys, def));
     }
 }

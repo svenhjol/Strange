@@ -206,7 +206,14 @@ public class Quests extends CommonFeature {
                 var id = entry.getKey();
                 var namespace = id.getNamespace();
                 var resource = entry.getValue();
-                var definition = QuestDefinition.deserialize(namespace, manager, resource);
+                QuestDefinition definition;
+
+                try {
+                    definition = QuestDefinition.deserialize(namespace, manager, resource);
+                } catch (Exception e) {
+                    mod().log().warn(getClass(), "Definition " + id + " failed to load due to an error: " + e.getMessage());
+                    continue;
+                }
 
                 // If the def requires specific charmony features, test they are enabled now and skip def if not.
                 if (!DataHelper.hasRequiredFeatures(definition.requiredFeatures())) {
@@ -270,7 +277,7 @@ public class Quests extends CommonFeature {
             throw new RuntimeException("Could not get server reference");
         }
 
-        var newQuests = QuestsHelper.makeQuestsFromDefinitions(definitions, villagerUuid);
+        var newQuests = QuestsHelper.makeQuestsFromDefinitions(definitions, serverPlayer, villagerUuid);
 
         VILLAGER_QUESTS.put(villagerUuid, newQuests);
         VILLAGER_QUESTS_REFRESH.put(villagerUuid, gameTime);
