@@ -2,25 +2,21 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "farmer"
+    "fletcher"
   ],
   "gather": [
     {
-      "list": "strange:common_seeds",
-      "amount": 20
-    },
-    {
-      "list": "strange:coal",
+      "list": "strange:common_fletcher_items",
       "amount": 10
     },
     {
-      "list": "strange:uncooked_foods",
+      "list": "strange:coal",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": 1
     },
     {
@@ -32,12 +28,16 @@
       "amount": 1
     },
     {
-      "list": "strange:composters",
-      "amount": 1
+      "list": "strange:cooked_food",
+      "amount": 3
     },
     {
-      "list": "strange:fences",
-      "amount": 6
+      "list": "strange:overworld_stone_slabs",
+      "amount": 12
+    },
+    {
+      "list": "strange:cooking_blocks",
+      "amount": 1
     }
   ]
 }

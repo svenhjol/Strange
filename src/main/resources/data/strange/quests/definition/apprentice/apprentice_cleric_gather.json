@@ -7,11 +7,11 @@
   "gather": [
     {
       "item": "raw_gold",
-      "amount": 10
+      "amount": "8-12"
     },
     {
       "item": "gold_ingot",
-      "amount": 10
+      "amount": "8-12"
     }
   ],
   "reward_items": [

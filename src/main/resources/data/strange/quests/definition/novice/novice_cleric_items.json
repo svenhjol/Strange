@@ -7,7 +7,7 @@
   "gather": [
     {
       "list": "strange:common_mob_drops",
-      "amount": 20
+      "amount": "18-22"
     }
   ],
   "reward_items": [

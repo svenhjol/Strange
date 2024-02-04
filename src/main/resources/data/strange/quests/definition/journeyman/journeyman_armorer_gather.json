@@ -11,15 +11,15 @@
     },
     {
       "item": "coal",
-      "amount": 45
+      "amount": "40-50"
     },
     {
       "item": "iron_ingot",
-      "amount": 25
+      "amount": "20-30"
     },
     {
       "item": "copper_ingot",
-      "amount": 55
+      "amount": "50-60"
     }
   ],
   "reward_items": [

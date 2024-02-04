@@ -2,11 +2,15 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "fletcher"
+    "mason"
   ],
   "gather": [
     {
-      "list": "strange:common_fletcher_items",
+      "list": "strange:common_stone_blocks",
+      "amount": 10
+    },
+    {
+      "list": "strange:clay",
       "amount": 10
     },
     {
@@ -16,7 +20,7 @@
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": 1
     },
     {
@@ -28,15 +32,15 @@
       "amount": 1
     },
     {
-      "list": "strange:cooked_foods",
-      "amount": 3
+      "list": "strange:stonecutters",
+      "amount": 1
     },
     {
       "list": "strange:overworld_stone_slabs",
       "amount": 12
     },
     {
-      "list": "strange:cooking_blocks",
+      "list": "strange:leather_armor",
       "amount": 1
     }
   ]

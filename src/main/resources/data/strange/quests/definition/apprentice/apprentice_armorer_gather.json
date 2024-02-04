@@ -7,15 +7,15 @@
   "gather": [
     {
       "item": "coal",
-      "amount": 25
+      "amount": "20-30"
     },
     {
       "item": "iron_ingot",
-      "amount": 10
+      "amount": "8-12"
     },
     {
       "item": "copper_ingot",
-      "amount": 25
+      "amount": "20-30"
     }
   ],
   "reward_items": [

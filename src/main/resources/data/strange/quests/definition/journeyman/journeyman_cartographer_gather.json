@@ -7,11 +7,11 @@
   "gather": [
     {
       "item": "map",
-      "amount": 8
+      "amount": "7-9"
     },
     {
       "item": "compass",
-      "amount": 10
+      "amount": "8-12"
     }
   ],
   "reward_items": [

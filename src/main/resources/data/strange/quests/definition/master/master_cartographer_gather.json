@@ -7,15 +7,15 @@
   "gather": [
     {
       "item": "iron_ingot",
-      "amount": 80
+      "amount": "75-85"
     },
     {
       "item": "compass",
-      "amount": 20
+      "amount": "18-22"
     },
     {
       "item": "redstone",
-      "amount": 160
+      "amount": "150-170"
     }
   ],
   "reward_items": [

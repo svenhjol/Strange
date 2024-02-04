@@ -1,24 +1,25 @@
 {
-  "type": "battle",
+  "type": "treasure",
   "level": 1,
   "loyalty": 2,
-  "battle": [
+  "treasure": [
     {
-      "list": "strange:common_hostile_mobs",
-      "amount": 3
+      "list": "strange:fishing_loot_tables",
+      "amount": 3,
+      "chance": 0.75
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": "1-3"
     },
     {
-      "list": "strange:stone_tools",
+      "list": "strange:leather_armor",
       "amount": 1
     },
     {
-      "list": "strange:leather_armor",
+      "list": "strange:stone_tools",
       "amount": 1
     },
     {

@@ -2,25 +2,25 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "mason"
+    "farmer"
   ],
   "gather": [
     {
-      "list": "strange:common_stone_blocks",
-      "amount": 10
-    },
-    {
-      "list": "strange:clay",
-      "amount": 10
+      "list": "strange:common_seeds",
+      "amount": 20
     },
     {
       "list": "strange:coal",
+      "amount": 10
+    },
+    {
+      "list": "strange:uncooked_food",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": 1
     },
     {
@@ -32,16 +32,12 @@
       "amount": 1
     },
     {
-      "list": "strange:stonecutters",
+      "list": "strange:composters",
       "amount": 1
     },
     {
-      "list": "strange:overworld_stone_slabs",
-      "amount": 12
-    },
-    {
-      "list": "strange:leather_armor",
-      "amount": 1
+      "list": "strange:fences",
+      "amount": 6
     }
   ]
 }

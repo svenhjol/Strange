@@ -7,11 +7,11 @@
   "gather": [
     {
       "list": "strange:uncooked_food",
-      "amount": 10
+      "amount": "8-12"
     },
     {
       "item": "coal",
-      "amount": 25
+      "amount": "20-30"
     }
   ],
   "reward_items": [

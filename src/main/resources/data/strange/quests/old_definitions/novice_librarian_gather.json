@@ -2,17 +2,17 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "shepherd"
+    "librarian"
   ],
   "gather": [
     {
-      "list": "strange:common_shepherd_items",
+      "list": "strange:book_ingredients",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": 1
     },
     {
@@ -20,11 +20,7 @@
       "amount": 1
     },
     {
-      "list": "strange:tools",
-      "amount": 1
-    },
-    {
-      "list": "strange:cooked_foods",
+      "list": "strange:candles",
       "amount": 3
     },
     {
@@ -32,7 +28,7 @@
       "amount": 12
     },
     {
-      "list": "strange:crafting_tables",
+      "list": "strange:lecterns",
       "amount": 1
     }
   ]

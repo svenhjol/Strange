@@ -7,11 +7,11 @@
   "gather": [
     {
       "list": "strange:uncooked_food",
-      "amount": 45
+      "amount": "40-50"
     },
     {
       "list": "strange:berries",
-      "amount": 120
+      "amount": "110-125"
     }
   ],
   "reward_items": [

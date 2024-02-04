@@ -7,11 +7,11 @@
   "gather": [
     {
       "list": "strange:uncooked_food",
-      "amount": 30
+      "amount": "26-30"
     },
     {
       "list": "dried_kelp_block",
-      "amount": 30
+      "amount": "28-32"
     }
   ],
   "reward_items": [

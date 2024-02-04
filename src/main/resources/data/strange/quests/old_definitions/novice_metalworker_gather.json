@@ -2,21 +2,27 @@
   "type": "gather",
   "level": 1,
   "professions": [
-    "leatherworker"
+    "armorer",
+    "toolsmith",
+    "weaponsmith"
   ],
   "gather": [
     {
-      "list": "strange:common_leatherworker_items",
+      "list": "strange:coal",
       "amount": 10
     },
     {
-      "list": "strange:uncooked_foods",
+      "list": "strange:common_stone_blocks",
+      "amount": 10
+    },
+    {
+      "list": "strange:common_raw_ores",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": 1
     },
     {
@@ -28,15 +34,15 @@
       "amount": 1
     },
     {
-      "list": "strange:candles",
+      "list": "strange:cooked_food",
       "amount": 3
     },
     {
-      "list": "strange:overworld_wooden_slabs",
+      "list": "strange:overworld_stone_slabs",
       "amount": 12
     },
     {
-      "list": "strange:lecterns",
+      "list": "strange:crafting_tables",
       "amount": 1
     }
   ]

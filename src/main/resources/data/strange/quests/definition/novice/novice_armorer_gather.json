@@ -7,7 +7,7 @@
   "gather": [
     {
       "item": "coal",
-      "amount": 15
+      "amount": "14-16"
     }
   ],
   "reward_items": [

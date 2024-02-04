@@ -7,11 +7,11 @@
   "gather": [
     {
       "item": "glass_bottle",
-      "amount": 20
+      "amount": "18-22"
     },
     {
       "list": "strange:turtle_drops",
-      "amount": 8
+      "amount": "6-8"
     }
   ],
   "reward_items": [

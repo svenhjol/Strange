@@ -7,11 +7,11 @@
   "gather": [
     {
       "item": "glass",
-      "amount": 25
+      "amount": "20-30"
     },
     {
       "item": "compass",
-      "amount": 5
+      "amount": "4-6"
     }
   ],
   "reward_items": [

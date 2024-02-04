@@ -7,15 +7,15 @@
   "gather": [
     {
       "item": "coal",
-      "amount": 120
+      "amount": "110-125"
     },
     {
       "item": "iron_block",
-      "amount": 8
+      "amount": "7-9"
     },
     {
       "list": "strange:copper_blocks",
-      "amount": 20
+      "amount": "16-24"
     }
   ],
   "reward_items": [

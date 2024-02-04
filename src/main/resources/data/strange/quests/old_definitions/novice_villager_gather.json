@@ -11,7 +11,7 @@
       "amount": 10
     },
     {
-      "list": "strange:uncooked_foods",
+      "list": "strange:uncooked_food",
       "amount": 10
     },
     {
@@ -25,7 +25,7 @@
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "list": "strange:emerald",
       "amount": 1
     },
     {
