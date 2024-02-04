@@ -52,7 +52,7 @@ public class Quests extends CommonFeature {
     public static int maxPlayerQuests = 3;
     public static int maxVillagerQuests = 3;
     public static int maxVillagerLoyalty = 128;
-    public static boolean allowLowerVillagerLevels = true;
+    public static boolean allowLowerVillagerLevels = false;
     public static boolean loyaltyIncreasesWhenVillagerLevelMatches = true;
 
     @Override

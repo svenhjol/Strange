@@ -2,15 +2,11 @@
   "type": "gather",
   "level": 5,
   "professions": [
-    "butcher"
+    "cleric"
   ],
   "gather": [
     {
-      "list": "strange:uncooked_food",
-      "amount": 45
-    },
-    {
-      "list": "strange:berries",
+      "item": "nether_wart",
       "amount": 120
     }
   ],
@@ -18,10 +14,6 @@
     {
       "item": "emerald",
       "amount": "28-32"
-    },
-    {
-      "list": "strange:cooked_food",
-      "amount": "30-40"
     }
   ]
 }

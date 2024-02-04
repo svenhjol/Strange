@@ -153,7 +153,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         if (player == null) return;
 
         // Quest icon and title
-        guiGraphics.renderFakeItem(questIcon, midX + xOffset - 5, yOffset - 3);
+        guiGraphics.renderFakeItem(questIcon, midX + xOffset - 5, yOffset - 4);
         guiGraphics.drawString(font, questTitle, midX + xOffset + 15, yOffset + 2, titleColor, false);
 
         // Box around the quest details

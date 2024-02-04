@@ -15,6 +15,7 @@ import java.util.Map;
 public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
     public ResourceLocation list;
     public ResourceLocation lootTable;
+    public Item item;
     public int amount;
     public double weight = -1;
     public double chance = 1.0d;
@@ -32,6 +33,10 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
             switch (key) {
                 case "list": {
                     this.list = parseResourceLocation(val);
+                    break;
+                }
+                case "item": {
+                    this.item = parseItem(val);
                     break;
                 }
                 case "loot_table": {
@@ -63,8 +68,9 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
 
     public List<RewardItem> items() {
         var max = 4;
+        var localAmount = amount;
+
         List<ItemStack> out = new ArrayList<>();
-        List<Item> sublist = new ArrayList<>();
 
         if (random().nextDouble() > chance) {
             return List.of();
@@ -72,20 +78,32 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
 
         // TODO: loot tables
 
-        var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
-        if (items.isEmpty()) {
-            throw new RuntimeException("Reward item list is empty: " + list);
+        if (item != null && list != null) {
+            localAmount /= 2; // Half the full amount goes each of the item and the list
+            max -= 1; // One is now the item, the rest is the list
         }
 
-        if (weight < 0) {
-            sublist.addAll(items.subset(max, random()));
-        } else {
-            sublist.addAll(items.subset(max, weight, 0.1d, random()));
+        if (item != null) {
+            out.add(new ItemStack(item, localAmount));
         }
 
-        for (var item : sublist) {
-            var size = random().nextIntBetweenInclusive(Math.max(1, amount - 2), amount + 1);
-            out.add(new ItemStack(item, size));
+        if (list != null) {
+            List<Item> sublist = new ArrayList<>();
+            var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
+            if (items.isEmpty()) {
+                throw new RuntimeException("Reward item list is empty: " + list);
+            }
+
+            if (weight < 0) {
+                sublist.addAll(items.subset(max, random()));
+            } else {
+                sublist.addAll(items.subset(max, weight, 0.1d, random()));
+            }
+
+            for (var item : sublist) {
+                var size = random().nextIntBetweenInclusive(Math.max(1, localAmount - 2), localAmount + 1);
+                out.add(new ItemStack(item, size));
+            }
         }
 
         return out.stream().map(RewardItem::new).toList();

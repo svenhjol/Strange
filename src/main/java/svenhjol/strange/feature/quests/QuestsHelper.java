@@ -22,7 +22,7 @@ public class QuestsHelper {
     public static final Map<Integer, String> TIERS = new HashMap<>();
     public static List<QuestDefinition> makeDefinitions(UUID villagerUuid, VillagerProfession profession, int minLevel, int maxLevel, int numberOfDefinitions, RandomSource random) {
         var definitions = Quests.DEFINITIONS.stream()
-            .filter(d -> d.professions().contains(profession) || d.professions().contains(VillagerProfession.NONE) || d.professions().isEmpty())
+            .filter(d -> QuestsHelper.isValidProfession(profession, d.professions()))
             .filter(d -> d.level() >= minLevel && d.level() <= maxLevel)
             .filter(d -> d.loyalty() <= Quests.getLoyalty(villagerUuid))
             .collect(Collectors.toCollection(ArrayList::new));

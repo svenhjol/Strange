@@ -6,21 +6,21 @@
   ],
   "gather": [
     {
-      "list": "strange:uncooked_foods",
+      "list": "strange:uncooked_food",
       "amount": 7
     },
     {
-      "list": "strange:coal",
+      "item": "coal",
       "amount": 15
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "2-3"
     },
     {
-      "list": "strange:stews",
+      "list": "strange:stews_and_soups",
       "amount": "2-4"
     }
   ]

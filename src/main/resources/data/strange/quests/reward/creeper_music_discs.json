@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "music_disc_13",
-    "music_disc_cat",
     "music_disc_blocks",
     "music_disc_chirp",
     "music_disc_far",
@@ -12,10 +10,6 @@
     "music_disc_strad",
     "music_disc_ward",
     "music_disc_11",
-    "music_disc_wait",
-    "music_disc_otherside",
-    "music_disc_relic",
-    "music_disc_5",
-    "music_disc_pigstep"
+    "music_disc_wait"
   ]
 }

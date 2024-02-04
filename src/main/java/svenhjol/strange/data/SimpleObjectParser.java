@@ -1,7 +1,9 @@
 package svenhjol.strange.data;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,5 +83,13 @@ public interface SimpleObjectParser {
         }
 
         return Arrays.stream(str.split(",")).map(this::parseResourceLocation).toList();
+    }
+
+    default Item parseItem(Object i) {
+        if (!(i instanceof String str)) {
+            throw new RuntimeException("Could not parse string: " + i);
+        }
+
+        return BuiltInRegistries.ITEM.get(parseResourceLocation(str));
     }
 }

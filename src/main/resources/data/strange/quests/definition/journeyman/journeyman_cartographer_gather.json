@@ -6,21 +6,21 @@
   ],
   "gather": [
     {
-      "list": "strange:maps",
+      "item": "map",
       "amount": 8
     },
     {
-      "list": "strange:compasses",
+      "item": "compass",
       "amount": 10
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "10-12"
     },
     {
-      "list": "strange:maps",
+      "item": "map",
       "amount": 1
     }
   ],

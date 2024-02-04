@@ -2,16 +2,16 @@
   "type": "gather",
   "level": 2,
   "professions": [
-    "butcher"
+    "cleric"
   ],
   "gather": [
     {
-      "list": "strange:uncooked_food",
+      "item": "raw_gold",
       "amount": 10
     },
     {
-      "item": "coal",
-      "amount": 25
+      "item": "gold_ingot",
+      "amount": 10
     }
   ],
   "reward_items": [
@@ -20,7 +20,11 @@
       "amount": "5-7"
     },
     {
-      "list": "strange:cooked_food",
+      "item": "lapis_lazuli",
+      "amount": "8-12"
+    },
+    {
+      "item": "redstone",
       "amount": "8-12"
     }
   ]

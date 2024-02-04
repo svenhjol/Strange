@@ -6,13 +6,13 @@
   ],
   "gather": [
     {
-      "list": "strange:coal",
+      "item": "coal",
       "amount": 15
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "2-3"
     },
     {

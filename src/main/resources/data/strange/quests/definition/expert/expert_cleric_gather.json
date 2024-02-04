@@ -2,16 +2,16 @@
   "type": "gather",
   "level": 4,
   "professions": [
-    "butcher"
+    "cleric"
   ],
   "gather": [
     {
-      "list": "strange:uncooked_food",
-      "amount": 30
+      "item": "glass_bottle",
+      "amount": 20
     },
     {
-      "list": "dried_kelp_block",
-      "amount": 30
+      "list": "strange:turtle_drops",
+      "amount": 8
     }
   ],
   "reward_items": [
@@ -20,8 +20,8 @@
       "amount": "18-21"
     },
     {
-      "list": "strange:cooked_food",
-      "amount": "20-25"
+      "item": "ender_pearl",
+      "amount": "2-4"
     }
   ]
 }

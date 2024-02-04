@@ -7,37 +7,17 @@
   "gather": [
     {
       "list": "strange:common_mob_drops",
-      "amount": 10
-    },
-    {
-      "list": "strange:glass",
-      "amount": 10
+      "amount": 20
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
-      "amount": 1
+      "item": "emerald",
+      "amount": "2-3"
     },
     {
-      "list": "strange:stone_tools",
-      "amount": 1
-    },
-    {
-      "list": "strange:tools",
-      "amount": 1
-    },
-    {
-      "list": "strange:cooked_foods",
-      "amount": 3
-    },
-    {
-      "list": "strange:overworld_stone_slabs",
-      "amount": 12
-    },
-    {
-      "list": "strange:cooking_blocks",
-      "amount": 1
+      "item": "redstone",
+      "amount": "3-5"
     }
   ]
 }

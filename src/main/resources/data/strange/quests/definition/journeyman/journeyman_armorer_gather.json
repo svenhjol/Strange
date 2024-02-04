@@ -6,25 +6,25 @@
   ],
   "gather": [
     {
-      "list": "strange:lava_buckets",
+      "item": "lava_bucket",
       "amount": "6-7"
     },
     {
-      "list": "strange:coal",
+      "item": "coal",
       "amount": 45
     },
     {
-      "list": "strange:iron_ingots",
+      "item": "iron_ingot",
       "amount": 25
     },
     {
-      "list": "strange:copper_ingots",
+      "item": "copper_ingot",
       "amount": 55
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "10-12"
     },
     {

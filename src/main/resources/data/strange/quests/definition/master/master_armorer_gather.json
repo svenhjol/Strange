@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "strange:coal",
+      "item": "coal",
       "amount": 120
     },
     {
-      "list": "strange:iron_blocks",
+      "item": "iron_block",
       "amount": 8
     },
     {
@@ -20,7 +20,7 @@
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "28-32"
     },
     {

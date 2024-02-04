@@ -6,36 +6,38 @@
   ],
   "gather": [
     {
-      "list": "strange:iron_ingots",
+      "item": "iron_ingot",
       "amount": 80
     },
     {
-      "list": "strange:compasses",
+      "item": "compass",
       "amount": 20
     },
     {
-      "list": "strange:redstone",
+      "item": "redstone",
       "amount": 160
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "28-32"
     },
     {
       "list": "strange:rare_banner_patterns",
       "amount": "2-4"
-    },
+    }
+  ],
+  "reward_item_functions": [
     {
       "name": "make_structure_map",
       "title": "structure.minecraft.ancient_city",
       "structure": "minecraft:ancient_city"
     },
     {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.trail_ruins",
-      "structure": "minecraft:trail_ruins"
+    "name": "make_structure_map",
+    "title": "structure.minecraft.trail_ruins",
+    "structure": "minecraft:trail_ruins"
     }
   ]
 }

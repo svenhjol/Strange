@@ -6,17 +6,17 @@
   ],
   "gather": [
     {
-      "list": "strange:paper",
+      "item": "paper",
       "amount": 30
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "2-3"
     },
     {
-      "list": "strange:maps",
+      "item": "map",
       "amount": "3-5"
     }
   ]

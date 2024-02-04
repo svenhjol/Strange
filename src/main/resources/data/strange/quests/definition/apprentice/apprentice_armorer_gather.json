@@ -6,21 +6,21 @@
   ],
   "gather": [
     {
-      "list": "strange:coal",
+      "item": "coal",
       "amount": 25
     },
     {
-      "list": "strange:iron_ingots",
+      "item": "iron_ingot",
       "amount": 10
     },
     {
-      "list": "strange:copper_ingots",
+      "item": "copper_ingot",
       "amount": 25
     }
   ],
   "reward_items": [
     {
-      "list": "strange:emeralds",
+      "item": "emerald",
       "amount": "5-7"
     },
     {
@@ -28,7 +28,7 @@
       "amount": "4-5"
     },
     {
-      "list": "strange:bells",
+      "item": "bell",
       "amount": 1
     }
   ]
