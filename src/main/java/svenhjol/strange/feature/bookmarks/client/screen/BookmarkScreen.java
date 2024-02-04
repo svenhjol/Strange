@@ -62,7 +62,7 @@ public class BookmarkScreen extends TravelJournalScreen {
     @Override
     protected void initShortcuts() {
         super.initShortcuts();
-        int yo = 91;
+        int yo = 120;
         int lineHeight = 17;
 
         if (hasMap) {
