@@ -52,7 +52,7 @@ public class DefaultRewards {
         }
 
         // We want a subset of the possible items.
-        var max = Math.min(definition.level(), Quests.maxQuestRewards);
+        var max = Math.min(definition.level(), Quests.maxQuestRewards - 1);
         Util.shuffle(items, random);
         rewardItems = items.subList(0, Math.min(max, items.size()));
 

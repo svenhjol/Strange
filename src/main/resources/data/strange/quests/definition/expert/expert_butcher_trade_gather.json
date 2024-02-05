@@ -7,21 +7,21 @@
   "gather": [
     {
       "list": "strange:uncooked_food",
-      "amount": "26-30"
+      "amount": "23-28"
     },
     {
-      "list": "dried_kelp_block",
-      "amount": "28-32"
+      "item": "dried_kelp_block",
+      "amount": "15-23"
     }
   ],
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "18-21"
+      "amount": "10-15"
     },
     {
       "list": "strange:cooked_food",
-      "amount": "20-25"
+      "amount": "15-20"
     }
   ]
 }

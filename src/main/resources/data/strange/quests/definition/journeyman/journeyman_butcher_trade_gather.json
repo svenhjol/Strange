@@ -7,13 +7,13 @@
   "gather": [
     {
       "list": "strange:uncooked_food",
-      "amount": "18-20"
+      "amount": "13-18"
     }
   ],
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "10-12"
+      "amount": "7-10"
     },
     {
       "list": "strange:cooked_food",

@@ -21,11 +21,15 @@
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "28-32"
+      "amount": "15-23"
     },
     {
       "list": "strange:rare_banner_patterns",
       "amount": "2-4"
+    },
+    {
+      "item": "map",
+      "amount": 1
     }
   ],
   "reward_item_functions": [

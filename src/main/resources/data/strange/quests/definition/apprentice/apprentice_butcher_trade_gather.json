@@ -7,21 +7,25 @@
   "gather": [
     {
       "list": "strange:uncooked_food",
-      "amount": "8-12"
+      "amount": "7-11"
     },
     {
       "item": "coal",
-      "amount": "20-30"
+      "amount": "18-25"
     }
   ],
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "5-7"
+      "amount": "4-7"
     },
     {
       "list": "strange:cooked_food",
-      "amount": "8-12"
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:stews_and_soups",
+      "amount": "5-8"
     }
   ]
 }
