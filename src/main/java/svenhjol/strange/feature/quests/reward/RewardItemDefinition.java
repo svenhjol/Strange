@@ -101,8 +101,7 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
             }
 
             for (var item : sublist) {
-                var size = random().nextIntBetweenInclusive(Math.max(1, localAmount - 2), localAmount + 1);
-                out.add(new ItemStack(item, size));
+                out.add(new ItemStack(item, localAmount));
             }
         }
 

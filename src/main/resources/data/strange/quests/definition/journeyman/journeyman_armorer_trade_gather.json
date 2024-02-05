@@ -7,19 +7,19 @@
   "gather": [
     {
       "item": "lava_bucket",
-      "amount": "6-7"
+      "amount": "7-8"
     },
     {
       "item": "coal",
-      "amount": "40-50"
+      "amount": "70-90"
     },
     {
       "item": "iron_ingot",
-      "amount": "20-30"
+      "amount": "50-70"
     },
     {
       "item": "copper_ingot",
-      "amount": "50-60"
+      "amount": "90-110"
     }
   ],
   "reward_items": [
@@ -29,11 +29,17 @@
     },
     {
       "list": "strange:chainmail_armor",
-      "amount": "8-10"
+      "amount": "2-3"
     },
     {
       "list": "strange:iron_armor",
-      "amount": "6-7"
+      "amount": "2-3"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
     }
   ]
 }

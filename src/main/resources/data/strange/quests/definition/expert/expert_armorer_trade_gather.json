@@ -7,15 +7,15 @@
   "gather": [
     {
       "item": "coal",
-      "amount": "60-70"
+      "amount": "120-140"
     },
     {
       "item": "iron_ingot",
-      "amount": "35-45"
+      "amount": "100-120"
     },
     {
       "item": "copper_ingot",
-      "amount": "85-95"
+      "amount": "180-200"
     }
   ],
   "reward_items": [
@@ -26,6 +26,12 @@
     {
       "list": "strange:diamond_armor",
       "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
     }
   ]
 }

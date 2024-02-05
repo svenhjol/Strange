@@ -160,16 +160,16 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, offerBorderColor);
 
         // "Requires:"
-        guiGraphics.drawString(font, getRequirementText(), midX + xOffset + 2, yOffset + 22, requirementColor, false);
+        guiGraphics.drawString(font, getRequirementText(), midX + xOffset + 1, yOffset + 22, requirementColor, false);
 
         // "Rewards:"
-        guiGraphics.drawString(font, getRewardText(), midX + xOffset + 2, yOffset + 41, rewardColor, false);
+        guiGraphics.drawString(font, getRewardText(), midX + xOffset + 1, yOffset + 41, rewardColor, false);
 
         // Calculate the width of the reward/requirement text and start rendering images from there.
         var xt = Math.max(font.width(getRequirementText()), font.width(getRewardText()));
 
-        renderRequirements(guiGraphics, -155 + xt + 8, yOffset + 18, mouseX, mouseY);
-        renderRewards(guiGraphics, -155 + xt + 8, yOffset + 38, mouseX, mouseY);
+        renderRequirements(guiGraphics, -155 + xt + 6, yOffset + 18, mouseX, mouseY);
+        renderRewards(guiGraphics, -155 + xt + 6, yOffset + 38, mouseX, mouseY);
 
         // Draw loyalty star and number of loyalty points required
         if (quest.loyalty() > 0) {
@@ -179,7 +179,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         }
 
         if (!renderedButtons) {
-            var button = new QuestsButtons.AcceptImageButton(midX + 128, yOffset + 26, onAccept);
+            var button = new QuestsButtons.AcceptImageButton(midX + 133, yOffset + 26, onAccept);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }

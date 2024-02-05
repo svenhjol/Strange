@@ -6,16 +6,12 @@
   ],
   "gather": [
     {
-      "item": "coal",
-      "amount": "110-125"
-    },
-    {
       "item": "iron_block",
-      "amount": "7-9"
+      "amount": "21-25"
     },
     {
       "list": "strange:copper_blocks",
-      "amount": "16-24"
+      "amount": "50-55"
     }
   ],
   "reward_items": [
@@ -25,7 +21,15 @@
     },
     {
       "list": "strange:diamond_armor",
-      "amount": "2-3"
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "enchant_level": 31,
+      "allow_treasure": true
     }
   ]
 }

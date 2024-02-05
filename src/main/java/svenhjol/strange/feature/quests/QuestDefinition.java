@@ -121,7 +121,7 @@ public class QuestDefinition {
     }
 
     public int rewardExperience() {
-        return reward_experience == 1 ? Math.min(1, (int)(level() * 1.3f)) : reward_experience;
+        return reward_experience == 1 ? Math.max(1, (int)(level() * (level() * 0.5f))) : reward_experience;
     }
 
     public boolean epic() {

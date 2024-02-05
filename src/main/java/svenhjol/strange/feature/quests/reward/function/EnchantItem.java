@@ -27,19 +27,22 @@ public class EnchantItem implements RewardItemFunction {
         var stack = reward.stack;
         var random = quest.random();
 
-        var enchantLevel = quest.villagerLevel() * 6;
-
         if (random.nextDouble() < params.chance && stack.isEnchantable()) {
-            EnchantmentHelper.enchantItem(random, stack, enchantLevel, params.allowTreasure);
+            EnchantmentHelper.enchantItem(random, stack, params.enchantLevel, params.allowTreasure);
         }
     }
 
     public static class EnchantItemParameters {
         public final double chance;
+        public final int enchantLevel;
         public final boolean allowTreasure;
 
         public EnchantItemParameters(RewardItemFunctionParameters params) {
+            var definition = params.functionDefinition().questDefinition();
+            var defaultEnchantLevel = definition.level() * 6;
+
             this.chance = params.getDouble("chance", 0.5d);
+            this.enchantLevel = params.getInteger("enchant_level", defaultEnchantLevel);
             this.allowTreasure = params.getBoolean("allow_treasure", false);
         }
     }
