@@ -6,8 +6,8 @@
   ],
   "gather": [
     {
-      "list": "strange:common_mob_drops",
-      "amount": "18-22"
+      "list": "strange:common_hostile_mob_drops",
+      "amount": "10-12"
     }
   ],
   "reward_items": [
@@ -17,7 +17,7 @@
     },
     {
       "item": "redstone",
-      "amount": "3-5"
+      "amount": "4-6"
     }
   ]
 }
