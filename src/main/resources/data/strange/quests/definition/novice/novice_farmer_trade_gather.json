@@ -1,0 +1,23 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "farmer"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_harvestable_items",
+      "amount": "18-22"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "1-3"
+    },
+    {
+      "item": "food",
+      "amount": "4-6"
+    }
+  ]
+}

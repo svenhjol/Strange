@@ -1,0 +1,35 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "farmer"
+  ],
+  "gather": [
+    {
+      "item": "pumpkin",
+      "amount": "8-10"
+    },
+    {
+      "list": "strange:common_harvestable_items",
+      "amount": "25-35"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:cooked_food",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:stews_and_soups",
+      "amount": "5-8"
+    },
+    {
+      "item": "pumpkin_pie",
+      "amount": "5-8"
+    }
+  ]
+}

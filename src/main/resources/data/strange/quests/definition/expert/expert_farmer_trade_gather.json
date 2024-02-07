@@ -1,0 +1,36 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "farmer"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_harvestable_items",
+      "amount": "40-50"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "strange:cooked_food",
+      "amount": "15-20"
+    },
+    {
+      "item": "cake",
+      "amount": "5-8"
+    },
+    {
+      "item": "suspicious_stew",
+      "amount": "10-15"
+    }
+  ],
+  "reward_item_functionS": [
+    {
+      "name": "MakeSuspiciousStew"
+    }
+  ]
+}
