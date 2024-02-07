@@ -18,7 +18,7 @@ import svenhjol.strange.feature.quests.reward.RewardItemFunctionParameters;
 public class MakeStructureMap implements RewardItemFunction {
     public static final String ID = "make_structure_map";
 
-    private MakeMapParameters params;
+    private Parameters params;
 
     @Override
     public String id() {
@@ -27,7 +27,7 @@ public class MakeStructureMap implements RewardItemFunction {
 
     @Override
     public RewardItemFunction withParameters(RewardItemFunctionParameters params) {
-        this.params = new MakeMapParameters(params);
+        this.params = new Parameters(params);
         return this;
     }
 
@@ -64,12 +64,12 @@ public class MakeStructureMap implements RewardItemFunction {
         }
     }
 
-    public static class MakeMapParameters {
+    public static class Parameters {
         public final double chance;
         public final String title;
         public final ResourceLocation structure;
 
-        public MakeMapParameters(RewardItemFunctionParameters params) {
+        public Parameters(RewardItemFunctionParameters params) {
             this.chance = params.getDouble("chance", 1.0d);
             this.title = params.getString("title", "filled_map.strange.default");
             this.structure = params.getResourceLocation("structure", new ResourceLocation("village"));
