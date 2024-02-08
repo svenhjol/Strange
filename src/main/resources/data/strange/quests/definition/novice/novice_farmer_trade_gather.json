@@ -16,7 +16,7 @@
       "amount": "1-3"
     },
     {
-      "item": "food",
+      "list": "strange:food",
       "amount": "4-6"
     }
   ]

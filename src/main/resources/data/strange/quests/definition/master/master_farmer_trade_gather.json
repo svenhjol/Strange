@@ -1,41 +1,41 @@
 {
   "type": "gather",
-  "level": 4,
+  "level": 5,
   "professions": [
     "farmer"
   ],
   "gather": [
     {
       "list": "strange:common_harvestable_items",
-      "amount": "80-120"
+      "amount": "180-200"
     },
     {
       "list": "strange:uncommon_harvestable_items",
-      "amount": "20-30"
+      "amount": "60-80"
     }
   ],
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "10-15"
+      "amount": "15-23"
     },
     {
-      "list": "strange:cooked_food",
-      "amount": "8-12"
+      "item": "golden_carrot",
+      "amount": "10-14"
     },
     {
-      "item": "cake",
-      "amount": "5-8"
+      "item": "glistering_melon_slice",
+      "amount": "16-20"
     },
     {
       "item": "suspicious_stew",
-      "amount": "10-13"
+      "amount": "15-18"
     }
   ],
   "reward_item_functions": [
     {
       "name": "make_suspicious_stew",
-      "duration": 30,
+      "duration": 60,
       "effects": "speed,health_boost,regeneration,resistance,jump_boost,fire_resistance,luck"
     }
   ]

@@ -70,19 +70,24 @@ public interface SimpleObjectParser {
     }
 
     default ResourceLocation parseResourceLocation(Object r) {
-        if (!(r instanceof String str)) {
-            throw new RuntimeException("Could not parse string: " + r);
+        if (r instanceof ResourceLocation res) {
+            return res;
+        } else if (r instanceof String str) {
+            return new ResourceLocation(str);
         }
 
-        return new ResourceLocation(str);
+        throw new RuntimeException("Could not parse string: " + r);
     }
 
+    @SuppressWarnings("unchecked")
     default List<ResourceLocation> parseResourceLocationList(Object rs) {
-        if (!(rs instanceof String str)) {
-            throw new RuntimeException("Could not parse string: " + rs);
+        if (rs instanceof List<?> rsl) {
+            return (List<ResourceLocation>) rsl;
+        } else if (rs instanceof String str) {
+            return Arrays.stream(str.split(",")).map(this::parseResourceLocation).toList();
         }
 
-        return Arrays.stream(str.split(",")).map(this::parseResourceLocation).toList();
+        throw new RuntimeException("Could not parse string: " + rs);
     }
 
     default Item parseItem(Object i) {

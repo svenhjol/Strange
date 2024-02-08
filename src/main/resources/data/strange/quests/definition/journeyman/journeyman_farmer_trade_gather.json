@@ -7,7 +7,7 @@
   "gather": [
     {
       "item": "melon",
-      "amount": "8-10"
+      "amount": "10-12"
     }
   ],
   "reward_items": [
@@ -21,7 +21,7 @@
     },
     {
       "item": "cookie",
-      "amount": "20-24"
+      "amount": "18-22"
     }
   ]
 }

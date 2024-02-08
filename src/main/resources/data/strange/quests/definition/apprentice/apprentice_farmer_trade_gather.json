@@ -20,6 +20,10 @@
       "amount": "4-7"
     },
     {
+      "list": "strange:food",
+      "amount": "12-15"
+    },
+    {
       "list": "strange:cooked_food",
       "amount": "5-8"
     },

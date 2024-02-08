@@ -4,6 +4,7 @@ import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.reward.function.EnchantBook;
 import svenhjol.strange.feature.quests.reward.function.EnchantItem;
 import svenhjol.strange.feature.quests.reward.function.MakeStructureMap;
+import svenhjol.strange.feature.quests.reward.function.MakeSuspiciousStew;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +38,6 @@ public class RewardItemFunctions {
         functionClasses.add(EnchantBook.class);
         functionClasses.add(EnchantItem.class);
         functionClasses.add(MakeStructureMap.class);
+        functionClasses.add(MakeSuspiciousStew.class);
     }
 }
