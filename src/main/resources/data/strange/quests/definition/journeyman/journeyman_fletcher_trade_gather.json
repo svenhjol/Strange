@@ -1,0 +1,49 @@
+{
+  "type": "gather",
+  "level": 3,
+  "professions": [
+    "fletcher"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_planks",
+      "amount": "40-50"
+    },
+    {
+      "item": "string",
+      "amount": "36-40"
+    },
+    {
+      "item": "flint",
+      "amount": "36-40"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "bow",
+      "amount": 1
+    },
+    {
+      "item": "crossbow",
+      "amount": 1
+    },
+    {
+      "item": "arrow",
+      "amount": "30-35"
+    },
+    {
+      "item": "spectral_arrow",
+      "amount": "8-12"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

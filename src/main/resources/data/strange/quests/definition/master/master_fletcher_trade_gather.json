@@ -1,0 +1,53 @@
+{
+  "type": "gather",
+  "level": 5,
+  "professions": [
+    "fletcher"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_fletcher_items",
+      "amount": "160-180"
+    },
+    {
+      "item": "redstone",
+      "amount": "150-170"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "15-23"
+    },
+    {
+      "item": "golden_carrot",
+      "amount": "10-13"
+    },
+    {
+      "item": "tipped_arrow",
+      "amount": "30-40"
+    },
+    {
+      "item": "bow",
+      "amount": 1
+    },
+    {
+      "item": "crossbow",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_tipped_arrow",
+      "potion": "strong_harming"
+    },
+    {
+      "name": "make_tipped_arrow",
+      "potion": "strong_poison"
+    },
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

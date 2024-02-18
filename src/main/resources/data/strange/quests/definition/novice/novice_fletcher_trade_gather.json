@@ -1,0 +1,43 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "fletcher"
+  ],
+  "gather": [
+    {
+      "item": "stick",
+      "amount": "28-32"
+    },
+    {
+      "item": "gravel",
+      "amount": "12-14"
+    },
+    {
+      "item": "flint",
+      "amount": "5-7"
+    },
+    {
+      "item": "feather",
+      "amount": "4-6"
+    },
+    {
+      "item": "string",
+      "amount": "4-6"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "1-3"
+    },
+    {
+      "item": "arrow",
+      "amount": "8-10"
+    },
+    {
+      "list": "strange:wool",
+      "amount": "2-3"
+    }
+  ]
+}

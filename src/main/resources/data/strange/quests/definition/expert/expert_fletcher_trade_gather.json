@@ -1,0 +1,41 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "fletcher"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_fletcher_items",
+      "amount": "80-120"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "item": "bow",
+      "amount": 1
+    },
+    {
+      "item": "crossbow",
+      "amount": 1
+    },
+    {
+      "item": "tipped_arrow",
+      "amount": "20-30"
+    },
+    {
+      "item": "spectral_arrow",
+      "amount": "18-22"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}
