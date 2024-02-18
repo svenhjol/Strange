@@ -146,13 +146,14 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var professions = quest.villagerProfessions();
 
         if (professions.size() == 1) {
-            professionInfo = Component.translatable(QuestsResources.RETURN_TO_PROFESSION_KEY, professions.get(0));
+            var professionName = svenhjol.strange.helper.TextHelper.uncapitalize(QuestsHelper.getProfessionName(professions.get(0)).getString());
+            professionInfo = Component.translatable(QuestsResources.RETURN_TO_PROFESSION_KEY, professionName);
         } else {
             var sb = new StringBuilder();
             for (int i = 0; i < professions.size(); i++) {
                 var profession = professions.get(i);
-                var professionName = QuestsHelper.getProfessionName(profession);
-                sb.append(professionName.getString()).append(i < professions.size() - 1 ? ", " : ".");
+                var professionName = svenhjol.strange.helper.TextHelper.uncapitalize(QuestsHelper.getProfessionName(profession).getString());
+                sb.append(professionName).append(i < professions.size() - 1 ? ", " : ".");
             }
             professionInfo = Component.translatable(QuestsResources.RETURN_TO_PROFESSIONS_KEY, sb.toString());
         }
