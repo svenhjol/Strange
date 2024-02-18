@@ -29,7 +29,7 @@
       "name": "enchant_item",
       "chance": 1.0,
       "enchant_level": 31,
-      "allow_treasure": true
+      "allow_treasure": false
     }
   ]
 }
