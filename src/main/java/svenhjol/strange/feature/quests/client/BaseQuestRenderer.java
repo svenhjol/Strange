@@ -140,6 +140,24 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
         guiGraphics.drawString(screen.font, getRewardText(), midX - 105, 90, titleColor, false);
         renderRewards(guiGraphics, -105, 102, mouseX, mouseY);
+
+        // Show the professions that this quest can be returned to.
+        Component professionInfo;
+        var professions = quest.villagerProfessions();
+
+        if (professions.size() == 1) {
+            professionInfo = Component.translatable(QuestsResources.RETURN_TO_PROFESSION_KEY, professions.get(0));
+        } else {
+            var sb = new StringBuilder();
+            for (int i = 0; i < professions.size(); i++) {
+                var profession = professions.get(i);
+                var professionName = QuestsHelper.getProfessionName(profession);
+                sb.append(professionName.getString()).append(i < professions.size() - 1 ? ", " : ".");
+            }
+            professionInfo = Component.translatable(QuestsResources.RETURN_TO_PROFESSIONS_KEY, sb.toString());
+        }
+
+        guiGraphics.drawWordWrap(screen.font, professionInfo, midX - 105, 123, 200, rewardColor);
     }
 
     /**

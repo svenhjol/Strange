@@ -51,6 +51,12 @@ public class QuestsHelper {
         return sublist;
     }
 
+    public static Component getProfessionName(VillagerProfession profession) {
+        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
+        var professionKey = registry.getKey(profession);
+        return Component.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath());
+    }
+
     public static QuestList makeQuestsFromDefinitions(List<QuestDefinition> definitions, ServerPlayer player, UUID villagerUuid) {
         var quests = new QuestList();
 
@@ -91,9 +97,7 @@ public class QuestsHelper {
     }
 
     public static Component makeVillagerOffersTitle(VillagerProfession profession, int villagerLevel) {
-        var registry = BuiltInRegistries.VILLAGER_PROFESSION;
-        var professionKey = registry.getKey(profession);
-        var merchantProfession = Component.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath());
+        var merchantProfession = getProfessionName(profession);
         var merchantLevel = Component.translatable("merchant.level." + villagerLevel);
 
         return Component.translatable(QuestsResources.QUEST_OFFERS_TITLE_KEY, merchantLevel, merchantProfession);
