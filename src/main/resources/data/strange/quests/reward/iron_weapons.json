@@ -1,9 +1,7 @@
 {
   "replace": false,
   "values": [
-    "iron_hoe",
     "iron_axe",
-    "iron_pickaxe",
-    "iron_shovel"
+    "iron_sword"
   ]
 }
