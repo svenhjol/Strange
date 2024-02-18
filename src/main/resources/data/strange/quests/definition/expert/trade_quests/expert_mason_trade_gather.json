@@ -1,0 +1,35 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "mason"
+  ],
+  "gather": [
+    {
+      "item": "clay_ball",
+      "amount": "170-190"
+    },
+    {
+      "list": "strange:uncommon_mason_items",
+      "amount": "60-80"
+    },
+    {
+      "list": "strange:common_mason_items",
+      "amount": "110-130"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:stained_terracotta",
+      "amount": "30-50"
+    },
+    {
+      "list": "strange:glazed_terracotta",
+      "amount": "30-50"
+    }
+  ]
+}

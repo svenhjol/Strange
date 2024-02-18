@@ -1,0 +1,31 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "mason"
+  ],
+  "gather": [
+    {
+      "item": "clay_ball",
+      "amount": "40-50"
+    },
+    {
+      "list": "strange:common_mason_items",
+      "amount": "18-24"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "brick",
+      "amount": "22-28"
+    },
+    {
+      "item": "chiseled_stone_bricks",
+      "amount": "8-10"
+    }
+  ]
+}

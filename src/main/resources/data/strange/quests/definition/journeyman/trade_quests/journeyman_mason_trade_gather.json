@@ -1,0 +1,39 @@
+{
+  "type": "gather",
+  "level": 3,
+  "professions": [
+    "mason"
+  ],
+  "gather": [
+    {
+      "item": "clay_ball",
+      "amount": "90-110"
+    },
+    {
+      "list": "strange:common_mason_items",
+      "amount": "60-80"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "polished_andesite",
+      "amount": "20-40"
+    },
+    {
+      "item": "polished_diorite",
+      "amount": "20-40"
+    },
+    {
+      "item": "polished_granite",
+      "amount": "20-40"
+    },
+    {
+      "item": "dripstone_block",
+      "amount": "20-40"
+    }
+  ]
+}
