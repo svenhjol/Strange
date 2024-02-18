@@ -265,8 +265,19 @@ public class Quests extends CommonFeature {
             return;
         }
 
-        var minLevel = allowLowerVillagerLevels ? 1 : villagerLevel;
-        var definitions = QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, minLevel, villagerLevel, maxVillagerQuests, random);
+        List<QuestDefinition> definitions = new ArrayList<>();
+
+        if (allowLowerVillagerLevels) {
+            // Always try and get one definition at the level of the villager.
+            definitions.addAll(QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, villagerLevel, villagerLevel, 1, random));
+
+            // Fill the rest of the definitions with any level.
+            definitions.addAll(QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, 1, villagerLevel, maxVillagerQuests - 1, random));
+        } else {
+            // Fill all definitions with the level of the villager.
+            definitions.addAll(QuestsHelper.makeDefinitions(villagerUuid, villagerProfession, villagerLevel, villagerLevel, maxVillagerQuests, random));
+        }
+
         if (definitions.isEmpty()) {
             NotifyVillagerQuestsResult.send(serverPlayer, VillagerQuestsResult.NO_QUESTS_GENERATED);
             return;
