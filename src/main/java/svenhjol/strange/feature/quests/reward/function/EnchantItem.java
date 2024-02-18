@@ -42,7 +42,7 @@ public class EnchantItem implements RewardItemFunction {
             var defaultEnchantLevel = definition.level() * 6;
 
             this.chance = params.getDouble("chance", 0.5d);
-            this.enchantLevel = params.getInteger("enchant_level", defaultEnchantLevel);
+            this.enchantLevel = params.getInteger("level", defaultEnchantLevel);
             this.allowTreasure = params.getBoolean("allow_treasure", false);
         }
     }

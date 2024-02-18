@@ -40,9 +40,11 @@ public class EnchantBook implements RewardItemFunction {
         public final int enchantLevel;
 
         public EnchantBookParameters(RewardItemFunctionParameters params) {
+            var definition = params.functionDefinition().questDefinition();
+            var defaultEnchantLevel = definition.level() * 6;
+
             this.allowTreasure = params.getBoolean("allow_treasure", false);
-            this.enchantLevel = params.getInteger("level",
-                params.functionDefinition().questDefinition().level() * 6);
+            this.enchantLevel = params.getInteger("level", defaultEnchantLevel);
         }
     }
 }
