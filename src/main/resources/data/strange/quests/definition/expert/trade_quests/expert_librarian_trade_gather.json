@@ -1,0 +1,51 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "librarian"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_librarian_items",
+      "amount": "95-105"
+    },
+    {
+      "list": "strange:uncommon_librarian_items",
+      "amount": "55-70"
+    },
+    {
+      "item": "writable_book",
+      "amount": "25-35"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "bookshelf",
+      "amount": "9-12"
+    },
+    {
+      "item": "book",
+      "amount": "15-20"
+    },
+    {
+      "item": "glass_pane",
+      "amount": "22-32"
+    },
+    {
+      "item": "clock",
+      "amount": "4-6"
+    },
+    {
+      "item": "compass",
+      "amount": "4-6"
+    },
+    {
+      "item": "name_tag",
+      "amount": "2-3"
+    },
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    }
+  ]
+}

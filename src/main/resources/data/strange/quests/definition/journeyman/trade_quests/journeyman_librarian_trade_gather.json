@@ -1,0 +1,43 @@
+{
+  "type": "gather",
+  "level": 3,
+  "professions": [
+    "librarian"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_librarian_items",
+      "amount": "68-78"
+    },
+    {
+      "list": "strange:uncommon_librarian_items",
+      "amount": "30-40"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "bookshelf",
+      "amount": "5-7"
+    },
+    {
+      "item": "book",
+      "amount": "8-12"
+    },
+    {
+      "item": "glass_pane",
+      "amount": "10-15"
+    },
+    {
+      "item": "lantern",
+      "amount": "10-15"
+    },
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    }
+  ]
+}

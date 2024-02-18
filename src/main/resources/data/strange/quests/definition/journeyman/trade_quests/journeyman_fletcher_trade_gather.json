@@ -6,10 +6,6 @@
   ],
   "gather": [
     {
-      "list": "strange:common_planks",
-      "amount": "40-50"
-    },
-    {
       "item": "string",
       "amount": "36-40"
     },
