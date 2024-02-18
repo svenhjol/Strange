@@ -94,7 +94,7 @@
   "gui.strange.quests.loyalty": "Loyalty: %s",
   "gui.strange.quests.no_quests": "No quests yet.",
   "gui.strange.quests.quest_info": "Quest information",
-  "gui.strange.quests.quest_offers": "%s Quest Offers",
+  "gui.strange.quests.quest_offers": "%s %s Quest Offers",
   "gui.strange.quests.quest_title": "%s %s Quest",
   "gui.strange.quests.quests": "Quests",
   "gui.strange.quests.remaining": "%s/%s",

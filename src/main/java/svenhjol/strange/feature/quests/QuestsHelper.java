@@ -90,17 +90,21 @@ public class QuestsHelper {
         return quests.size() >= Quests.maxPlayerQuests;
     }
 
-    public static Component makeVillagerOffersTitle(VillagerProfession profession) {
+    public static Component makeVillagerOffersTitle(VillagerProfession profession, int villagerLevel) {
         var registry = BuiltInRegistries.VILLAGER_PROFESSION;
         var professionKey = registry.getKey(profession);
-        return TextHelper.translatable(QuestsResources.QUEST_OFFERS_TITLE_KEY,
-            TextHelper.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath()));
+        var merchantProfession = Component.translatable("entity." + professionKey.getNamespace() + ".villager." + professionKey.getPath());
+        var merchantLevel = Component.translatable("merchant.level." + villagerLevel);
+
+        return Component.translatable(QuestsResources.QUEST_OFFERS_TITLE_KEY, merchantLevel, merchantProfession);
     }
 
     public static Component makeQuestTitle(Quest quest) {
+        var merchantLevel = Component.translatable("merchant.level." + quest.villagerLevel());
+        var questType = quest.type().getTypeName();
+
         return TextHelper.translatable(quest.isEpic() ? QuestsResources.EPIC_QUEST_TITLE_KEY : QuestsResources.QUEST_TITLE_KEY,
-            TextHelper.translatable("merchant.level." + quest.villagerLevel()),
-            quest.type().getTypeName());
+            merchantLevel, questType);
     }
 
     static {
