@@ -86,7 +86,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         requirementColor = 0x303030;
         satisfiedColor = 0x308030;
         rewardColor = 0x308080;
-        requirementBackgroundColor = 0x24000000;
+        requirementBackgroundColor = 0x12000000;
         satisfiedBackgroundColor = 0x24008000;
         rewardBackgroundColor = 0x24008080;
         showRemaining = true;
@@ -128,7 +128,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
 
         if (!renderedButtons) {
             var sprites = QuestsButtons.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
-            var button = new QuestsButtons.ScrollImageButton(sprites, midX + 88, yOffset + 11, onUpdate, QuestsResources.QUEST_INFO_TEXT);
+            var button = new QuestsButtons.ScrollImageButton(sprites, midX + 88, yOffset + 17, onUpdate, QuestsResources.QUEST_INFO_TEXT);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
@@ -138,8 +138,8 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         guiGraphics.drawString(screen.font, getRequirementText(), midX - 105, 40, titleColor, false);
         renderRequirements(guiGraphics, -105, 52, mouseX, mouseY);
 
-        guiGraphics.drawString(screen.font, getRewardText(), midX - 105, 80, titleColor, false);
-        renderRewards(guiGraphics, -105, 92, mouseX, mouseY);
+        guiGraphics.drawString(screen.font, getRewardText(), midX - 105, 90, titleColor, false);
+        renderRewards(guiGraphics, -105, 102, mouseX, mouseY);
     }
 
     /**
@@ -172,7 +172,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         guiGraphics.drawString(font, getRequirementText(), midX + xOffset + 1, yOffset + 22, requirementColor, false);
 
         // "Rewards:"
-        guiGraphics.drawString(font, getRewardText(), midX + xOffset + 1, yOffset + 41, rewardColor, false);
+        guiGraphics.drawString(font, getRewardText(), midX + xOffset + 1, yOffset + 42, rewardColor, false);
 
         // Calculate the width of the reward/requirement text and start rendering images from there.
         var xt = Math.max(font.width(getRequirementText()), font.width(getRewardText()));
@@ -206,35 +206,35 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
             if (reward instanceof RewardItem i) {
                 var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.stack.getCount());
 
-                guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
+                guiGraphics.drawString(font, label, xo + 3, yo + 5, rewardColor, false);
                 var width = font.width(label);
 
-                guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, rewardBackgroundColor);
-                guiGraphics.renderFakeItem(i.stack, xo + 7 + width, yo);
+                guiGraphics.fill(xo, yo - 1, xo + 22 + width, yo + 17, rewardBackgroundColor);
+                guiGraphics.renderFakeItem(i.stack, xo + 5 + width, yo);
 
-                if (mouseX >= xo && mouseX <= xo + 25 + width
-                    && mouseY >= yo - 1 && mouseY <= yo + 17) {
+                if (mouseX >= xo + 5 + width && mouseX <= xo + 21 + width
+                    && mouseY >= yo && mouseY <= yo + 16) {
                     guiGraphics.renderTooltip(font, i.stack, xo, yo + 27);
                 }
 
-                xo += 27 + width;
+                xo += 24 + width;
             }
 
             if (reward instanceof RewardExperience i) {
                 var label = TextHelper.translatable(QuestsResources.AMOUNT_KEY, i.total);
 
-                guiGraphics.drawString(font, label, xo + 4, yo + 4, rewardColor, false);
+                guiGraphics.drawString(font, label, xo + 3, yo + 5, rewardColor, false);
                 var width = font.width(label);
 
-                guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, rewardBackgroundColor);
-                guiGraphics.renderFakeItem(new ItemStack(Items.EXPERIENCE_BOTTLE), xo + 7 + width, yo);
+                guiGraphics.fill(xo, yo - 1, xo + 21 + width, yo + 17, rewardBackgroundColor);
+                guiGraphics.renderFakeItem(new ItemStack(Items.EXPERIENCE_BOTTLE), xo + 4 + width, yo);
 
-                if (mouseX >= xo && mouseX <= xo + 25 + width
-                    && mouseY >= yo - 1 && mouseY <= yo + 17) {
+                if (mouseX >= xo + 4 + width && mouseX <= xo + 20 + width
+                    && mouseY >= yo && mouseY <= yo + 16) {
                     guiGraphics.renderTooltip(font, TextHelper.translatable(QuestsResources.REWARD_LEVELS_KEY, i.total), xo, yo + 27);
                 }
 
-                xo += 27 + width;
+                xo += 23 + width;
             }
         }
     }
