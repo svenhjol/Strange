@@ -1,0 +1,37 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "toolsmith"
+  ],
+  "gather": [
+    {
+      "item": "coal",
+      "amount": "20-30"
+    },
+    {
+      "item": "iron_ingot",
+      "amount": "8-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:stone_tools",
+      "amount": 2
+    },
+    {
+      "item": "bell",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}
