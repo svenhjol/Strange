@@ -1,0 +1,35 @@
+{
+  "type": "gather",
+  "level": 5,
+  "professions": [
+    "shepherd"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_shepherd_items",
+      "amount": "170-190"
+    },
+    {
+      "list": "strange:dyes",
+      "amount": "80-100"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "15-23"
+    },
+    {
+      "list": "strange:wool",
+      "amount": "42-50"
+    },
+    {
+      "list": "strange:banners",
+      "amount": "18-22"
+    },
+    {
+      "item": "painting",
+      "amount": "15-20"
+    }
+  ]
+}

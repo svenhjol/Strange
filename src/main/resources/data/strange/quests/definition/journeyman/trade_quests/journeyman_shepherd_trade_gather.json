@@ -1,0 +1,35 @@
+{
+  "type": "gather",
+  "level": 3,
+  "professions": [
+    "shepherd"
+  ],
+  "gather": [
+    {
+      "list": "strange:common_shepherd_items",
+      "amount": "40-50"
+    },
+    {
+      "list": "strange:dyes",
+      "amount": "24-30"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:wool",
+      "amount": "20-30"
+    },
+    {
+      "list": "strange:carpets",
+      "amount": "20-30"
+    },
+    {
+      "list": "strange:beds",
+      "amount": "8-12"
+    }
+  ]
+}
