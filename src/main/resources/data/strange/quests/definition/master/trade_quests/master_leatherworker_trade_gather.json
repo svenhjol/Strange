@@ -1,0 +1,43 @@
+{
+  "type": "gather",
+  "level": 5,
+  "professions": [
+    "leatherworker"
+  ],
+  "gather": [
+    {
+      "item": "coal",
+      "amount": "140-150"
+    },
+    {
+      "list": "strange:common_leatherworker_items",
+      "amount": "160-180"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "15-23"
+    },
+    {
+      "item": "saddle",
+      "amount": "6-8"
+    },
+    {
+      "list": "strange:leather_armor",
+      "amount": 4
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": 4
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "enchant_level": 31,
+      "allow_treasure": false
+    }
+  ]
+}

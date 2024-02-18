@@ -2,24 +2,20 @@
   "type": "gather",
   "level": 3,
   "professions": [
-    "armorer"
+    "leatherworker"
   ],
   "gather": [
     {
-      "item": "lava_bucket",
-      "amount": "7-8"
+      "item": "leather",
+      "amount": "30-40"
+    },
+    {
+      "item": "rabbit_hide",
+      "amount": "16-18"
     },
     {
       "item": "coal",
-      "amount": "70-90"
-    },
-    {
-      "item": "iron_ingot",
-      "amount": "50-70"
-    },
-    {
-      "item": "copper_ingot",
-      "amount": "90-110"
+      "amount": "50-60"
     }
   ],
   "reward_items": [
@@ -28,11 +24,11 @@
       "amount": "7-10"
     },
     {
-      "list": "strange:chainmail_armor",
+      "list": "strange:leather_armor",
       "amount": 2
     },
     {
-      "list": "strange:iron_armor",
+      "list": "strange:chainmail_armor",
       "amount": 2
     }
   ],

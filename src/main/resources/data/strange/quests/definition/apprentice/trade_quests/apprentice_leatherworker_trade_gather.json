@@ -1,0 +1,31 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "leatherworker"
+  ],
+  "gather": [
+    {
+      "item": "flint",
+      "amount": "20-23"
+    },
+    {
+      "list": "strange:common_leatherworker_items",
+      "amount": "14-18"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "leather_leggings",
+      "amount": 1
+    },
+    {
+      "item": "leather_chestplate",
+      "amount": 1
+    }
+  ]
+}
