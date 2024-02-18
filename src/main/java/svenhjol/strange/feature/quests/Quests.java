@@ -209,7 +209,7 @@ public class Quests extends CommonFeature {
                 QuestDefinition definition;
 
                 try {
-                    definition = QuestDefinition.deserialize(namespace, manager, resource);
+                    definition = QuestDefinition.deserialize(id, namespace, manager, resource);
                 } catch (Exception e) {
                     mod().log().warn(getClass(), "Definition " + id + " failed to load due to an error: " + e.getMessage());
                     continue;

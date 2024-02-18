@@ -28,6 +28,7 @@ public abstract class Quest {
     static final String STATUS_TAG = "status";
     static final String EPIC_TAG = "epic";
     static final String LOYALTY_TAG = "loyalty";
+    static final String DEFINITION_ID_TAG = "definition_id";
     static final String VILLAGER_PROFESSIONS_TAG = "villager_professions";
     static final String VILLAGER_LEVEL_TAG = "villager_level";
     static final String VILLAGER_UUID_TAG = "villager_uuid";
@@ -49,6 +50,7 @@ public abstract class Quest {
     protected RewardExperience rewardExperience;
     protected long randomSeed;
     protected boolean epic;
+    protected String definitionId;
     protected boolean dirty; // transient
     protected RandomSource random; // transient
 
@@ -69,6 +71,9 @@ public abstract class Quest {
     }
     public int loyalty() {
         return loyalty;
+    }
+    public String definitionId() {
+        return definitionId;
     }
 
     public boolean isEpic() {
@@ -140,6 +145,7 @@ public abstract class Quest {
         var id = tag.getString(ID_TAG);
         var type = QuestType.valueOf(tag.getString(TYPE_TAG));
         var status = Status.valueOf(tag.getString(STATUS_TAG));
+        var definitionId = tag.getString(DEFINITION_ID_TAG);
         var epic = tag.getBoolean(EPIC_TAG);
         var loyalty = tag.getInt(LOYALTY_TAG);
         var villagerLevel = tag.getInt(VILLAGER_LEVEL_TAG);
@@ -152,6 +158,7 @@ public abstract class Quest {
         quest.status = status;
         quest.epic = epic;
         quest.loyalty = loyalty;
+        quest.definitionId = definitionId;
         quest.villagerLevel = villagerLevel;
         quest.villagerUuid = villagerUuid;
         quest.randomSeed = randomSeed;
@@ -185,6 +192,7 @@ public abstract class Quest {
         tag.putString(ID_TAG, id);
         tag.putString(TYPE_TAG, type.name());
         tag.putString(STATUS_TAG, status().name());
+        tag.putString(DEFINITION_ID_TAG, definitionId);
         tag.putBoolean(EPIC_TAG, epic);
         tag.putInt(LOYALTY_TAG, loyalty);
         tag.putInt(VILLAGER_LEVEL_TAG, villagerLevel);
@@ -214,6 +222,7 @@ public abstract class Quest {
 
     protected void make(QuestDefinition definition, ServerPlayer player, UUID villagerUuid) {
         this.id = makeId();
+        this.definitionId = definition.id();
         this.type = definition.type();
         this.status = Status.NOT_STARTED;
         this.epic = definition.epic();

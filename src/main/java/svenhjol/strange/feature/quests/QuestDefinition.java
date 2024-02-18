@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection"})
 public class QuestDefinition {
     private String namespace = "minecraft";
+    private String id = "";
     private ResourceManager manager; // Transient
     private RandomSource random; // Transient
     private long seed;
@@ -43,18 +44,23 @@ public class QuestDefinition {
     private List<Map<String, Object>> reward_item_functions = new ArrayList<>();
     private int reward_experience = 1;
 
-    public static QuestDefinition deserialize(String namespace, ResourceManager manager, Resource resource) throws IOException {
+    public static QuestDefinition deserialize(ResourceLocation id, String namespace, ResourceManager manager, Resource resource) throws IOException {
         BufferedReader reader;
 
         reader = resource.openAsReader();
         var def = new Gson().fromJson(reader, QuestDefinition.class);
 
+        def.id = id.toString(); // This is used to log the definition that a quest uses.
         def.namespace = namespace;
         def.manager = manager;
         def.seed = RandomSource.create().nextLong();
         def.random = RandomSource.create(def.seed);
 
         return def;
+    }
+
+    public String id() {
+        return id;
     }
 
     public String namespace() {

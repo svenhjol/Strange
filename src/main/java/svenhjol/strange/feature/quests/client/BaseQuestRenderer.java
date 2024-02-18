@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import svenhjol.charmony.helper.ConfigHelper;
 import svenhjol.charmony.helper.TextHelper;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsHelper;
@@ -155,6 +156,14 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         // Quest icon and title
         guiGraphics.renderFakeItem(questIcon, midX + xOffset - 5, yOffset - 4);
         guiGraphics.drawString(font, questTitle, midX + xOffset + 15, yOffset + 2, titleColor, false);
+
+        // Show definition ID in a tooltip if debugging enabled
+        if (ConfigHelper.isDebugEnabled()
+            && mouseX > midX + xOffset - 5 && mouseX < midX + xOffset + 15
+            && mouseY > yOffset + 2 && mouseY < yOffset + 14) {
+            guiGraphics.renderTooltip(font, Component.literal(quest.definitionId().substring(quest.definitionId().lastIndexOf("/") + 1)),
+                midX + xOffset - 5, yOffset + 24);
+        }
 
         // Box around the quest details
         guiGraphics.renderOutline(midX + xOffset - 5, yOffset + 13, 320, 46, offerBorderColor);
