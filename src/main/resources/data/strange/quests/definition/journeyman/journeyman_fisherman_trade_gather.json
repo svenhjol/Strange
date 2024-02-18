@@ -1,0 +1,37 @@
+{
+  "type": "gather",
+  "level": 3,
+  "professions": [
+    "fisherman"
+  ],
+  "gather": [
+    {
+      "item": "salmon",
+      "amount": "18-21"
+    },
+    {
+      "item": "cod",
+      "amount": "24-28"
+    },
+    {
+      "item": "pufferfish",
+      "amount": "10-14"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "fishing_rod",
+      "amount": "2-3"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

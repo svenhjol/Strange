@@ -2,16 +2,20 @@
   "type": "gather",
   "level": 5,
   "professions": [
-    "farmer"
+    "fisherman"
   ],
   "gather": [
     {
-      "list": "strange:common_harvestable_items",
-      "amount": "180-200"
+      "item": "cod",
+      "amount": "60-80"
     },
     {
-      "list": "strange:uncommon_harvestable_items",
-      "amount": "60-80"
+      "item": "salmon",
+      "amount": "50-60"
+    },
+    {
+      "item": "pufferfish",
+      "amount": "35-40"
     }
   ],
   "reward_items": [
@@ -21,11 +25,11 @@
     },
     {
       "item": "golden_carrot",
-      "amount": "10-14"
+      "amount": "9-12"
     },
     {
-      "item": "glistering_melon_slice",
-      "amount": "16-20"
+      "item": "cooked_cod",
+      "amount": "35-45"
     },
     {
       "item": "suspicious_stew",
@@ -36,7 +40,7 @@
     {
       "name": "make_suspicious_stew",
       "duration": 60,
-      "effects": "speed,jump_boost,luck"
+      "effects": "health_boost,regeneration,resistance,fire_resistance"
     }
   ]
 }

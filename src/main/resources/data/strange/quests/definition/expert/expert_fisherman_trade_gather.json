@@ -2,16 +2,16 @@
   "type": "gather",
   "level": 4,
   "professions": [
-    "farmer"
+    "fisherman"
   ],
   "gather": [
     {
-      "list": "strange:common_harvestable_items",
-      "amount": "80-120"
+      "item": "coal",
+      "amount": "70-90"
     },
     {
-      "list": "strange:uncommon_harvestable_items",
-      "amount": "20-30"
+      "item": "tropical_fish",
+      "amount": "14-18"
     }
   ],
   "reward_items": [
@@ -20,12 +20,12 @@
       "amount": "10-15"
     },
     {
-      "list": "strange:cooked_food",
-      "amount": "8-12"
+      "item": "cooked_salmon",
+      "amount": "20-25"
     },
     {
-      "item": "cake",
-      "amount": "5-8"
+      "item": "cooked_cod",
+      "amount": "20-25"
     },
     {
       "item": "suspicious_stew",
@@ -36,7 +36,7 @@
     {
       "name": "make_suspicious_stew",
       "duration": 30,
-      "effects": "speed,jump_boost,luck"
+      "effects": "health_boost,regeneration,resistance,fire_resistance"
     }
   ]
 }

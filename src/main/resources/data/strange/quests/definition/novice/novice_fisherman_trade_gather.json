@@ -1,0 +1,39 @@
+{
+  "type": "gather",
+  "level": 1,
+  "professions": [
+    "fisherman"
+  ],
+  "gather": [
+    {
+      "item": "string",
+      "amount": "10-12"
+    },
+    {
+      "item": "coal",
+      "amount": "13-15"
+    },
+    {
+      "item": "cod",
+      "amount": "6-8"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "1-3"
+    },
+    {
+      "list": "strange:food",
+      "amount": "4-6"
+    },
+    {
+      "item": "cod_bucket",
+      "amount": "1"
+    },
+    {
+      "item": "cooked_cod",
+      "amount": "4-6"
+    }
+  ]
+}
