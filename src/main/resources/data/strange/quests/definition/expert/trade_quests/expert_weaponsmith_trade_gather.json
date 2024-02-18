@@ -1,0 +1,37 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "weaponsmith"
+  ],
+  "gather": [
+    {
+      "item": "flint",
+      "amount": "140-150"
+    },
+    {
+      "item": "iron_ingot",
+      "amount": "100-130"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_weapons",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}
