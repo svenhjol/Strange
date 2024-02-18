@@ -32,27 +32,27 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
 
             switch (key) {
                 case "list": {
-                    this.list = parseResourceLocation(val);
+                    this.list = parseResourceLocation(val).orElseThrow();
                     break;
                 }
                 case "item": {
-                    this.item = parseItem(val);
+                    this.item = parseItem(val).orElseThrow();
                     break;
                 }
                 case "loot_table": {
-                    this.lootTable = parseResourceLocation(val);
+                    this.lootTable = parseResourceLocation(val).orElseThrow();
                     break;
                 }
                 case "amount": {
-                    this.amount = parseInteger(val);
+                    this.amount = parseInteger(val).orElseThrow();
                     break;
                 }
                 case "weight": {
-                    this.weight = parseInteger(val);
+                    this.weight = parseInteger(val).orElseThrow();
                     break;
                 }
                 case "chance": {
-                    this.chance = parseDouble(val);
+                    this.chance = parseDouble(val).orElseThrow();
                     break;
                 }
             }

@@ -3,98 +3,112 @@ package svenhjol.strange.data;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public interface SimpleObjectParser {
     RandomSource random();
 
-    String namespace();
-
-    default String parseString(Object s) {
-        return String.valueOf(s);
+    default Optional<String> parseString(Object s) {
+        return Optional.of(String.valueOf(s));
     }
 
-    default boolean parseBoolean(Object b) {
+    default Optional<Boolean> parseBoolean(Object b) {
         if (b instanceof Boolean bn) {
-            return bn;
+            return Optional.of(bn);
         } else if (b instanceof String str) {
             var sl = str.toLowerCase(Locale.ROOT);
             if (sl.equals("false")) {
-                return false;
+                return Optional.of(false);
             } else if (sl.equals("true")) {
-                return true;
+                return Optional.of(true);
             }
         } else if (b instanceof Integer in) {
-            return in != 0;
+            return Optional.of(in != 0);
         }
-        throw new RuntimeException("Could not parse bool");
+        return Optional.empty();
     }
 
-    default int parseInteger(Object i) {
+    default Optional<Integer> parseInteger(Object i) {
         if (i instanceof Integer in) {
-            return in;
+            return Optional.of(in);
         } else if (i instanceof Double d) {
-            return d.intValue();
+            return Optional.of(d.intValue());
         } else if (i instanceof Float f) {
-            return f.intValue();
+            return Optional.of(f.intValue());
         } else if (i instanceof String str) {
+            int out;
             if (str.contains("-")) {
                 // Range
                 var split = Arrays.stream(str.split("-")).map(Integer::parseInt).toList();
-                return random().nextIntBetweenInclusive(split.get(0), split.get(1));
+                out = random().nextIntBetweenInclusive(split.get(0), split.get(1));
             } else {
-                return Integer.parseInt(str);
+                out = Integer.parseInt(str);
             }
+            return Optional.of(out);
         }
-        throw new RuntimeException("Could not parse int");
+        return Optional.empty();
     }
 
-    default double parseDouble(Object d) {
+    default Optional<Double> parseDouble(Object d) {
         if (d instanceof Double dl) {
-            return dl;
+            return Optional.of(dl);
         } else if (d instanceof Integer i) {
-            return i.doubleValue();
+            return Optional.of(i.doubleValue());
         } else if (d instanceof Float f) {
-            return f.doubleValue();
+            return Optional.of(f.doubleValue());
         } else if (d instanceof String str) {
             if (str.endsWith("d")) {
                 str = str.substring(0, str.lastIndexOf("d"));
             }
-            return Double.parseDouble(str);
+            return Optional.of(Double.parseDouble(str));
         }
-        throw new RuntimeException("Could not parse double");
+        return Optional.empty();
     }
 
-    default ResourceLocation parseResourceLocation(Object r) {
+    default Optional<ResourceLocation> parseResourceLocation(Object r) {
         if (r instanceof ResourceLocation res) {
-            return res;
+            return Optional.of(res);
         } else if (r instanceof String str) {
-            return new ResourceLocation(str);
+            return Optional.of(new ResourceLocation(str));
         }
-
-        throw new RuntimeException("Could not parse string: " + r);
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
-    default List<ResourceLocation> parseResourceLocationList(Object rs) {
+    default Optional<List<ResourceLocation>> parseResourceLocationList(Object rs) {
         if (rs instanceof List<?> rsl) {
-            return (List<ResourceLocation>) rsl;
+            return Optional.of((List<ResourceLocation>) rsl);
         } else if (rs instanceof String str) {
-            return Arrays.stream(str.split(",")).map(this::parseResourceLocation).toList();
+            var list = Arrays.stream(str.split(",")).toList();
+            List<ResourceLocation> out = new ArrayList<>();
+            for (var res : list) {
+                var result = parseResourceLocation(res);
+                if (result.isEmpty()) {
+                    return Optional.empty();
+                }
+                out.add(result.get());
+            }
+            return Optional.of(out);
         }
-
-        throw new RuntimeException("Could not parse string: " + rs);
+        return Optional.empty();
     }
 
-    default Item parseItem(Object i) {
-        if (!(i instanceof String str)) {
-            throw new RuntimeException("Could not parse string: " + i);
-        }
+    default Optional<Item> parseItem(Object o) {
+        var result = parseResourceLocation(o);
+        return result.map(BuiltInRegistries.ITEM::get);
+    }
 
-        return BuiltInRegistries.ITEM.get(parseResourceLocation(str));
+    default Optional<MobEffect> parseMobEffect(Object o) {
+        var result = parseResourceLocation(o);
+        return result.map(BuiltInRegistries.MOB_EFFECT::get);
+    }
+
+    default Optional<Potion> parsePotion(Object o) {
+        var result = parseResourceLocation(o);
+        return result.map(BuiltInRegistries.POTION::get);
     }
 }

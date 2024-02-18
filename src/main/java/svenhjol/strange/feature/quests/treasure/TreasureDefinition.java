@@ -32,19 +32,19 @@ public class TreasureDefinition extends BaseDefinition<TreasureDefinition> {
 
             switch (key) {
                 case "list": {
-                    this.list = parseResourceLocation(val);
+                    this.list = parseResourceLocation(val).orElseThrow();
                     break;
                 }
                 case "amount": {
-                    this.amount = parseInteger(val);
+                    this.amount = parseInteger(val).orElseThrow();
                     break;
                 }
                 case "items": {
-                    this.items = parseResourceLocationList(val);
+                    this.items = parseResourceLocationList(val).orElseThrow();
                     break;
                 }
                 case "chance": {
-                    this.chance = parseDouble(val);
+                    this.chance = parseDouble(val).orElseThrow();
                     break;
                 }
             }

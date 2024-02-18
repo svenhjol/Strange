@@ -32,19 +32,19 @@ public class GatherDefinition extends BaseDefinition<GatherDefinition> {
 
             switch (key) {
                 case "list": {
-                    this.list = parseResourceLocation(val);
+                    this.list = parseResourceLocation(val).orElseThrow();
                     break;
                 }
                 case "item": {
-                    this.item = parseItem(val);
+                    this.item = parseItem(val).orElseThrow();
                     break;
                 }
                 case "amount": {
-                    this.amount = parseInteger(val);
+                    this.amount = parseInteger(val).orElseThrow();
                     break;
                 }
                 case "weight": {
-                    this.weight = parseDouble(val);
+                    this.weight = parseDouble(val).orElseThrow();
                     break;
                 }
             }

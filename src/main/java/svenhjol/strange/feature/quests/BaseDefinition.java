@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import svenhjol.strange.data.ResourceListManager;
 import svenhjol.strange.data.SimpleObjectParser;
-import svenhjol.strange.feature.quests.QuestDefinition;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -31,10 +30,5 @@ public abstract class BaseDefinition<T> implements SimpleObjectParser {
     @Override
     public RandomSource random() {
         return questDefinition().random();
-    }
-
-    @Override
-    public String namespace() {
-        return questDefinition().namespace();
     }
 }
