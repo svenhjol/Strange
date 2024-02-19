@@ -6,12 +6,8 @@
   ],
   "gather": [
     {
-      "item": "iron_block",
-      "amount": "21-25"
-    },
-    {
-      "list": "strange:copper_blocks",
-      "amount": "50-55"
+      "item": "iron_ingot",
+      "amount": "200-220"
     }
   ],
   "reward_items": [

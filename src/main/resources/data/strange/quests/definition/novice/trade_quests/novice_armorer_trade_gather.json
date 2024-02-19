@@ -7,7 +7,7 @@
   "gather": [
     {
       "item": "coal",
-      "amount": "14-16"
+      "amount": "20-24"
     }
   ],
   "reward_items": [
@@ -17,7 +17,13 @@
     },
     {
       "list": "strange:iron_armor",
-      "amount": 1
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.5
     }
   ]
 }

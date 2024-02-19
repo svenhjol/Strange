@@ -11,17 +11,17 @@
     },
     {
       "item": "iron_ingot",
-      "amount": "100-120"
-    },
-    {
-      "item": "copper_ingot",
-      "amount": "180-200"
+      "amount": "100-130"
     }
   ],
   "reward_items": [
     {
       "item": "emerald",
       "amount": "10-15"
+    },
+    {
+      "list": "strange:iron_armor",
+      "amount": 2
     },
     {
       "list": "strange:diamond_armor",
@@ -31,7 +31,7 @@
   "reward_item_functions": [
     {
       "name": "enchant_item",
-      "chance": 0.75
+      "chance": 1.0
     }
   ]
 }

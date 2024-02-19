@@ -7,15 +7,11 @@
   "gather": [
     {
       "item": "coal",
-      "amount": "20-30"
+      "amount": "35-45"
     },
     {
       "item": "iron_ingot",
-      "amount": "8-12"
-    },
-    {
-      "item": "copper_ingot",
-      "amount": "20-30"
+      "amount": "15-20"
     }
   ],
   "reward_items": [
@@ -25,11 +21,21 @@
     },
     {
       "list": "strange:iron_armor",
-      "amount": "1-2"
+      "amount": 2
     },
     {
       "item": "bell",
       "amount": 1
+    },
+    {
+      "item": "shield",
+      "amount": "2-3"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
     }
   ]
 }

@@ -17,13 +17,13 @@
     },
     {
       "list": "strange:iron_weapons",
-      "amount": 1
+      "amount": 2
     }
   ],
   "reward_item_functions": [
     {
       "name": "enchant_item",
-      "chance": 1.0
+      "chance": 0.5
     }
   ]
 }
