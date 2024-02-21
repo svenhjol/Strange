@@ -8,6 +8,10 @@
     {
       "list": "strange:common_hostile_mobs",
       "amount": 5
+    },
+    {
+      "list": "strange:common_hostile_mobs",
+      "amount": 10
     }
   ],
   "reward_items": [
