@@ -56,6 +56,7 @@ public class TreasureQuest extends Quest {
                 if (lootTable.equals(lootTableId)) {
                     if (random.nextDouble() < treasure.chance) {
                         log().debug(getClass(), "Adding the treasure to the loot pool");
+                        treasure.discovered = true;
                         return Optional.of(treasure.item.copy());
                     } else {
                         log().debug(getClass(), "Did not pass chance check, skipping treasure loot generation");
