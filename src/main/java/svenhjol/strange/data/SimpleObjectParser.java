@@ -4,6 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 
@@ -105,6 +106,11 @@ public interface SimpleObjectParser {
     default Optional<MobEffect> parseMobEffect(Object o) {
         var result = parseResourceLocation(o);
         return result.map(BuiltInRegistries.MOB_EFFECT::get);
+    }
+
+    default Optional<EntityType<?>> parseEntity(Object o) {
+        var result = parseResourceLocation(o);
+        return result.map(BuiltInRegistries.ENTITY_TYPE::get);
     }
 
     default Optional<Potion> parsePotion(Object o) {
