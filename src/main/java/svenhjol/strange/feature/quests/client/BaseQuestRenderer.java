@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import svenhjol.charmony.helper.ConfigHelper;
@@ -145,10 +146,15 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         Component professionInfo;
         var professions = quest.villagerProfessions();
 
-        if (professions.size() == 1) {
+        if (professions.contains(VillagerProfession.NONE)) {
+            // Any villager provides rewards.
+            professionInfo = Component.translatable(QuestsResources.RETURN_TO_ANY_PROFESSION_KEY);
+        } else if (professions.size() == 1) {
+            // A specific villager profession provides rewards.
             var professionName = svenhjol.strange.helper.TextHelper.uncapitalize(QuestsHelper.getProfessionName(professions.get(0)).getString());
             professionInfo = Component.translatable(QuestsResources.RETURN_TO_PROFESSION_KEY, professionName);
         } else {
+            // Any of the specified villager professions provide rewards.
             var sb = new StringBuilder();
             for (int i = 0; i < professions.size(); i++) {
                 var profession = professions.get(i);

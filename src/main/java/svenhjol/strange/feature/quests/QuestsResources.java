@@ -42,6 +42,7 @@ public class QuestsResources {
     public static final String LOYALTY_KEY = "gui.strange.quests.loyalty";
     public static final String RETURN_TO_PROFESSION_KEY = "gui.strange.quests.return_to_profession";
     public static final String RETURN_TO_PROFESSIONS_KEY = "gui.strange.quests.return_to_professions";
+    public static final String RETURN_TO_ANY_PROFESSION_KEY = "gui.strange.quests.return_to_any_profession";
     public static final Map<Integer, ResourceLocation> LEVEL_TO_SCROLL = new HashMap<>();
     public static final Map<EntityType<?>, ResourceLocation> MOB_SPRITES = new HashMap<>();
     public static final Map<ResourceLocation, ResourceLocation> LOOT_SPRITES = new HashMap<>();
