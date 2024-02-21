@@ -1,0 +1,35 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "professions": [
+    "cleric"
+  ],
+  "hunt": [
+    {
+      "list": "strange:common_hostile_mobs",
+      "amount": 5
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "1-3"
+    },
+    {
+      "item": "redstone",
+      "amount": "4-6"
+    },
+    {
+      "item": "glass_bottle",
+      "amount": "2-3"
+    },
+    {
+      "item": "bucket",
+      "amount": 1
+    },
+    {
+      "list": "strange:dyes",
+      "amount": "2-3"
+    }
+  ]
+}
