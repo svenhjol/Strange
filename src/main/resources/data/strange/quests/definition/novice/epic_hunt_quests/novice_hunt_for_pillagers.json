@@ -1,0 +1,57 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "loyalty": 5,
+  "epic": true,
+  "reward_experience": 3,
+  "professions": [
+    "villager"
+  ],
+  "hunt": [
+    {
+      "mob": "pillager",
+      "amount": "12-14"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "3-6"
+    },
+    {
+      "item": "gunpowder",
+      "amount": "20-22"
+    },
+    {
+      "item": "bone",
+      "amount": "20-22"
+    },
+    {
+      "list": "strange:iron_armor",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:leather_armor",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": "2-3"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 10
+    }
+  ]
+}

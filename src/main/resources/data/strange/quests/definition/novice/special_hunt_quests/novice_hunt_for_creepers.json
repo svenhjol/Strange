@@ -1,0 +1,51 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "loyalty": 3,
+  "professions": [
+    "villager"
+  ],
+  "hunt": [
+    {
+      "mob": "creeper",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "2-4"
+    },
+    {
+      "item": "gunpowder",
+      "amount": "12-14"
+    },
+    {
+      "list": "strange:iron_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:leather_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 8
+    }
+  ]
+}

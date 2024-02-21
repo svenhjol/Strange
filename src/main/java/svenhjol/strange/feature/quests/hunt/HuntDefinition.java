@@ -35,7 +35,7 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
                     this.list = parseResourceLocation(val).orElseThrow();
                     break;
                 }
-                case "entity": {
+                case "mob", "entity": {
                     this.entity = parseEntity(val).orElseThrow();
                     break;
                 }

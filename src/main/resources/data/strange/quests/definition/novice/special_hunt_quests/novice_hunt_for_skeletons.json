@@ -1,0 +1,51 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "loyalty": 3,
+  "professions": [
+    "villager"
+  ],
+  "hunt": [
+    {
+      "mob": "skeleton",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "2-4"
+    },
+    {
+      "item": "bow",
+      "amount": 2
+    },
+    {
+      "item": "crossbow",
+      "amount": 2
+    },
+    {
+      "item": "iron_axe",
+      "amount": 2
+    },
+    {
+      "item": "iron_sword",
+      "amount": 2
+    },
+    {
+      "item": "bone",
+      "amount": "8-10"
+    },
+    {
+      "list": "strange:stone_tools",
+      "amount": 4
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 8
+    }
+  ]
+}
