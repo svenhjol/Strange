@@ -5,9 +5,9 @@ import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import svenhjol.strange.data.LinkedEntityTypeList;
+import svenhjol.strange.feature.quests.BaseDefinition;
 import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.Quests;
-import svenhjol.strange.feature.quests.BaseDefinition;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class HuntDefinition extends BaseDefinition<HuntDefinition> {
     private ResourceLocation list;
+    private EntityType<?> entity;
     private int amount = 1;
     private double weight = -1;
 
@@ -32,6 +33,10 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
             switch (key) {
                 case "list": {
                     this.list = parseResourceLocation(val).orElseThrow();
+                    break;
+                }
+                case "entity": {
+                    this.entity = parseEntity(val).orElseThrow();
                     break;
                 }
                 case "amount": {
@@ -57,25 +62,39 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
         List<Pair<EntityType<?>, Integer>> out = new ArrayList<>();
         List<EntityType<?>> sublist = new ArrayList<>();
 
-        var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
-        if (mobs.isEmpty()) {
-            throw new RuntimeException("Hunt entity list is empty: " + list);
+        var localAmount = amount;
+        var localMax = Quests.maxQuestRequirements;
+
+        if (entity != null && list != null) {
+            localAmount /= 2;
+            localMax -= 1;
         }
 
-        Util.shuffle(mobs, random());
-
-        var max = Math.min(
-            Math.min(Quests.maxQuestRequirements, amount),
-            definition.level() + random().nextInt(2));
-
-        if (weight < 0) {
-            sublist.addAll(mobs.subset(max, random()));
-        } else {
-            sublist.addAll(mobs.subset(max, weight, 0.1d, random()));
+        if (entity != null) {
+            out.add(Pair.of(entity, localAmount));
         }
 
-        for (var mob : sublist) {
-            out.add(Pair.of(mob, amount / max));
+        if (list != null) {
+            var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
+            if (mobs.isEmpty()) {
+                throw new RuntimeException("Hunt entity list is empty: " + list);
+            }
+
+            Util.shuffle(mobs, random());
+
+            var max = Math.min(
+                Math.min(localMax, mobs.size()),
+                definition.level() + random().nextInt(2));
+
+            if (weight < 0) {
+                sublist.addAll(mobs.subset(max, random()));
+            } else {
+                sublist.addAll(mobs.subset(max, weight, 0.1d, random()));
+            }
+
+            for (var mob : sublist) {
+                out.add(Pair.of(mob, localAmount / max));
+            }
         }
 
         return out;
