@@ -20,6 +20,7 @@ import java.util.Map;
 public class BattleDefinition extends BaseDefinition<BattleDefinition> {
     static final ResourceLocation DEFAULT_BATTLE_EFFECTS = new ResourceLocation(Strange.ID, "default_battle_effects");
     private ResourceLocation list;
+    private EntityType<?> entity;
     private int amount = 1;
     private int weight = -1;
     private final List<ResourceLocation> effects = new ArrayList<>();
@@ -38,6 +39,10 @@ public class BattleDefinition extends BaseDefinition<BattleDefinition> {
             switch (key) {
                 case "list": {
                     this.list = parseResourceLocation(val).orElseThrow();
+                    break;
+                }
+                case "entity", "mob": {
+                    this.entity = parseEntity(val).orElseThrow();
                     break;
                 }
                 case "amount": {
@@ -66,6 +71,16 @@ public class BattleDefinition extends BaseDefinition<BattleDefinition> {
     public List<EntityType<?>> mobs() {
         List<EntityType<?>> out = new ArrayList<>();
 
+        // If entity specified directly then add the required amount and return early.
+        if (entity != null) {
+            var max = Math.min(Quests.maxQuestRequirements, amount);
+            for (int i = 0; i < max; i++) {
+                out.add(entity);
+            }
+            return out;
+        }
+
+        // Add mobs from list.
         var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
         if (mobs.isEmpty()) {
             throw new RuntimeException("Battle entity list is empty: " + list);
