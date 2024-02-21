@@ -8,14 +8,6 @@
     {
       "list": "strange:common_hostile_mobs",
       "amount": 5
-    },
-    {
-      "entity": "zombie",
-      "amount": 6
-    },
-    {
-      "entity": "skeleton",
-      "amount": 6
     }
   ],
   "reward_items": [
