@@ -1,0 +1,45 @@
+{
+  "type": "treasure",
+  "level": 1,
+  "loyalty": 2,
+  "profession": [
+    "butcher", "farmer", "leatherworker", "shepherd"
+  ],
+  "treasure": [
+    {
+      "list": "strange:village_profession_loot_tables",
+      "amount": 5,
+      "chance": 0.9
+    }
+  ],
+  "reward_experience": 10,
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:iron_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 10
+    }
+  ]
+}

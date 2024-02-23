@@ -1,0 +1,45 @@
+{
+  "type": "treasure",
+  "level": 1,
+  "loyalty": 2,
+  "profession": [
+    "villager"
+  ],
+  "treasure": [
+    {
+      "list": "strange:mineshaft_loot_tables",
+      "amount": 2,
+      "chance": 0.8
+    }
+  ],
+  "reward_experience": 6,
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:iron_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 10
+    }
+  ]
+}
