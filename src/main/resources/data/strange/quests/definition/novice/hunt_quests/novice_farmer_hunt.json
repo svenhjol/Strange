@@ -25,11 +25,17 @@
     },
     {
       "item": "stone_hoe",
-      "amount": 1
+      "amount": 2
     },
     {
       "list": "strange:torches",
       "amount": "6-8"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
     }
   ]
 }
