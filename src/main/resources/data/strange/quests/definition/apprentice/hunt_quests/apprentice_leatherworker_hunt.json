@@ -1,0 +1,41 @@
+{
+  "type": "hunt",
+  "level": 2,
+  "professions": [
+    "leatherworker"
+  ],
+  "hunt": [
+    {
+      "list": "strange:common_hostile_mobs",
+      "amount": 25
+    },
+    {
+      "mob": "pillager",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "leather_leggings",
+      "amount": 1
+    },
+    {
+      "item": "leather_chestplate",
+      "amount": 1
+    },
+    {
+      "item": "leather",
+      "amount": "8-11"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
+    }
+  ]
+}

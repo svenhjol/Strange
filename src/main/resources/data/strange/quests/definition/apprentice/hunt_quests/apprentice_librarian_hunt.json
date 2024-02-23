@@ -1,17 +1,17 @@
 {
-  "type": "gather",
+  "type": "hunt",
   "level": 2,
   "professions": [
     "librarian"
   ],
-  "gather": [
+  "hunt": [
     {
-      "list": "strange:common_librarian_items",
-      "amount": "30-42"
+      "list": "strange:common_hostile_mobs",
+      "amount": 25
     },
     {
-      "list": "strange:uncommon_librarian_items",
-      "amount": "16-22"
+      "mob": "pillager",
+      "amount": "10-12"
     }
   ],
   "reward_items": [
@@ -30,6 +30,10 @@
     {
       "item": "book",
       "amount": "3-6"
+    },
+    {
+      "item": "glass_pane",
+      "amount": "8-11"
     },
     {
       "item": "enchanted_book",
