@@ -22,15 +22,15 @@
     },
     {
       "list": "strange:iron_armor",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:leather_armor",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:chainmail_armor",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:stone_tools",
@@ -38,14 +38,14 @@
     },
     {
       "list": "strange:iron_tools",
-      "amount": 2
+      "amount": 1
     }
   ],
   "reward_item_functions": [
     {
       "name": "enchant_item",
       "chance": 1.0,
-      "level": 8
+      "level": 10
     }
   ]
 }

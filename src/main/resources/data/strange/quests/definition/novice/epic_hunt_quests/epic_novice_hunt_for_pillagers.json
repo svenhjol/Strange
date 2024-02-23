@@ -1,7 +1,7 @@
 {
   "type": "hunt",
   "level": 1,
-  "loyalty": 5,
+  "loyalty": 8,
   "epic": true,
   "reward_experience": 3,
   "professions": [
@@ -16,7 +16,7 @@
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "4-6"
+      "amount": "5-7"
     },
     {
       "item": "gunpowder",
@@ -51,7 +51,7 @@
     {
       "name": "enchant_item",
       "chance": 1.0,
-      "level": 10
+      "level": 12
     }
   ]
 }

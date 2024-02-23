@@ -9,7 +9,7 @@
     {
       "list": "strange:fishing_loot_tables",
       "amount": 3,
-      "chance": 0.75
+      "chance": 0.5
     }
   ],
   "reward_items": [
@@ -19,30 +19,30 @@
     },
     {
       "list": "strange:iron_armor",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:leather_armor",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:chainmail_armor",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:iron_tools",
-      "amount": 2
+      "amount": 1
     },
     {
       "list": "strange:iron_weapons",
-      "amount": 2
+      "amount": 1
     }
   ],
   "reward_item_functions": [
     {
       "name": "enchant_item",
       "chance": 1.0,
-      "level": 8
+      "level": 10
     }
   ]
 }

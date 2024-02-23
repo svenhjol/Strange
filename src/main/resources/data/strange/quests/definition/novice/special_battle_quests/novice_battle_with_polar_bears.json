@@ -7,8 +7,8 @@
   ],
   "battle": [
     {
-      "mob": "witch",
-      "amount": 1
+      "mob": "polar_bear",
+      "amount": 2
     }
   ],
   "reward_items": [
@@ -17,8 +17,8 @@
       "amount": "3-5"
     },
     {
-      "list": "strange:iron_tools",
-      "amount": 2
+      "item": "bone",
+      "amount": "12-14"
     },
     {
       "list": "strange:iron_weapons",

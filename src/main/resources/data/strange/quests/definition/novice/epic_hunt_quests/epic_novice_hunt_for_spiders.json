@@ -1,51 +1,61 @@
 {
   "type": "hunt",
   "level": 1,
-  "loyalty": 3,
+  "loyalty": 8,
+  "epic": true,
+  "reward_experience": 3,
   "professions": [
     "villager"
   ],
   "hunt": [
     {
-      "mob": "creeper",
-      "amount": "10-12"
+      "mob": "spider",
+      "amount": "16-20"
     }
   ],
   "reward_items": [
     {
       "item": "emerald",
-      "amount": "2-4"
+      "amount": "5-7"
     },
     {
-      "item": "gunpowder",
-      "amount": "12-14"
+      "item": "string",
+      "amount": "20-22"
+    },
+    {
+      "item": "bonemeal",
+      "amount": "20-22"
     },
     {
       "list": "strange:iron_armor",
-      "amount": 1
+      "amount": "2-3"
     },
     {
       "list": "strange:leather_armor",
-      "amount": 1
+      "amount": "2-3"
     },
     {
       "list": "strange:chainmail_armor",
-      "amount": 1
+      "amount": "2-3"
     },
     {
       "list": "strange:iron_tools",
-      "amount": 1
+      "amount": "2-3"
     },
     {
       "list": "strange:iron_weapons",
-      "amount": 1
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:stone_tools",
+      "amount": "5-6"
     }
   ],
   "reward_item_functions": [
     {
       "name": "enchant_item",
       "chance": 1.0,
-      "level": 10
+      "level": 12
     }
   ]
 }

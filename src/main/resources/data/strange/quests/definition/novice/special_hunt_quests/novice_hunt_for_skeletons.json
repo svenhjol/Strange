@@ -22,15 +22,15 @@
     },
     {
       "item": "crossbow",
-      "amount": 2
+      "amount": 1
     },
     {
       "item": "iron_axe",
-      "amount": 2
+      "amount": 1
     },
     {
       "item": "iron_sword",
-      "amount": 2
+      "amount": 1
     },
     {
       "item": "bone",
@@ -45,7 +45,7 @@
     {
       "name": "enchant_item",
       "chance": 1.0,
-      "level": 8
+      "level": 10
     }
   ]
 }

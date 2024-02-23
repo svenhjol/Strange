@@ -1,0 +1,35 @@
+{
+  "type": "battle",
+  "level": 1,
+  "loyalty": 4,
+  "profession": [
+    "villager"
+  ],
+  "battle": [
+    {
+      "mob": "witch",
+      "amount": 2
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "3-5"
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 10
+    }
+  ]
+}
