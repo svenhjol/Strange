@@ -45,7 +45,20 @@ public interface SimpleObjectParser {
             if (str.contains("-")) {
                 // Range
                 var split = Arrays.stream(str.split("-")).map(Integer::parseInt).toList();
-                out = random().nextIntBetweenInclusive(split.get(0), split.get(1));
+                var min = split.get(0);
+                var max = split.get(1);
+
+                if (min == 0 || max == 0) {
+                    throw new RuntimeException("Range min or max cannot be zero");
+                }
+
+                if (max < min) {
+                    var newMax = min;
+                    min = max;
+                    max = newMax;
+                }
+
+                out = random().nextIntBetweenInclusive(min, max);
             } else {
                 out = Integer.parseInt(str);
             }
