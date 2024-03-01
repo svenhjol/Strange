@@ -1,0 +1,50 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "shepherd"
+  ],
+  "hunt": [
+    {
+      "mob": "cave_spider",
+      "amount": "10-12"
+    },
+    {
+      "mob": "sheep",
+      "amount": "30-40"
+    },
+    {
+      "mob": "llama",
+      "amount": "12-14"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:wool",
+      "amount": "20-30"
+    },
+    {
+      "list": "strange:carpets",
+      "amount": "20-30"
+    },
+    {
+      "list": "strange:beds",
+      "amount": "8-12"
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 12
+    }
+  ]
+}

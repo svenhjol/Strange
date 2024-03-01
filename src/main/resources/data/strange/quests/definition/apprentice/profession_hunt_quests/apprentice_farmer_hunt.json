@@ -1,0 +1,53 @@
+{
+  "type": "hunt",
+  "level": 2,
+  "professions": [
+    "farmer"
+  ],
+  "hunt": [
+    {
+      "list": "strange:common_hostile_mobs",
+      "amount": 10
+    },
+    {
+      "mob": "pillager",
+      "amount": "4-5"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:food",
+      "amount": "12-15"
+    },
+    {
+      "list": "strange:cooked_food",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:stews_and_soups",
+      "amount": "5-8"
+    },
+    {
+      "item": "pumpkin_pie",
+      "amount": "5-8"
+    },
+    {
+      "item": "stone_hoe",
+      "amount": 4
+    },
+    {
+      "list": "strange:torches",
+      "amount": "6-8"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

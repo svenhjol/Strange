@@ -1,0 +1,49 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "leatherworker"
+  ],
+  "hunt": [
+    {
+      "mob": "hoglin",
+      "amount": "4-5"
+    },
+    {
+      "mob": "horse",
+      "amount": "12-14"
+    },
+    {
+      "mob": "cow",
+      "amount": "30-40"
+    },
+    {
+      "mob": "rabbit",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:leather_armor",
+      "amount": 2
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": 2
+    },
+    {
+      "item": "leather",
+      "amount": "15-20"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

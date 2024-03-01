@@ -1,0 +1,47 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "librarian"
+  ],
+  "hunt": [
+    {
+      "mob": "witch",
+      "amount": "10-12"
+    },
+    {
+      "mob": "vex",
+      "amount": "2-3"
+    },
+    {
+      "mob": "magma_cube",
+      "amount": "5-6"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "lantern",
+      "amount": "5-6"
+    },
+    {
+      "item": "bookshelf",
+      "amount": "1-2"
+    },
+    {
+      "item": "book",
+      "amount": "3-6"
+    },
+    {
+      "item": "glass_pane",
+      "amount": "8-11"
+    },
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    }
+  ]
+}

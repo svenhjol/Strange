@@ -1,0 +1,54 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "weaponsmith"
+  ],
+  "hunt": [
+    {
+      "mob": "vindicator",
+      "amount": "4-5"
+    },
+    {
+      "mob": "evoker",
+      "amount": "1-2"
+    },
+    {
+      "mob": "wither_skeleton",
+      "amount": "2-3"
+    },
+    {
+      "mob": "blaze",
+      "amount": "2-3"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 3
+    },
+    {
+      "item": "bell",
+      "amount": 1
+    },
+    {
+      "item": "arrow",
+      "amount": "25-30"
+    },
+    {
+      "list": "strange:lanterns",
+      "amount": "9-11"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 15
+    }
+  ]
+}

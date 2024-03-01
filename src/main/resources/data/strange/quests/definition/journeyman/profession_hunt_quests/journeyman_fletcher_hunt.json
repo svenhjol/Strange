@@ -1,0 +1,53 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "fletcher"
+  ],
+  "hunt": [
+    {
+      "mob": "stray",
+      "amount": "10-12"
+    },
+    {
+      "mob": "pillager",
+      "amount": "10-12"
+    },
+    {
+      "mob": "skeleton",
+      "amount": "20-24"
+    },
+    {
+      "mob": "wither_skeleton",
+      "amount": "2-3"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "bow",
+      "amount": 1
+    },
+    {
+      "item": "crossbow",
+      "amount": 1
+    },
+    {
+      "item": "arrow",
+      "amount": "30-35"
+    },
+    {
+      "item": "spectral_arrow",
+      "amount": "8-12"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

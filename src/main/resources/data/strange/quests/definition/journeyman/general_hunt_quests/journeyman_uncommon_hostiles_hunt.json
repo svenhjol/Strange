@@ -1,0 +1,13 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "villager"
+  ],
+  "hunt": [
+    {
+      "list": "strange:uncommon_hostile_mobs",
+      "amount": "10-12"
+    }
+  ]
+}

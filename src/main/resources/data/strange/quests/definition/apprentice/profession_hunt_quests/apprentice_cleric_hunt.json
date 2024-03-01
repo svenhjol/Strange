@@ -1,0 +1,39 @@
+{
+  "type": "hunt",
+  "level": 2,
+  "professions": [
+    "cleric"
+  ],
+  "hunt": [
+    {
+      "list": "strange:common_hostile_mobs",
+      "amount": 10
+    },
+    {
+      "mob": "pillager",
+      "amount": "4-5"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "lapis_lazuli",
+      "amount": "10-14"
+    },
+    {
+      "item": "redstone",
+      "amount": "10-14"
+    },
+    {
+      "item": "bucket",
+      "amount": "4-6"
+    },
+    {
+      "list": "strange:dyes",
+      "amount": "10-14"
+    }
+  ]
+}

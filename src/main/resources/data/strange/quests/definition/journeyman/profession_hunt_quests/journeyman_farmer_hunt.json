@@ -1,0 +1,53 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "farmer"
+  ],
+  "hunt": [
+    {
+      "list": "strange:uncommon_ambient_mobs",
+      "amount": "10-12"
+    },
+    {
+      "list": "strange:uncommon_neutral_mobs",
+      "amount": "10-12"
+    },
+    {
+      "mob": "zombie_villager",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:cooked_food",
+      "amount": "8-12"
+    },
+    {
+      "list": "strange:stews_and_soups",
+      "amount": "8-12"
+    },
+    {
+      "item": "cookie",
+      "amount": "18-22"
+    },
+    {
+      "item": "pumpkin_pie",
+      "amount": "8-12"
+    },
+    {
+      "item": "iron_how",
+      "amount": 3
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "cleric"
+  ],
+  "hunt": [
+    {
+      "mob": "zombie_villager",
+      "amount": "10-12"
+    },
+    {
+      "mob": "zombie",
+      "amount": "20-24"
+    },
+    {
+      "mob": "zombified_piglin",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "glowstone_dust",
+      "amount": "14-18"
+    },
+    {
+      "item": "glowstone",
+      "amount": "5-7"
+    }
+  ]
+}

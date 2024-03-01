@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:zombified_piglin",
+    "minecraft:cave_spider",
+    "minecraft:phantom",
+    "minecraft:witch",
+    "minecraft:enderman",
+    "minecraft:pillager",
+    "minecraft:zombie_villager",
+    "minecraft:slime"
+  ]
+}

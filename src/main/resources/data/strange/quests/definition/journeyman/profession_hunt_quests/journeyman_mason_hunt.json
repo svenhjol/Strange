@@ -1,0 +1,55 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "mason"
+  ],
+  "hunt": [
+    {
+      "mob": "vindicator",
+      "amount": "4-5"
+    },
+    {
+      "mob": "blaze",
+      "amount": "2-3"
+    },
+    {
+      "mob": "creeper",
+      "amount": "20-24"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "polished_andesite",
+      "amount": "20-40"
+    },
+    {
+      "item": "polished_diorite",
+      "amount": "20-40"
+    },
+    {
+      "item": "polished_granite",
+      "amount": "20-40"
+    },
+    {
+      "item": "dripstone_block",
+      "amount": "20-40"
+    },
+    {
+      "item": "brick",
+      "amount": "35-45"
+    },
+    {
+      "item": "chiseled_stone_bricks",
+      "amount": "20-40"
+    },
+    {
+      "list": "strange:copper_blocks",
+      "amount": "10-12"
+    }
+  ]
+}

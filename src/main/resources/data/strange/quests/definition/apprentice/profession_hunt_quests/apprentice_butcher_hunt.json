@@ -1,0 +1,35 @@
+{
+  "type": "hunt",
+  "level": 2,
+  "professions": [
+    "butcher"
+  ],
+  "hunt": [
+    {
+      "list": "strange:common_hostile_mobs",
+      "amount": 10
+    },
+    {
+      "mob": "pillager",
+      "amount": "4-5"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:cooked_food",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:stews_and_soups",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:candles",
+      "amount": "4-5"
+    }
+  ]
+}

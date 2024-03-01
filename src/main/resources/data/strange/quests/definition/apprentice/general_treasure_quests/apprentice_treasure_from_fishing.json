@@ -1,0 +1,44 @@
+{
+  "type": "treasure",
+  "level": 2,
+  "loyalty": 2,
+  "profession": [
+    "villager"
+  ],
+  "treasure": [
+    {
+      "list": "strange:fishing_loot_tables",
+      "amount": 2,
+      "chance": 0.05
+    }
+  ],
+  "reward_experience": 10,
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:iron_armor",
+      "amount": 1
+    },
+    {
+      "list": "strange:chainmail_armor",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_tools",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_weapons",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}
