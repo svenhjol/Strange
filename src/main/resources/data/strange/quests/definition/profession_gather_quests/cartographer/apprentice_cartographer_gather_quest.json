@@ -1,0 +1,62 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "cartographer"
+  ],
+  "gather": [
+    {
+      "list": "common_scholar_gather",
+      "amount": "25-35"
+    },
+    {
+      "list": "uncommon_scholar_gather",
+      "amount": "6-9"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "list": "common_scholar_rewards",
+      "amount": "6-9"
+    },
+    {
+      "list": "uncommon_scholar_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.ocean_ruin_warm",
+      "structure": "minecraft:ocean_ruin_warm"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.ocean_ruin_cold",
+      "structure": "minecraft:ocean_ruin_cold"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.mineshaft",
+      "structure": "minecraft:mineshaft"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.pillager_outpost",
+      "structure": "minecraft:pillager_outpost"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.desert_pyramid",
+      "structure": "minecraft:desert_pyramid"
+    }
+  ]
+}

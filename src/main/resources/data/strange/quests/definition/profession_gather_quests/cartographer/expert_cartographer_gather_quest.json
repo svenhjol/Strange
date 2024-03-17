@@ -1,0 +1,57 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "cartographer"
+  ],
+  "gather": [
+    {
+      "item": "redstone",
+      "amount": "100-125"
+    },
+    {
+      "list": "uncommon_scholar_gather",
+      "amount": "20-30"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "list": "uncommon_scholar_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "rare_scholar_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.mansion",
+      "structure": "minecraft:mansion"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.monument",
+      "structure": "minecraft:monument"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.swamp_hut",
+      "structure": "minecraft:swamp_hut"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.igloo",
+      "structure": "minecraft:igloo"
+    }
+  ]
+}

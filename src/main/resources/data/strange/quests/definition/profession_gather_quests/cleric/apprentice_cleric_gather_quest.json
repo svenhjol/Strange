@@ -1,0 +1,43 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "cleric"
+  ],
+  "gather": [
+    {
+      "list": "common_brewing_gather",
+      "amount": "15-20"
+    },
+    {
+      "list": "uncommon_brewing_gather",
+      "amount": "8-11"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "potion",
+      "amount": 1
+    },
+    {
+      "list": "common_scholar_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "common_brewing_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "uncommon_scholar_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "uncommon_brewing_rewards",
+      "amount": 1
+    }
+  ]
+}

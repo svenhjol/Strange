@@ -1,0 +1,84 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "cleric"
+  ],
+  "gather": [
+    {
+      "item": "nether_wart",
+      "amount": "60-80"
+    },
+    {
+      "list": "rare_brewing_gather",
+      "amount": "6-8"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "item": "potion",
+      "amount": "2-3"
+    },
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "list": "uncommon_scholar_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "uncommon_brewing_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "rare_scholar_rewards",
+      "amount": 1
+    },
+    {
+      "list": "rare_brewing_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.swamp_hut",
+      "structure": "minecraft:swamp_hut"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.igloo",
+      "structure": "minecraft:igloo"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_plains",
+      "structure": "minecraft:village_plains"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_desert",
+      "structure": "minecraft:village_desert"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_savanna",
+      "structure": "minecraft:village_savanna"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_snowy",
+      "structure": "minecraft:village_snowy"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_taiga",
+      "structure": "minecraft:village_taiga"
+    }
+  ]
+}
