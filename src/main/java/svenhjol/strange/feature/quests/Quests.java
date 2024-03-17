@@ -198,32 +198,29 @@ public class Quests extends CommonFeature {
         DEFINITIONS.clear();
 
         var manager = server.getResourceManager();
+        var resources = manager.listResources("quests/definition/", file -> file.getPath().endsWith(".json"));
 
-        for (var tier : QuestsHelper.TIERS.values()) {
-            var resources = manager.listResources("quests/definition/" + tier, file -> file.getPath().endsWith(".json"));
+        for (var entry : resources.entrySet()) {
+            var id = entry.getKey();
+            var namespace = id.getNamespace();
+            var resource = entry.getValue();
+            QuestDefinition definition;
 
-            for (var entry : resources.entrySet()) {
-                var id = entry.getKey();
-                var namespace = id.getNamespace();
-                var resource = entry.getValue();
-                QuestDefinition definition;
-
-                try {
-                    definition = QuestDefinition.deserialize(id, namespace, manager, resource);
-                } catch (Exception e) {
-                    mod().log().warn(getClass(), "Definition " + id + " failed to load due to an error: " + e.getMessage());
-                    continue;
-                }
-
-                // If the def requires specific charmony features, test they are enabled now and skip def if not.
-                if (!DataHelper.hasRequiredFeatures(definition.requiredFeatures())) {
-                    mod().log().debug(getClass(), "Definition " + id + " has missing or disabled features, skipping");
-                    continue;
-                }
-
-                DEFINITIONS.add(definition);
-                mod().log().debug(getClass(), "Registered quest definition " + id);
+            try {
+                definition = QuestDefinition.deserialize(id, namespace, manager, resource);
+            } catch (Exception e) {
+                mod().log().warn(getClass(), "Definition " + id + " failed to load due to an error: " + e.getMessage());
+                continue;
             }
+
+            // If the def requires specific charmony features, test they are enabled now and skip def if not.
+            if (!DataHelper.hasRequiredFeatures(definition.requiredFeatures())) {
+                mod().log().debug(getClass(), "Definition " + id + " has missing or disabled features, skipping");
+                continue;
+            }
+
+            DEFINITIONS.add(definition);
+            mod().log().debug(getClass(), "Registered quest definition " + id);
         }
     }
 
