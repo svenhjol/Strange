@@ -1,0 +1,8 @@
+{
+  "values": [
+    "minecraft:chests/bastion_treasure",
+    "minecraft:chests/bastion_other",
+    "minecraft:chests/bastion_bridge",
+    "minecraft:chests/bastion_hoglin_stable"
+  ]
+}
