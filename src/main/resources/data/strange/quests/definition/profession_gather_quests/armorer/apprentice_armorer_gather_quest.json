@@ -1,0 +1,57 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "armorer"
+  ],
+  "gather": [
+    {
+      "list": "common_metalworking_gather",
+      "amount": "35-45"
+    },
+    {
+      "list": "uncommon_metalworking_gather",
+      "amount": "15-20"
+    },
+    {
+      "item": "lava_bucket",
+      "amount": "4-6"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "leather_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "chainmail_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "common_horse_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "common_metalworking_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "uncommon_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "butcher"
+  ],
+  "gather": [
+    {
+      "item": "leather",
+      "amount": "28-36"
+    },
+    {
+      "item": "sweet_berries",
+      "amount": "50-64"
+    },
+    {
+      "list": "common_food_gather",
+      "amount": "28-36"
+    },
+    {
+      "list": "uncommon_food_gather",
+      "amount": "20-30"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "common_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "uncommon_crafted_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "uncommon_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "rare_crafted_rewards",
+      "amount": 1
+    },
+    {
+      "list": "rare_food_rewards",
+      "amount": "2-4"
+    }
+  ]
+}

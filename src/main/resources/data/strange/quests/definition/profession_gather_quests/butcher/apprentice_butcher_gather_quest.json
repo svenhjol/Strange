@@ -1,0 +1,35 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "butcher"
+  ],
+  "gather": [
+    {
+      "item": "coal",
+      "amount": "24-30"
+    },
+    {
+      "item": "leather",
+      "amount": "11-14"
+    },
+    {
+      "list": "common_food_gather",
+      "amount": "11-14"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "common_food_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "common_crafted_rewards",
+      "amount": "3-4"
+    }
+  ]
+}
