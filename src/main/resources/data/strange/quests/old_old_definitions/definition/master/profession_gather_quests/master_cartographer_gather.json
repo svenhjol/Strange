@@ -39,9 +39,9 @@
       "structure": "minecraft:ancient_city"
     },
     {
-    "name": "make_structure_map",
-    "title": "structure.minecraft.trail_ruins",
-    "structure": "minecraft:trail_ruins"
+      "name": "make_structure_map",
+      "title": "structure.minecraft.trail_ruins",
+      "structure": "minecraft:trail_ruins"
     }
   ]
 }
