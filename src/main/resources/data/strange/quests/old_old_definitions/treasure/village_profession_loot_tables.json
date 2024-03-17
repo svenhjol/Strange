@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:chests/village/village_weaponsmith",
+    "minecraft:chests/village/village_toolsmith",
+    "minecraft:chests/village/village_armorer",
+    "minecraft:chests/village/village_cartographer",
+    "minecraft:chests/village/village_mason",
+    "minecraft:chests/village/village_shepherd",
+    "minecraft:chests/village/village_butcher",
+    "minecraft:chests/village/village_fletcher",
+    "minecraft:chests/village/village_fisher",
+    "minecraft:chests/village/village_tannery",
+    "minecraft:chests/village/village_temple"
+  ]
+}
