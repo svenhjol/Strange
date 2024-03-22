@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "common_metalworking_gather",
+      "list": "strange:common_metalworking_gather",
       "amount": "70-90"
     },
     {
-      "list": "uncommon_metalworking_gather",
+      "list": "strange:uncommon_metalworking_gather",
       "amount": "50-70"
     },
     {
@@ -24,27 +24,27 @@
       "amount": "7-10"
     },
     {
-      "list": "chainmail_armor_rewards",
+      "list": "strange:chainmail_armor_rewards",
       "amount": 2
     },
     {
-      "list": "iron_armor_rewards",
+      "list": "strange:iron_armor_rewards",
       "amount": 2
     },
     {
-      "list": "common_horse_rewards",
+      "list": "strange:common_horse_rewards",
       "amount": "2-3"
     },
     {
-      "list": "common_metalworking_rewards",
+      "list": "strange:common_metalworking_rewards",
       "amount": "4-5"
     },
     {
-      "list": "uncommon_horse_rewards",
+      "list": "strange:uncommon_horse_rewards",
       "amount": "1-2"
     },
     {
-      "list": "uncommon_metalworking_rewards",
+      "list": "strange:uncommon_metalworking_rewards",
       "amount": 1
     }
   ],

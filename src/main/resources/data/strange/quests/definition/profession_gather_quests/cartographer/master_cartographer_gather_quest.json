@@ -10,7 +10,7 @@
       "amount": "150-170"
     },
     {
-      "list": "uncommon_scholar_gather",
+      "list": "strange:uncommon_scholar_gather",
       "amount": "35-50"
     }
   ],
@@ -24,7 +24,7 @@
       "amount": 1
     },
     {
-      "list": "rare_scholar_rewards",
+      "list": "strange:rare_scholar_rewards",
       "amount": "1-2"
     }
   ],

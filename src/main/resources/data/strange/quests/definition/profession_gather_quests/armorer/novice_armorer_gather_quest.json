@@ -6,7 +6,7 @@
   ],
   "gather": [
     {
-      "list": "common_metalworking_gather",
+      "list": "strange:common_metalworking_gather",
       "amount": "20-24"
     }
   ],
@@ -16,19 +16,19 @@
       "amount": "1-3"
     },
     {
-      "list": "leather_armor_rewards",
+      "list": "strange:leather_armor_rewards",
       "amount": 1
     },
     {
-      "list": "iron_armor_rewards",
+      "list": "strange:iron_armor_rewards",
       "amount": 1
     },
     {
-      "list": "common_horse_rewards",
+      "list": "strange:common_horse_rewards",
       "amount": 1
     },
     {
-      "list": "common_metalworking_rewards",
+      "list": "strange:common_metalworking_rewards",
       "amount": 1
     }
   ],

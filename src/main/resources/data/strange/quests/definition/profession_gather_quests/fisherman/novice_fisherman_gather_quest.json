@@ -14,7 +14,7 @@
       "amount": "13-16"
     },
     {
-      "list": "common_fishing_gather",
+      "list": "strange:common_fishing_gather",
       "amount": "6-9"
     }
   ],
@@ -28,11 +28,11 @@
       "amount": 1
     },
     {
-      "list": "fishing_tool_rewards",
+      "list": "strange:fishing_tool_rewards",
       "amount": 1
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "3-5"
     }
   ],

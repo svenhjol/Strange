@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "common_fletching_gather",
+      "list": "strange:common_fletching_gather",
       "amount": "65-80"
     },
     {
-      "list": "uncommon_fletching_gather",
+      "list": "strange:uncommon_fletching_gather",
       "amount": "60-80"
     }
   ],
@@ -20,23 +20,23 @@
       "amount": "10-15"
     },
     {
-      "list": "projectile_weapon_rewards",
+      "list": "strange:projectile_weapon_rewards",
       "amount": 1
     },
     {
-      "list": "uncommon_crafted_rewards",
+      "list": "strange:uncommon_crafted_rewards",
       "amount": "9-12"
     },
     {
-      "list": "uncommon_projectile_rewards",
+      "list": "strange:uncommon_projectile_rewards",
       "amount": "42-50"
     },
     {
-      "list": "rare_crafted_rewards",
+      "list": "strange:rare_crafted_rewards",
       "amount": 1
     },
     {
-      "list": "rare_projectile_rewards",
+      "list": "strange:rare_projectile_rewards",
       "amount": "20-30"
     }
   ],

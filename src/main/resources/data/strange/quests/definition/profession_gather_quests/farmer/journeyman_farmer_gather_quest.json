@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "common_farming_gather",
+      "list": "strange:common_farming_gather",
       "amount": "50-65"
     },
     {
-      "list": "uncommon_farming_gather",
+      "list": "strange:uncommon_farming_gather",
       "amount": "10-12"
     }
   ],
@@ -28,11 +28,11 @@
       "amount": "5-10"
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "9-12"
     },
     {
-      "list": "uncommon_food_rewards",
+      "list": "strange:uncommon_food_rewards",
       "amount": "5-8"
     }
   ],

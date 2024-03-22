@@ -14,11 +14,11 @@
       "amount": "50-60"
     },
     {
-      "list": "common_leatherworking_gather",
+      "list": "strange:common_leatherworking_gather",
       "amount": "35-50"
     },
     {
-      "list": "uncommon_leatherworking_gather",
+      "list": "strange:uncommon_leatherworking_gather",
       "amount": "36-42"
     }
   ],
@@ -28,27 +28,27 @@
       "amount": "7-10"
     },
     {
-      "list": "chainmail_armor_rewards",
+      "list": "strange:chainmail_armor_rewards",
       "amount": 2
     },
     {
-      "list": "leather_armor_rewards",
+      "list": "strange:leather_armor_rewards",
       "amount": 2
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "9-12"
     },
     {
-      "list": "common_horse_rewards",
+      "list": "strange:common_horse_rewards",
       "amount": "2-3"
     },
     {
-      "list": "uncommon_food_rewards",
+      "list": "strange:uncommon_food_rewards",
       "amount": "5-8"
     },
     {
-      "list": "uncommon_horse_rewards",
+      "list": "strange:uncommon_horse_rewards",
       "amount": "1-2"
     }
   ],

@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "common_fishing_gather",
+      "list": "strange:common_fishing_gather",
       "amount": "35-50"
     },
     {
-      "list": "uncommon_fishing_gather",
+      "list": "strange:uncommon_fishing_gather",
       "amount": "15-20"
     }
   ],
@@ -24,19 +24,19 @@
       "amount": "10-13"
     },
     {
-      "list": "fishing_tool_rewards",
+      "list": "strange:fishing_tool_rewards",
       "amount": "1-2"
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "15-20"
     },
     {
-      "list": "uncommon_food_rewards",
+      "list": "strange:uncommon_food_rewards",
       "amount": "9-12"
     },
     {
-      "list": "rare_food_rewards",
+      "list": "strange:rare_food_rewards",
       "amount": "2-4"
     }
   ],

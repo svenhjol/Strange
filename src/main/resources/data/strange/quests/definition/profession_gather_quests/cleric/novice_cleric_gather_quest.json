@@ -6,7 +6,7 @@
   ],
   "gather": [
     {
-      "list": "common_brewing_gather",
+      "list": "strange:common_brewing_gather",
       "amount": "10-12"
     }
   ],
@@ -16,11 +16,11 @@
       "amount": "1-3"
     },
     {
-      "list": "common_scholar_rewards",
+      "list": "strange:common_scholar_rewards",
       "amount": "2-4"
     },
     {
-      "list": "common_brewing_rewards",
+      "list": "strange:common_brewing_rewards",
       "amount": "1-2"
     }
   ]

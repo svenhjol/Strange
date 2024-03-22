@@ -6,7 +6,7 @@
   ],
   "gather": [
     {
-      "list": "common_metalworking_gather",
+      "list": "strange:common_metalworking_gather",
       "amount": "20-24"
     }
   ],
@@ -16,15 +16,15 @@
       "amount": "1-3"
     },
     {
-      "list": "stone_weapon_rewards",
+      "list": "strange:stone_weapon_rewards",
       "amount": 2
     },
     {
-      "list": "iron_weapon_rewards",
+      "list": "strange:iron_weapon_rewards",
       "amount": 1
     },
     {
-      "list": "common_metalworking_rewards",
+      "list": "strange:common_metalworking_rewards",
       "amount": 1
     }
   ],

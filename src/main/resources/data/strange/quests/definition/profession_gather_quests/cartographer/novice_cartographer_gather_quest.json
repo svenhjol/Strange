@@ -6,7 +6,7 @@
   ],
   "gather": [
     {
-      "list": "common_scholar_gather",
+      "list": "strange:common_scholar_gather",
       "amount": "15-23"
     }
   ],
@@ -16,7 +16,7 @@
       "amount": "1-3"
     },
     {
-      "list": "common_scholar_rewards",
+      "list": "strange:common_scholar_rewards",
       "amount": "3-5"
     }
   ]

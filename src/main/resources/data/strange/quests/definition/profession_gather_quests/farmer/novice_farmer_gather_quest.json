@@ -6,7 +6,7 @@
   ],
   "gather": [
     {
-      "list": "common_farming_gather",
+      "list": "strange:common_farming_gather",
       "amount": "18-22"
     }
   ],
@@ -16,7 +16,7 @@
       "amount": "1-3"
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "3-5"
     }
   ]

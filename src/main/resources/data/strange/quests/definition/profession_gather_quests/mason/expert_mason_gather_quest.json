@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "common_stone_gather",
+      "list": "strange:common_stone_gather",
       "amount": "100-130"
     },
     {
-      "list": "uncommon_stone_gather",
+      "list": "strange:uncommon_stone_gather",
       "amount": "70-100"
     }
   ],
@@ -24,19 +24,19 @@
       "amount": 1
     },
     {
-      "list": "common_decorative_block_rewards",
+      "list": "strange:common_decorative_block_rewards",
       "amount": "30-50"
     },
     {
-      "list": "uncommon_crafted_rewards",
+      "list": "strange:uncommon_crafted_rewards",
       "amount": "9-12"
     },
     {
-      "list": "uncommon_decorative_block_rewards",
+      "list": "strange:uncommon_decorative_block_rewards",
       "amount": "30-50"
     },
     {
-      "list": "rare_crafted_items",
+      "list": "strange:rare_crafted_items",
       "amount": 1
     }
   ],

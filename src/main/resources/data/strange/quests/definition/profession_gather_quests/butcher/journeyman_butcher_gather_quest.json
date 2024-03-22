@@ -10,11 +10,11 @@
       "amount": "17-24"
     },
     {
-      "list": "common_food_gather",
+      "list": "strange:common_food_gather",
       "amount": "17-24"
     },
     {
-      "list": "uncommon_food_gather",
+      "list": "strange:uncommon_food_gather",
       "amount": "12-16"
     }
   ],
@@ -24,19 +24,19 @@
       "amount": "7-10"
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "9-12"
     },
     {
-      "list": "common_crafted_rewards",
+      "list": "strange:common_crafted_rewards",
       "amount": "5-8"
     },
     {
-      "list": "uncommon_crafted_rewards",
+      "list": "strange:uncommon_crafted_rewards",
       "amount": "5-8"
     },
     {
-      "list": "uncommon_food_rewards",
+      "list": "strange:uncommon_food_rewards",
       "amount": "5-8"
     }
   ]

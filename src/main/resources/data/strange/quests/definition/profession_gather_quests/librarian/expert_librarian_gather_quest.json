@@ -10,11 +10,11 @@
       "amount": "25-35"
     },
     {
-      "list": "uncommon_scholar_gather",
+      "list": "strange:uncommon_scholar_gather",
       "amount": "20-30"
     },
     {
-      "list": "uncommon_librarian_gather",
+      "list": "strange:uncommon_librarian_gather",
       "amount": "40-60"
     }
   ],
@@ -32,19 +32,19 @@
       "amount": 1
     },
     {
-      "list": "uncommon_crafted_rewards",
+      "list": "strange:uncommon_crafted_rewards",
       "amount": "9-12"
     },
     {
-      "list": "uncommon_scholar_rewards",
+      "list": "strange:uncommon_scholar_rewards",
       "amount": "3-5"
     },
     {
-      "list": "rare_crafted_rewards",
+      "list": "strange:rare_crafted_rewards",
       "amount": 1
     },
     {
-      "list": "rare_scholar_rewards",
+      "list": "strange:rare_scholar_rewards",
       "amount": 1
     }
   ],

@@ -10,11 +10,11 @@
       "amount": "65-75"
     },
     {
-      "list": "common_metalworking_gather",
+      "list": "strange:common_metalworking_gather",
       "amount": "70-90"
     },
     {
-      "list": "uncommon_metalworking_gather",
+      "list": "strange:uncommon_metalworking_gather",
       "amount": "50-70"
     }
   ],
@@ -24,19 +24,19 @@
       "amount": "7-10"
     },
     {
-      "list": "iron_weapon_rewards",
+      "list": "strange:iron_weapon_rewards",
       "amount": 2
     },
     {
-      "list": "projectile_weapon_rewards",
+      "list": "strange:projectile_weapon_rewards",
       "amount": 1
     },
     {
-      "list": "common_metalworking_rewards",
+      "list": "strange:common_metalworking_rewards",
       "amount": "4-5"
     },
     {
-      "list": "uncommon_metalworking_rewards",
+      "list": "strange:uncommon_metalworking_rewards",
       "amount": 1
     }
   ],

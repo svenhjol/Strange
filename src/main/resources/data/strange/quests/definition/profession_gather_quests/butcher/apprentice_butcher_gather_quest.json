@@ -14,7 +14,7 @@
       "amount": "11-14"
     },
     {
-      "list": "common_food_gather",
+      "list": "strange:common_food_gather",
       "amount": "11-14"
     }
   ],
@@ -24,11 +24,11 @@
       "amount": "4-7"
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "5-8"
     },
     {
-      "list": "common_crafted_rewards",
+      "list": "strange:common_crafted_rewards",
       "amount": "3-4"
     }
   ]

@@ -10,7 +10,7 @@
       "amount": "120-140"
     },
     {
-      "list": "rare_brewing_gather",
+      "list": "strange:rare_brewing_gather",
       "amount": "11-14"
     }
   ],
@@ -28,11 +28,11 @@
       "amount": 1
     },
     {
-      "list": "rare_scholar_rewards",
+      "list": "strange:rare_scholar_rewards",
       "amount": "1-2"
     },
     {
-      "list": "rare_brewing_rewards",
+      "list": "strange:rare_brewing_rewards",
       "amount": "1-2"
     }
   ],

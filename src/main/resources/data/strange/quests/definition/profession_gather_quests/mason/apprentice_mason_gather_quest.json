@@ -10,7 +10,7 @@
       "amount": "40-50"
     },
     {
-      "list": "common_stone_gather",
+      "list": "strange:common_stone_gather",
       "amount": "18-24"
     }
   ],
@@ -20,11 +20,11 @@
       "amount": "4-7"
     },
     {
-      "list": "common_crafted_rewards",
+      "list": "strange:common_crafted_rewards",
       "amount": "3-4"
     },
     {
-      "list": "common_decorative_block_rewards",
+      "list": "strange:common_decorative_block_rewards",
       "amount": "8-10"
     }
   ]

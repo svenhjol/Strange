@@ -10,7 +10,7 @@
       "amount": "60-80"
     },
     {
-      "list": "rare_brewing_gather",
+      "list": "strange:rare_brewing_gather",
       "amount": "6-8"
     }
   ],
@@ -28,19 +28,19 @@
       "amount": 1
     },
     {
-      "list": "uncommon_scholar_rewards",
+      "list": "strange:uncommon_scholar_rewards",
       "amount": "3-5"
     },
     {
-      "list": "uncommon_brewing_rewards",
+      "list": "strange:uncommon_brewing_rewards",
       "amount": "3-5"
     },
     {
-      "list": "rare_scholar_rewards",
+      "list": "strange:rare_scholar_rewards",
       "amount": 1
     },
     {
-      "list": "rare_brewing_rewards",
+      "list": "strange:rare_brewing_rewards",
       "amount": 1
     }
   ],

@@ -6,11 +6,11 @@
   ],
   "gather": [
     {
-      "list": "common_food_gather",
+      "list": "strange:common_food_gather",
       "amount": "40-55"
     },
     {
-      "list": "uncommon_food_gather",
+      "list": "strange:uncommon_food_gather",
       "amount": "36-50"
     }
   ],
@@ -20,31 +20,31 @@
       "amount": "15-32"
     },
     {
-      "list": "common_food_rewards",
+      "list": "strange:common_food_rewards",
       "amount": "20-25"
     },
     {
-      "list": "common_wool_rewards",
+      "list": "strange:common_wool_rewards",
       "amount": "30-36"
     },
     {
-      "list": "uncommon_crafted_rewards",
+      "list": "strange:uncommon_crafted_rewards",
       "amount": "13-15"
     },
     {
-      "list": "uncommon_food_rewards",
+      "list": "strange:uncommon_food_rewards",
       "amount": "15-20"
     },
     {
-      "list": "uncommon_wool_rewards",
+      "list": "strange:uncommon_wool_rewards",
       "amount": "6-8"
     },
     {
-      "list": "rare_crafted_rewards",
+      "list": "strange:rare_crafted_rewards",
       "amount": "1-2"
     },
     {
-      "list": "rare_food_rewards",
+      "list": "strange:rare_food_rewards",
       "amount": "5-8"
     }
   ]

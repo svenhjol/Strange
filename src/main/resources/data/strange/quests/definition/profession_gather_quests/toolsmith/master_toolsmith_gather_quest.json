@@ -6,7 +6,7 @@
   ],
   "gather": [
     {
-      "list": "uncommon_metalworking_gather",
+      "list": "strange:uncommon_metalworking_gather",
       "amount": "200-220"
     }
   ],
@@ -16,7 +16,7 @@
       "amount": "15-23"
     },
     {
-      "list": "rare_metalworking_rewards",
+      "list": "strange:rare_metalworking_rewards",
       "amount": "1-2"
     }
   ],

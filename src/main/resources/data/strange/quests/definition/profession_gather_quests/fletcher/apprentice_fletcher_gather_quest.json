@@ -10,7 +10,7 @@
       "amount": "30-40"
     },
     {
-      "list": "common_fletching_gather",
+      "list": "strange:common_fletching_gather",
       "amount": "14-20"
     }
   ],
@@ -20,19 +20,19 @@
       "amount": "4-7"
     },
     {
-      "list": "projectile_weapon_rewards",
+      "list": "strange:projectile_weapon_rewards",
       "amount": 1
     },
     {
-      "list": "general_tool_rewards",
+      "list": "strange:general_tool_rewards",
       "amount": 2
     },
     {
-      "list": "common_crafted_rewards",
+      "list": "strange:common_crafted_rewards",
       "amount": "3-4"
     },
     {
-      "list": "common_projectile_rewards",
+      "list": "strange:common_projectile_rewards",
       "amount": "17-22"
     }
   ],
