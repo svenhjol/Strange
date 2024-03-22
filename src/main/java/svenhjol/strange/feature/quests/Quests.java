@@ -198,7 +198,7 @@ public class Quests extends CommonFeature {
         DEFINITIONS.clear();
 
         var manager = server.getResourceManager();
-        var resources = manager.listResources("quests/definition/", file -> file.getPath().endsWith(".json"));
+        var resources = manager.listResources("quests/definition", file -> file.getPath().endsWith(".json"));
 
         for (var entry : resources.entrySet()) {
             var id = entry.getKey();
