@@ -1,0 +1,38 @@
+{
+  "type": "gather",
+  "level": 5,
+  "professions": [
+    "weaponsmith"
+  ],
+  "gather": [
+    {
+      "list": "uncommon_metalworking_gather",
+      "amount": "200-220"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "15-23"
+    },
+    {
+      "list": "diamond_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "projectile_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "rare_metalworking_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 31
+    }
+  ]
+}

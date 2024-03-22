@@ -1,0 +1,39 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "shepherd"
+  ],
+  "gather": [
+    {
+      "list": "common_food_gather",
+      "amount": "11-14"
+    },
+    {
+      "list": "common_shepherd_gather",
+      "amount": "20-25"
+    },
+    {
+      "list": "uncommon_shepherd_gather",
+      "amount": "14-18"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "common_crafted_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "common_food_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "common_wool_rewards",
+      "amount": "8-10"
+    }
+  ]
+}

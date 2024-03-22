@@ -1,0 +1,50 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "weaponsmith"
+  ],
+  "gather": [
+    {
+      "item": "flint",
+      "amount": "110-130"
+    },
+    {
+      "list": "common_metalworking_gather",
+      "amount": "120-140"
+    },
+    {
+      "list": "uncommon_metalworking_gather",
+      "amount": "100-120"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "diamond_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "uncommon_metalworking_rewards",
+      "amount": 1
+    },
+    {
+      "list": "rare_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 22
+    }
+  ]
+}
