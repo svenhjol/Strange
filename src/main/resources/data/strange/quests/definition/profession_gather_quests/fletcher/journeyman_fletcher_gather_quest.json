@@ -1,0 +1,50 @@
+{
+  "type": "fletcher",
+  "level": 3,
+  "professions": [
+    "fletcher"
+  ],
+  "gather": [
+    {
+      "list": "common_fletching_gather",
+      "amount": "35-50"
+    },
+    {
+      "list": "uncommon_fletching_gather",
+      "amount": "40-50"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "projectile_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "common_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "common_projectile_rewards",
+      "amount": "30-35"
+    },
+    {
+      "list": "uncommon_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "uncommon_projectile_rewards",
+      "amount": "30-35"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 15
+    }
+  ]
+}

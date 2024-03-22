@@ -1,0 +1,45 @@
+{
+  "type": "gather",
+  "level": 2,
+  "professions": [
+    "leatherworker"
+  ],
+  "gather": [
+    {
+      "list": "common_leatherworking_gather",
+      "amount": "14-20"
+    },
+    {
+      "list": "uncommon_leatherworking_gather",
+      "amount": "14-18"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "chainmail_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "leather_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "common_food_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "common_horse_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
+    }
+  ]
+}

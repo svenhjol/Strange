@@ -1,0 +1,57 @@
+{
+  "type": "gather",
+  "level": 4,
+  "professions": [
+    "leatherworker"
+  ],
+  "gather": [
+    {
+      "item": "coal",
+      "amount": "75-90"
+    },
+    {
+      "list": "uncommon_leatherworking_gather",
+      "amount": "60-72"
+    },
+    {
+      "list": "rare_leatherworking_gather",
+      "amount": "3-5"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "chainmail_armor_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "leather_armor_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "common_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "uncommon_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "uncommon_horse_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "rare_horse_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}
