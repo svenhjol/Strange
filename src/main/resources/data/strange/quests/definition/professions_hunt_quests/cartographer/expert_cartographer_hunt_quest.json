@@ -1,0 +1,73 @@
+{
+  "type": "hunt",
+  "level": 4,
+  "professions": [
+    "cartographer"
+  ],
+  "hunt": [
+    {
+      "mob": "husk",
+      "amount": "20-24"
+    },
+    {
+      "mob": "stray",
+      "amount": "20-24"
+    },
+    {
+      "mob": "guardian",
+      "amount": "12-15"
+    },
+    {
+      "mob": "evoker",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:uncommon_hostile_mob_hunt",
+      "amount": "18-20"
+    },
+    {
+      "list": "strange:rare_hostile_mob_hunt",
+      "amount": "5-7"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:rare_scholar_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.mansion",
+      "structure": "minecraft:mansion"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.monument",
+      "structure": "minecraft:monument"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.swamp_hut",
+      "structure": "minecraft:swamp_hut"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.igloo",
+      "structure": "minecraft:igloo"
+    }
+  ]
+}
