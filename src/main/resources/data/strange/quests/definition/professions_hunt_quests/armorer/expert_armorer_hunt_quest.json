@@ -1,0 +1,69 @@
+{
+  "type": "hunt",
+  "level": 4,
+  "professions": [
+    "armorer"
+  ],
+  "hunt": [
+    {
+      "mob": "vindicator",
+      "amount": "10-12"
+    },
+    {
+      "mob": "ravager",
+      "amount": "3-4"
+    },
+    {
+      "mob": "guardian",
+      "amount": "12-15"
+    },
+    {
+      "mob": "piglin_brute",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:uncommon_hostile_mob_hunt",
+      "amount": "18-20"
+    },
+    {
+      "list": "strange:rare_hostile_mob_hunt",
+      "amount": "5-7"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_horse_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_horse_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

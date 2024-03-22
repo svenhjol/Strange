@@ -1,0 +1,41 @@
+{
+  "type": "hunt",
+  "level": 1,
+  "professions": [
+    "armorer"
+  ],
+  "hunt": [
+    {
+      "list": "strange:common_hostile_mob_hunt",
+      "amount": "4-5"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "1-3"
+    },
+    {
+      "list": "strange:leather_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_horse_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.5
+    }
+  ]
+}
