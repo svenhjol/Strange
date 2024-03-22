@@ -1,0 +1,46 @@
+{
+  "type": "gather",
+  "level": 3,
+  "professions": [
+    "farmer"
+  ],
+  "gather": [
+    {
+      "list": "common_farming_gather",
+      "amount": "50-65"
+    },
+    {
+      "list": "uncommon_farming_gather",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "item": "cookie",
+      "amount": "18-22"
+    },
+    {
+      "item": "suspicious_stew",
+      "amount": "5-10"
+    },
+    {
+      "list": "common_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "uncommon_food_rewards",
+      "amount": "5-8"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_suspicious_stew",
+      "duration": 15,
+      "effects": "speed,jump_boost,luck"
+    }
+  ]
+}
