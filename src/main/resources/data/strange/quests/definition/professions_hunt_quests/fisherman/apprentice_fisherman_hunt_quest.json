@@ -1,0 +1,41 @@
+{
+  "type": "hunt",
+  "level": 2,
+  "professions": [
+    "fisherman"
+  ],
+  "hunt": [
+    {
+      "mob": "pillager",
+      "amount": "4-5"
+    },
+    {
+      "list": "strange:common_hostile_mob_hunt",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "cod_bucket",
+      "amount": 2
+    },
+    {
+      "list": "strange:fishing_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "5-8"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
+    }
+  ]
+}

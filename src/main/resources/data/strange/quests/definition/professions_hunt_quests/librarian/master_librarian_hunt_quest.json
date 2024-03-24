@@ -1,0 +1,80 @@
+{
+  "type": "hunt",
+  "level": 5,
+  "professions": [
+    "librarian"
+  ],
+  "hunt": [
+    {
+      "mob": "evoker",
+      "amount": "3-5"
+    },
+    {
+      "list": "strange:rare_ambient_mob_hunt",
+      "amount": "12-15"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "15-23"
+    },
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "13-15"
+    },
+    {
+      "list": "strange:rare_crafted_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:rare_scholar_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.ancient_city",
+      "structure": "minecraft:ancient_city"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.trail_ruins",
+      "structure": "minecraft:trail_ruins"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_plains",
+      "structure": "minecraft:village_plains"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_desert",
+      "structure": "minecraft:village_desert"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_savanna",
+      "structure": "minecraft:village_savanna"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_snowy",
+      "structure": "minecraft:village_snowy"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.village_taiga",
+      "structure": "minecraft:village_taiga"
+    }
+  ]
+}
