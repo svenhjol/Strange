@@ -1,0 +1,51 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "shepherd"
+  ],
+  "hunt": [
+    {
+      "mob": "cave_spider",
+      "amount": "10-12"
+    },
+    {
+      "mob": "sheep",
+      "amount": "30-40"
+    },
+    {
+      "list": "strange:uncommon_ambient_mob_hunt",
+      "amount": "12-14"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:common_wool_rewards",
+      "amount": "12-18"
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:uncommon_wool_rewards",
+      "amount": "1-2"
+    }
+  ]
+}

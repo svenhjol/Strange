@@ -1,0 +1,58 @@
+{
+  "type": "hunt",
+  "level": 3,
+  "professions": [
+    "weaponsmith"
+  ],
+  "hunt": [
+    {
+      "mob": "vindicator",
+      "amount": "4-5"
+    },
+    {
+      "mob": "wither_skeleton",
+      "amount": "2-3"
+    },
+    {
+      "mob": "evoker",
+      "amount": 1
+    },
+    {
+      "mob": "blaze",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:uncommon_hostile_mob_hunt",
+      "amount": "10-12"
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:projectile_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_metalworking_rewards",
+      "amount": "4-5"
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 15
+    }
+  ]
+}
