@@ -1,0 +1,88 @@
+{
+  "type": "treasure",
+  "level": 2,
+  "loyalty": 2,
+  "professions": [
+    "armorer",
+    "toolsmith",
+    "weaponsmith"
+  ],
+  "treasure": [
+    {
+      "list": "strange:mineshaft_loot_tables",
+      "amount": 2,
+      "chance": 1.0
+    },
+    {
+      "list": "strange:pillager_outpost_loot_tables",
+      "amount": 2,
+      "chance": 1.0
+    },
+    {
+      "list": "strange:shipwreck_loot_tables",
+      "amount": 3,
+      "chance": 1.0
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:general_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:projectile_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:stone_tool_rewards",
+      "amount": 3
+    },
+    {
+      "list": "strange:stone_weapon_rewards",
+      "amount": 3
+    },
+    {
+      "list": "strange:iron_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:leather_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:chainmail_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:common_horse_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_metalworking_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.75
+    }
+  ],
+  "reward_experience": 8
+}

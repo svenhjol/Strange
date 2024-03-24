@@ -1,0 +1,52 @@
+{
+  "type": "treasure",
+  "level": 2,
+  "loyalty": 2,
+  "professions": [
+    "cartographer",
+    "cleric",
+    "librarian"
+  ],
+  "treasure": [
+    {
+      "list": "strange:village_house_loot_tables",
+      "amount": 5,
+      "chance": 0.9
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    },
+    {
+      "item": "potion",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "6-9"
+    },
+    {
+      "list": "strange:common_brewing_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:uncommon_brewing_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_experience": 8
+}

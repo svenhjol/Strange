@@ -1,0 +1,79 @@
+{
+  "type": "treasure",
+  "epic": true,
+  "level": 4,
+  "loyalty": 5,
+  "treasure": [
+    {
+      "list": "strange:desert_pyramid_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.1
+    },
+    {
+      "list": "strange:desert_well_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.75
+    },
+    {
+      "list": "strange:ocean_ruin_archaeology_loot_tables",
+      "amount": 3,
+      "chance": 0.25
+    },
+    {
+      "list": "strange:trail_ruins_archaeology_loot_tables",
+      "amount": 3,
+      "chance": 0.5
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "strange:iron_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:diamond_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "13-15"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "strange:rare_scholar_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:rare_brewing_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:rare_crafted_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 22,
+      "allow_treasure": true
+    }
+  ],
+  "reward_experience": 24
+}

@@ -1,0 +1,48 @@
+{
+  "type": "treasure",
+  "level": 2,
+  "loyalty": 2,
+  "professions": [
+    "cartographer",
+    "mason",
+    "shepherd"
+  ],
+  "treasure": [
+    {
+      "list": "strange:ocean_ruin_loot_tables",
+      "amount": 3,
+      "chance": 0.8
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "6-9"
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "strange:common_decorative_block_rewards",
+      "amount": "8-10"
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:common_wool_rewards",
+      "amount": "8-10"
+    }
+  ],
+  "reward_experience": 8
+}

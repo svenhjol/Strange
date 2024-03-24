@@ -1,0 +1,74 @@
+{
+  "type": "treasure",
+  "epic": true,
+  "level": 4,
+  "loyalty": 5,
+  "treasure": [
+    {
+      "list": "strange:ancient_city_loot_tables",
+      "amount": 3,
+      "chance": 0.5
+    },
+    {
+      "list": "strange:bastion_loot_tables",
+      "amount": 3,
+      "chance": 0.5
+    },
+    {
+      "list": "strange:end_city_loot_tables",
+      "amount": 3,
+      "chance": 0.5
+    }
+  ],
+  "reward_items": [
+    {
+      "list": "strange:iron_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:diamond_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "13-15"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "strange:rare_scholar_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:rare_brewing_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:rare_crafted_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 22,
+      "allow_treasure": true
+    }
+  ],
+  "reward_experience": 24
+}

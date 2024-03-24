@@ -1,0 +1,71 @@
+{
+  "type": "treasure",
+  "level": 4,
+  "loyalty": 2,
+  "professions": [
+    "armorer",
+    "toolsmith",
+    "weaponsmith"
+  ],
+  "treasure": [
+    {
+      "list": "strange:nether_fortress_loot_tables",
+      "amount": 2,
+      "chance": 0.2
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "strange:iron_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_horse_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_horse_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 22
+    }
+  ],
+  "reward_experience": 20
+}

@@ -1,0 +1,74 @@
+{
+  "type": "treasure",
+  "level": 3,
+  "loyalty": 2,
+  "professions": [
+    "cartographer",
+    "mason",
+    "shepherd"
+  ],
+  "treasure": [
+    {
+      "list": "strange:ocean_ruin_loot_tables",
+      "amount": 3,
+      "chance": 0.33
+    },
+    {
+      "list": "strange:desert_pyramid_loot_tables",
+      "amount": 2,
+      "chance": 0.75
+    },
+    {
+      "list": "strange:jungle_temple_loot_tables",
+      "amount": 2,
+      "chance": 0.8
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "10-14"
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:common_decorative_block_rewards",
+      "amount": "15-30"
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:common_wool_rewards",
+      "amount": "12-18"
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:uncommon_decorative_block_rewards",
+      "amount": "15-30"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:uncommon_wool_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_experience": 14
+}
