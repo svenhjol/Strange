@@ -86,7 +86,7 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
                 Math.min(localMax, mobs.size()),
                 definition.level() + random().nextInt(2));
 
-            if (weight < 0) {
+            if (weight <= 0) {
                 sublist.addAll(mobs.subset(max, random()));
             } else {
                 sublist.addAll(mobs.subset(max, weight, 0.1d, random()));

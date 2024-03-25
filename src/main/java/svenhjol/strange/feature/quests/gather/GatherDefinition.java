@@ -83,7 +83,7 @@ public class GatherDefinition extends BaseDefinition<GatherDefinition> {
                 Math.min(localMax, items.size()),
                 definition.level() + random().nextInt(2));
 
-            if (weight < 0) {
+            if (weight <= 0) {
                 sublist.addAll(items.subset(max, random()));
             } else {
                 sublist.addAll(items.subset(max, weight, 0.1d, random()));
