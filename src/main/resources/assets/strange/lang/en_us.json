@@ -100,7 +100,7 @@
   "gui.strange.quests.remaining": "%s/%s",
   "gui.strange.quests.return_to_any_profession": "Rewards are available from any villager.",
   "gui.strange.quests.return_to_profession": "Rewards are available from any %s villager.",
-  "gui.strange.quests.return_to_professions": "Rewards are available from any of these villager: %s",
+  "gui.strange.quests.return_to_professions": "Rewards are available from any of these villagers: %s",
   "gui.strange.quests.reward_levels": "Experience levels: %s",
   "gui.strange.quests.satisfied": "All requirements met!",
   "gui.strange.quests.too_many_quests": "You are trying to do too many quests at once!",

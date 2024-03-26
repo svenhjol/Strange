@@ -146,7 +146,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         Component professionInfo;
         var professions = quest.villagerProfessions();
 
-        if (professions.contains(VillagerProfession.NONE)) {
+        if (professions.isEmpty() || professions.contains(VillagerProfession.NONE)) {
             // Any villager provides rewards.
             professionInfo = Component.translatable(QuestsResources.RETURN_TO_ANY_PROFESSION_KEY);
         } else if (professions.size() == 1) {
