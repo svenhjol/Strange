@@ -1,6 +1,7 @@
 {
   "type": "treasure",
   "level": 4,
+  "loyalty": 1,
   "treasure": [
     {
       "list": "strange:desert_pyramid_loot_tables",

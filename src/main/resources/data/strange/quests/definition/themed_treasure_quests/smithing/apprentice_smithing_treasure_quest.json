@@ -1,6 +1,7 @@
 {
   "type": "treasure",
   "level": 2,
+  "loyalty": 1,
   "treasure": [
     {
       "list": "strange:mineshaft_loot_tables",

@@ -1,6 +1,7 @@
 {
   "type": "treasure",
   "level": 5,
+  "loyalty": 1,
   "treasure": [
     {
       "list": "strange:woodland_mansion_loot_tables",

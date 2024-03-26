@@ -1,6 +1,7 @@
 {
   "type": "treasure",
   "level": 3,
+  "loyalty": 1,
   "treasure": [
     {
       "list": "strange:ocean_ruin_loot_tables",

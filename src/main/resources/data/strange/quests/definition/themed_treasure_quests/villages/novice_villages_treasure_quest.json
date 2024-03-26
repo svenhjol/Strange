@@ -1,6 +1,7 @@
 {
   "type": "treasure",
   "level": 1,
+  "loyalty": 1,
   "treasure": [
     {
       "list": "strange:fishing_loot_tables",

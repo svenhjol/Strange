@@ -1,6 +1,7 @@
 {
   "type": "treasure",
   "level": 4,
+  "loyalty": 1,
   "treasure": [
     {
       "list": "strange:nether_fortress_loot_tables",
