@@ -28,7 +28,7 @@ public class DefaultRewards {
             .map(RewardItemFunctionDefinition::function).collect(Collectors.toCollection(ArrayList::new));
 
         // Some functions are always present. Create defaults if not defined.
-        var defaultFunctions = List.of("enchant_book", "enchant_item", "make_suspicious_stew", "make_tipped_arrow");
+        var defaultFunctions = List.of("enchant_book", "enchant_item", "make_potion", "make_suspicious_stew", "make_tipped_arrow");
         var emptyFunctionDefinition = new RewardItemFunctionDefinition(definition);
         var emptyFunctionParameters = new RewardItemFunctionParameters(emptyFunctionDefinition);
 

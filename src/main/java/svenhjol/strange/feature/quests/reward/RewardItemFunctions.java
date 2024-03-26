@@ -34,6 +34,7 @@ public class RewardItemFunctions {
     void populate() {
         functionClasses.add(EnchantBook.class);
         functionClasses.add(EnchantItem.class);
+        functionClasses.add(MakePotion.class);
         functionClasses.add(MakeStructureMap.class);
         functionClasses.add(MakeSuspiciousStew.class);
         functionClasses.add(MakeTippedArrow.class);
