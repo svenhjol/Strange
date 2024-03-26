@@ -268,7 +268,7 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
         var font = screen.font;
 
         if (quest.satisfied()) {
-            guiGraphics.blitSprite(QuestsResources.TICK, x + 2, y + 3, 9, 9);
+            guiGraphics.blitSprite(QuestsResources.TICK, x + 3, y + 3, 9, 9);
             if (mouseX >= x + 2 && mouseX <= x + 11
                 && mouseY >= y + 3 && mouseY <= y + 12) {
                 guiGraphics.renderTooltip(font, TextHelper.translatable(QuestsResources.SATISFIED_KEY), x, y + 20);

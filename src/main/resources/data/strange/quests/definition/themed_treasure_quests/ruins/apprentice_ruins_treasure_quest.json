@@ -1,12 +1,6 @@
 {
   "type": "treasure",
   "level": 2,
-  "loyalty": 2,
-  "professions": [
-    "cartographer",
-    "mason",
-    "shepherd"
-  ],
   "treasure": [
     {
       "list": "strange:ocean_ruin_loot_tables",

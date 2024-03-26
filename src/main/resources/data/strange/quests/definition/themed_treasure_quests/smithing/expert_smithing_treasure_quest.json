@@ -1,12 +1,6 @@
 {
   "type": "treasure",
   "level": 4,
-  "loyalty": 2,
-  "professions": [
-    "armorer",
-    "toolsmith",
-    "weaponsmith"
-  ],
   "treasure": [
     {
       "list": "strange:nether_fortress_loot_tables",
@@ -41,14 +35,6 @@
     },
     {
       "list": "strange:diamond_armor_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:uncommon_horse_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:uncommon_metalworking_rewards",
       "amount": 1
     },
     {

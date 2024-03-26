@@ -1,12 +1,6 @@
 {
   "type": "treasure",
   "level": 2,
-  "loyalty": 2,
-  "professions": [
-    "butcher",
-    "farmer",
-    "fisherman"
-  ],
   "treasure": [
     {
       "list": "strange:village_profession_loot_tables",

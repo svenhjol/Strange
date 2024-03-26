@@ -1,0 +1,35 @@
+{
+  "type": "treasure",
+  "level": 4,
+  "treasure": [
+    {
+      "list": "strange:desert_pyramid_loot_tables",
+      "amount": 2,
+      "chance": 0.2
+    },
+    {
+      "list": "strange:jungle_temple_loot_tables",
+      "amount": 2,
+      "chance": 0.25
+    }
+  ],
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "10-15"
+    },
+    {
+      "list": "strange:rare_scholar_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_crafted_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_food_rewards",
+      "amount": "2-4"
+    }
+  ],
+  "reward_experience": 20
+}

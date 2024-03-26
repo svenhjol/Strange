@@ -1,12 +1,6 @@
 {
   "type": "treasure",
   "level": 1,
-  "loyalty": 2,
-  "professions": [
-    "butcher",
-    "farmer",
-    "fisherman"
-  ],
   "treasure": [
     {
       "list": "strange:fishing_loot_tables",

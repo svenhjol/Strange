@@ -1,12 +1,6 @@
 {
   "type": "treasure",
   "level": 3,
-  "loyalty": 2,
-  "professions": [
-    "armorer",
-    "toolsmith",
-    "weaponsmith"
-  ],
   "treasure": [
     {
       "list": "strange:mineshaft_loot_tables",
@@ -53,14 +47,6 @@
     {
       "list": "strange:iron_armor_rewards",
       "amount": 2
-    },
-    {
-      "list": "strange:common_horse_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:common_metalworking_rewards",
-      "amount": "4-5"
     },
     {
       "list": "strange:uncommon_horse_rewards",

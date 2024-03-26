@@ -1,21 +1,15 @@
 {
   "type": "treasure",
   "level": 5,
-  "loyalty": 2,
-  "professions": [
-    "cartographer",
-    "cleric",
-    "librarian"
-  ],
   "treasure": [
     {
       "list": "strange:woodland_mansion_loot_tables",
       "amount": 2,
-      "chance": 0.2
+      "chance": 0.25
     },
     {
       "list": "strange:stronghold_loot_tables",
-      "amount": 1,
+      "amount": 2,
       "chance": 0.25
     }
   ],
@@ -33,10 +27,6 @@
       "amount": 1
     },
     {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "13-15"
-    },
-    {
       "list": "strange:rare_crafted_rewards",
       "amount": "1-2"
     },
@@ -49,5 +39,5 @@
       "amount": "1-2"
     }
   ],
-  "reward_experience": 20
+  "reward_experience": 30
 }

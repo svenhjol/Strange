@@ -1,12 +1,6 @@
 {
   "type": "treasure",
   "level": 3,
-  "loyalty": 2,
-  "professions": [
-    "cartographer",
-    "cleric",
-    "librarian"
-  ],
   "treasure": [
     {
       "list": "strange:igloo_loot_tables",
@@ -22,18 +16,6 @@
     {
       "item": "potion",
       "amount": "1-2"
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:common_scholar_rewards",
-      "amount": "10-14"
-    },
-    {
-      "list": "strange:common_brewing_rewards",
-      "amount": "7-10"
     },
     {
       "list": "strange:uncommon_crafted_rewards",

@@ -18,7 +18,7 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
 
     @Override
     public int getPagedActiveHeight() {
-        return super.getPagedActiveHeight();
+        return super.getPagedActiveHeight() + 10;
     }
 
     @Override
@@ -45,25 +45,46 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
 
         for (int i = 0; i < Math.min(3, quest.lootTables().size()); i++) {
             var lootTable = quest.lootTables().get(i);
-
             var sprite = QuestsResources.LOOT_SPRITES.get(lootTable);
-            if (sprite != null) {
-                guiGraphics.blitSprite(sprite, xo, yo, 16, 16);
-            } else {
-                guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo);
-            }
 
-            if (mouseX >= xo && mouseX <= xo + 16
-                && mouseY >= yo && mouseY <= yo + 16) {
-                var component = Component.translatableWithFallback("loot_table." + lootTable.getNamespace() + "." + lootTable.getPath().replace("/", "."),
-                    niceLootTableName(lootTable));
-                guiGraphics.renderTooltip(font, component, xo, yo + 27);
-            }
+            switch (screenType) {
+                case PAGED_ACTIVE, SELECTED_ACTIVE:
+                    guiGraphics.fill(xo, yo - 2, xo + 20, yo + 30, requirementBackgroundColor);
 
-            xo += 17;
+                    if (sprite != null) {
+                        guiGraphics.blitSprite(sprite, xo + 2, yo + 6, 16, 16);
+                    } else {
+                        guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo + 6);
+                    }
+
+                    if (mouseX >= xo && mouseX <= xo + 16
+                        && mouseY >= yo + 6 && mouseY <= yo + 28) {
+                        var component = Component.translatableWithFallback("loot_table." + lootTable.getNamespace() + "." + lootTable.getPath().replace("/", "."),
+                            niceLootTableName(lootTable));
+                        guiGraphics.renderTooltip(font, component, xo, yo + 27);
+                    }
+
+                    xo += 22;
+                    break;
+
+                case PAGED_OFFER:
+                    if (sprite != null) {
+                        guiGraphics.blitSprite(sprite, xo, yo, 16, 16);
+                    } else {
+                        guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo);
+                    }
+
+                    if (mouseX >= xo && mouseX <= xo + 16
+                        && mouseY >= yo && mouseY <= yo + 16) {
+                        var component = Component.translatableWithFallback("loot_table." + lootTable.getNamespace() + "." + lootTable.getPath().replace("/", "."),
+                            niceLootTableName(lootTable));
+                        guiGraphics.renderTooltip(font, component, xo, yo + 27);
+                    }
+
+                    xo += 18;
+                    break;
+            }
         }
-
-        xo += 2;
 
         for (var requirement : quest.requirements()) {
             if (requirement instanceof TreasureItem i) {
@@ -74,22 +95,44 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
                     label = TextHelper.translatable("gui.strange.quests.amount", i.total());
                 }
 
-                guiGraphics.drawString(font, label, xo + 4, yo + 4, i.satisfied() ? satisfiedColor : requirementColor, false);
-                var width = font.width(label);
+                int width;
 
-                guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, i.satisfied() ? satisfiedBackgroundColor : requirementBackgroundColor);
-                guiGraphics.renderFakeItem(i.item, xo + 7 + width, yo);
+                switch (screenType) {
+                    case PAGED_ACTIVE, SELECTED_ACTIVE:
+                        guiGraphics.drawString(font, label, xo + 4, yo + 20, i.satisfied() ? satisfiedColor : requirementColor, false);
+                        width = font.width(label);
 
-                if (mouseX >= xo && mouseX <= xo + 25 + width
-                    && mouseY >= yo - 1 && mouseY <= yo + 17) {
-                    guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
+                        guiGraphics.fill(xo, yo - 2, xo + width + 6, yo + 30, i.satisfied() ? satisfiedBackgroundColor : requirementBackgroundColor);
+                        guiGraphics.renderFakeItem(i.item, xo + (width / 2) - 5, yo);
+
+                        if (mouseX >= xo + (width / 2) - 5 && mouseX <= xo + (width / 2) + 10
+                            && mouseY >= yo && mouseY <= yo + 16) {
+                            guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
+                        }
+
+                        xo += 8 + width;
+                        break;
+
+                    case PAGED_OFFER:
+                        guiGraphics.drawString(font, label, xo + 4, yo + 4, i.satisfied() ? satisfiedColor : requirementColor, false);
+                        width = font.width(label);
+
+                        guiGraphics.fill(xo, yo - 1, xo + 25 + width, yo + 17, i.satisfied() ? satisfiedBackgroundColor : requirementBackgroundColor);
+                        guiGraphics.renderFakeItem(i.item, xo + 7 + width, yo);
+
+                        if (mouseX >= xo && mouseX <= xo + 25 + width
+                            && mouseY >= yo - 1 && mouseY <= yo + 17) {
+                            guiGraphics.renderTooltip(font, i.item, xo, yo + 27);
+                        }
+
+                        xo += 27 + width;
+                        break;
                 }
 
-                xo += 27 + width;
             }
         }
 
-        renderSatisfied(guiGraphics, xo, yo, mouseX, mouseY);
+        renderSatisfied(guiGraphics, xo, yo + 5, mouseX, mouseY);
     }
 
     protected String niceLootTableName(ResourceLocation id) {
