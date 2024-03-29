@@ -1,0 +1,16 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "cleric"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "2-4"
+    },
+    {
+      "list": "strange:common_brewing_rewards",
+      "amount": "1-2"
+    }
+  ]
+}

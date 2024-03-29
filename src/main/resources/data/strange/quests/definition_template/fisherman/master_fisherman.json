@@ -1,0 +1,39 @@
+{
+  "template": "strange:master",
+  "professions": [
+    "fisherman"
+  ],
+  "reward_items": [
+    {
+      "item": "suspicious_stew",
+      "amount": "10-13"
+    },
+    {
+      "list": "strange:fishing_tool_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "20-25"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "strange:rare_food_rewards",
+      "amount": "5-8"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    },
+    {
+      "name": "make_suspicious_stew",
+      "duration": 60,
+      "effects": "health_boost,water_breathing,invisibility"
+    }
+  ]
+}

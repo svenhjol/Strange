@@ -1,9 +1,6 @@
 {
+  "template": "strange:leatherworker/apprentice_leatherworker",
   "type": "gather",
-  "level": 2,
-  "professions": [
-    "leatherworker"
-  ],
   "gather": [
     {
       "list": "strange:common_leatherworking_gather",
@@ -12,34 +9,6 @@
     {
       "list": "strange:uncommon_leatherworking_gather",
       "amount": "14-18"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
-    {
-      "list": "strange:chainmail_armor_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:leather_armor_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:common_horse_rewards",
-      "amount": "1-2"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 0.75
     }
   ]
 }

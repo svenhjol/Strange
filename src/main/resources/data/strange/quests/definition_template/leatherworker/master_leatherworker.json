@@ -1,0 +1,34 @@
+{
+  "template": "strange:master",
+  "professions": [
+    "leatherworker"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:chainmail_armor_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "strange:leather_armor_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "20-25"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "strange:rare_horse_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

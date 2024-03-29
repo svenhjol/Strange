@@ -1,0 +1,24 @@
+{
+  "template": "strange:journeyman",
+  "professions": [
+    "mason"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:common_decorative_block_rewards",
+      "amount": "15-30"
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:uncommon_decorative_block_rewards",
+      "amount": "15-30"
+    }
+  ]
+}

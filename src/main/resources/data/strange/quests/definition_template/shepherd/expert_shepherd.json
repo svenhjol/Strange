@@ -1,0 +1,36 @@
+{
+  "template": "strange:expert",
+  "professions": [
+    "shepherd"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "strange:common_wool_rewards",
+      "amount": "20-26"
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:uncommon_wool_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "strange:rare_crafted_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_food_rewards",
+      "amount": "2-4"
+    }
+  ]
+}

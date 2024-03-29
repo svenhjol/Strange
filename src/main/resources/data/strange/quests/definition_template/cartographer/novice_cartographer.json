@@ -1,0 +1,12 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "cartographer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "3-5"
+    }
+  ]
+}

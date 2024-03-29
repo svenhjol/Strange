@@ -1,9 +1,6 @@
 {
+  "template": "strange:librarian/journeyman_librarian",
   "type": "gather",
-  "level": 3,
-  "professions": [
-    "librarian"
-  ],
   "gather": [
     {
       "list": "strange:common_scholar_gather",
@@ -12,73 +9,6 @@
     {
       "list": "strange:uncommon_scholar_gather",
       "amount": "12-18"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "item": "map",
-      "amount": 1
-    },
-    {
-      "item": "enchanted_book",
-      "amount": 1
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:common_scholar_rewards",
-      "amount": "8-11"
-    },
-    {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:uncommon_scholar_rewards",
-      "amount": "2-3"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.jungle_pyramid",
-      "structure": "minecraft:jungle_pyramid"
-    },
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.village_plains",
-      "structure": "minecraft:village_plains"
-    },
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.desert_pyramid",
-      "structure": "minecraft:desert_pyramid"
-    },
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.village_desert",
-      "structure": "minecraft:village_desert"
-    },
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.village_savanna",
-      "structure": "minecraft:village_savanna"
-    },
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.village_snowy",
-      "structure": "minecraft:village_snowy"
-    },
-    {
-      "name": "make_structure_map",
-      "title": "structure.minecraft.village_taiga",
-      "structure": "minecraft:village_taiga"
     }
   ]
 }

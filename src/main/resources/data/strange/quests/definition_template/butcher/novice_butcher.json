@@ -1,0 +1,16 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "butcher"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "2-4"
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "1-2"
+    }
+  ]
+}

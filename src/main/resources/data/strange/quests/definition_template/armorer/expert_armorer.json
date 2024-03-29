@@ -1,0 +1,38 @@
+{
+  "template": "strange:expert",
+  "professions": [
+    "armorer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_horse_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_horse_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

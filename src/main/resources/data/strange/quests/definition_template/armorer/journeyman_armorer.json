@@ -1,0 +1,38 @@
+{
+  "template": "strange:journeyman",
+  "professions": [
+    "armorer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:chainmail_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:common_horse_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:common_metalworking_rewards",
+      "amount": "4-5"
+    },
+    {
+      "list": "strange:uncommon_horse_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

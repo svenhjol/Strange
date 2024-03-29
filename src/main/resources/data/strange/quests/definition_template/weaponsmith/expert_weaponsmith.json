@@ -1,0 +1,31 @@
+{
+  "template": "strange:expert",
+  "professions": [
+    "weaponsmith"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:uncommon_metalworking_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 22
+    }
+  ]
+}

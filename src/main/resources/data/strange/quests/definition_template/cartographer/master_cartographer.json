@@ -1,0 +1,38 @@
+{
+  "template": "strange:master",
+  "professions": [
+    "cartographer"
+  ],
+  "reward_items": [
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_scholar_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.mansion",
+      "structure": "minecraft:mansion"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.monument",
+      "structure": "minecraft:monument"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.ancient_city",
+      "structure": "minecraft:ancient_city"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.trail_ruins",
+      "structure": "minecraft:trail_ruins"
+    }
+  ]
+}

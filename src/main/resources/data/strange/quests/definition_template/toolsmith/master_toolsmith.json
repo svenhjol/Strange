@@ -1,0 +1,19 @@
+{
+  "template": "strange:master",
+  "professions": [
+    "toolsmith"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:rare_metalworking_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 31
+    }
+  ]
+}

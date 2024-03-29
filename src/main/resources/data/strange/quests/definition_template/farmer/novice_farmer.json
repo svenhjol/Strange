@@ -1,0 +1,12 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "farmer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "3-5"
+    }
+  ]
+}

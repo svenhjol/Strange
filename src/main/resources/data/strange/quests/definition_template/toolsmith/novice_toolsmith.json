@@ -1,0 +1,30 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "toolsmith"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:general_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:stone_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.5
+    }
+  ]
+}

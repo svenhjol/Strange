@@ -1,0 +1,16 @@
+{
+  "template": "strange:apprentice",
+  "professions": [
+    "mason"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "strange:common_decorative_block_rewards",
+      "amount": "8-10"
+    }
+  ]
+}

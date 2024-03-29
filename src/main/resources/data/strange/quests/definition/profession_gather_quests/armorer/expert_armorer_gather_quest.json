@@ -1,9 +1,6 @@
 {
+  "template": "strange:armorer/expert_armorer",
   "type": "gather",
-  "level": 4,
-  "professions": [
-    "armorer"
-  ],
   "gather": [
     {
       "list": "strange:common_metalworking_gather",
@@ -12,42 +9,6 @@
     {
       "list": "strange:uncommon_metalworking_gather",
       "amount": "100-120"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "list": "strange:iron_armor_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:diamond_armor_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:uncommon_horse_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:uncommon_metalworking_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:rare_horse_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:rare_metalworking_rewards",
-      "amount": 1
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0
     }
   ]
 }

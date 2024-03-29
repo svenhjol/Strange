@@ -1,9 +1,6 @@
 {
+  "template": "strange:toolsmith/expert_toolsmith",
   "type": "gather",
-  "level": 4,
-  "professions": [
-    "toolsmith"
-  ],
   "gather": [
     {
       "item": "flint",
@@ -16,35 +13,6 @@
     {
       "list": "strange:uncommon_metalworking_gather",
       "amount": "100-120"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "list": "strange:iron_tool_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:diamond_tool_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:uncommon_metalworking_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:rare_metalworking_rewards",
-      "amount": 1
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0,
-      "level": 22
     }
   ]
 }

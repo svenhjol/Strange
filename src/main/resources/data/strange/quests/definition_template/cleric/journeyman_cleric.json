@@ -1,0 +1,28 @@
+{
+  "template": "strange:journeyman",
+  "professions": [
+    "cleric"
+  ],
+  "reward_items": [
+    {
+      "item": "potion",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "8-11"
+    },
+    {
+      "list": "strange:common_brewing_rewards",
+      "amount": "7-10"
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "2-3"
+    },
+    {
+      "list": "strange:uncommon_brewing_rewards",
+      "amount": "2-3"
+    }
+  ]
+}

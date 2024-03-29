@@ -1,0 +1,28 @@
+{
+  "template": "strange:apprentice",
+  "professions": [
+    "cleric"
+  ],
+  "reward_items": [
+    {
+      "item": "potion",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:common_brewing_rewards",
+      "amount": "3-5"
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:uncommon_brewing_rewards",
+      "amount": 1
+    }
+  ]
+}

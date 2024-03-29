@@ -1,9 +1,6 @@
 {
+  "template": "strange:fletcher/journeyman_fletcher",
   "type": "gather",
-  "level": 3,
-  "professions": [
-    "fletcher"
-  ],
   "gather": [
     {
       "list": "strange:common_fletching_gather",
@@ -12,39 +9,6 @@
     {
       "list": "strange:uncommon_fletching_gather",
       "amount": "40-50"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "list": "strange:projectile_weapon_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:common_projectile_rewards",
-      "amount": "30-35"
-    },
-    {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:uncommon_projectile_rewards",
-      "amount": "30-35"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0,
-      "level": 15
     }
   ]
 }

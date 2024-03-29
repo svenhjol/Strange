@@ -1,9 +1,6 @@
 {
+  "template": "strange:farmer/apprentice_farmer",
   "type": "gather",
-  "level": 2,
-  "professions": [
-    "farmer"
-  ],
   "gather": [
     {
       "item": "pumpkin",
@@ -12,16 +9,6 @@
     {
       "list": "strange:common_farming_gather",
       "amount": "25-35"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "5-8"
     }
   ]
 }

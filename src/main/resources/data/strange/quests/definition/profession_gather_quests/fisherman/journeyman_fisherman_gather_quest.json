@@ -1,9 +1,6 @@
 {
+  "template": "strange:fisherman/journeyman_fisherman",
   "type": "gather",
-  "level": 3,
-  "professions": [
-    "fisherman"
-  ],
   "gather": [
     {
       "item": "coal",
@@ -20,39 +17,6 @@
     {
       "list": "strange:uncommon_fishing_gather",
       "amount": "9-13"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "item": "suspicious_stew",
-      "amount": "5-10"
-    },
-    {
-      "list": "strange:fishing_tool_rewards",
-      "amount": "1-2"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "5-8"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0
-    },
-    {
-      "name": "make_suspicious_stew",
-      "duration": 15,
-      "effects": "health_boost,water_breathing,invisibility"
     }
   ]
 }

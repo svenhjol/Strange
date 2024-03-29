@@ -1,0 +1,40 @@
+{
+  "template": "strange:apprentice",
+  "professions": [
+    "librarian"
+  ],
+  "reward_items": [
+    {
+      "item": "map",
+      "amount": 1
+    },
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "3-4"
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "5-8"
+    },
+    {
+      "list": "strange:uncommon_scholar_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.pillager_outpost",
+      "structure": "minecraft:pillager_outpost"
+    },
+    {
+      "name": "make_structure_map",
+      "title": "structure.minecraft.desert_pyramid",
+      "structure": "minecraft:desert_pyramid"
+    }
+  ]
+}

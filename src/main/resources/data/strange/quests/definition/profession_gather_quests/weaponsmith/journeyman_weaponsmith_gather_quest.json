@@ -1,9 +1,6 @@
 {
+  "template": "strange:weaponsmith/journeyman_weaponsmith",
   "type": "gather",
-  "level": 3,
-  "professions": [
-    "weaponsmith"
-  ],
   "gather": [
     {
       "item": "flint",
@@ -16,35 +13,6 @@
     {
       "list": "strange:uncommon_metalworking_gather",
       "amount": "50-70"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "list": "strange:iron_weapon_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:projectile_weapon_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:common_metalworking_rewards",
-      "amount": "4-5"
-    },
-    {
-      "list": "strange:uncommon_metalworking_rewards",
-      "amount": 1
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0,
-      "level": 15
     }
   ]
 }

@@ -1,0 +1,28 @@
+{
+  "template": "strange:expert",
+  "professions": [
+    "butcher"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "15-20"
+    },
+    {
+      "list": "strange:uncommon_crafted_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:rare_crafted_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_food_rewards",
+      "amount": "2-4"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "fisherman"
+  ],
+  "reward_items": [
+    {
+      "item": "cod_bucket",
+      "amount": 1
+    },
+    {
+      "list": "strange:fishing_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "3-5"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.5
+    }
+  ]
+}

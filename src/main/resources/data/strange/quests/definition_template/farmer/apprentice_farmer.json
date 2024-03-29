@@ -1,0 +1,12 @@
+{
+  "template": "strange:apprentice",
+  "professions": [
+    "farmer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "5-8"
+    }
+  ]
+}

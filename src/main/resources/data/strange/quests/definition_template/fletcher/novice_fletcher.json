@@ -1,0 +1,30 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "fletcher"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:projectile_weapon_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:general_tool_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_projectile_rewards",
+      "amount": "8-10"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.5
+    }
+  ]
+}

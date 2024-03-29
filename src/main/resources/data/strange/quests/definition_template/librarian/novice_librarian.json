@@ -1,0 +1,20 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "librarian"
+  ],
+  "reward_items": [
+    {
+      "item": "enchanted_book",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_scholar_rewards",
+      "amount": "2-4"
+    }
+  ]
+}

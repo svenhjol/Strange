@@ -1,9 +1,6 @@
 {
+  "template": "strange:leatherworker/journeyman_leatherworker",
   "type": "gather",
-  "level": 3,
-  "professions": [
-    "leatherworker"
-  ],
   "gather": [
     {
       "item": "rabbit_hide",
@@ -20,42 +17,6 @@
     {
       "list": "strange:uncommon_leatherworking_gather",
       "amount": "36-42"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "list": "strange:chainmail_armor_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:leather_armor_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:common_horse_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:uncommon_horse_rewards",
-      "amount": "1-2"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0
     }
   ]
 }

@@ -1,0 +1,26 @@
+{
+  "template": "strange:master",
+  "professions": [
+    "armorer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:rare_horse_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:rare_metalworking_rewards",
+      "amount": "1-2"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0
+    }
+  ]
+}

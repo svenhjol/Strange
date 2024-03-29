@@ -1,0 +1,31 @@
+{
+  "template": "strange:journeyman",
+  "professions": [
+    "farmer"
+  ],
+  "reward_items": [
+    {
+      "item": "cookie",
+      "amount": "18-22"
+    },
+    {
+      "item": "suspicious_stew",
+      "amount": "5-10"
+    },
+    {
+      "list": "strange:common_food_rewards",
+      "amount": "9-12"
+    },
+    {
+      "list": "strange:uncommon_food_rewards",
+      "amount": "5-8"
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "make_suspicious_stew",
+      "duration": 15,
+      "effects": "speed,jump_boost,luck"
+    }
+  ]
+}

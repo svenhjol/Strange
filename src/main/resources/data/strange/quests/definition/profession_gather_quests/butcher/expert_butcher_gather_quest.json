@@ -1,9 +1,6 @@
 {
+  "template": "strange:butcher/expert_butcher",
   "type": "gather",
-  "level": 4,
-  "professions": [
-    "butcher"
-  ],
   "gather": [
     {
       "item": "leather",
@@ -20,32 +17,6 @@
     {
       "list": "strange:uncommon_food_gather",
       "amount": "20-30"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "15-20"
-    },
-    {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:rare_crafted_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:rare_food_rewards",
-      "amount": "2-4"
     }
   ]
 }

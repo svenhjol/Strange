@@ -1,9 +1,6 @@
 {
+  "template": "strange:shepherd/master_shepherd",
   "type": "gather",
-  "level": 5,
-  "professions": [
-    "shepherd"
-  ],
   "gather": [
     {
       "list": "strange:common_food_gather",
@@ -12,40 +9,6 @@
     {
       "list": "strange:uncommon_food_gather",
       "amount": "36-50"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "15-32"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "20-25"
-    },
-    {
-      "list": "strange:common_wool_rewards",
-      "amount": "30-36"
-    },
-    {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "13-15"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "15-20"
-    },
-    {
-      "list": "strange:uncommon_wool_rewards",
-      "amount": "6-8"
-    },
-    {
-      "list": "strange:rare_crafted_rewards",
-      "amount": "1-2"
-    },
-    {
-      "list": "strange:rare_food_rewards",
-      "amount": "5-8"
     }
   ]
 }

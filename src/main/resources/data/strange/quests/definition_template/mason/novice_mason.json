@@ -1,0 +1,16 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "mason"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:common_crafted_rewards",
+      "amount": "1-2"
+    },
+    {
+      "list": "strange:common_decorative_block_rewards",
+      "amount": "2-5"
+    }
+  ]
+}

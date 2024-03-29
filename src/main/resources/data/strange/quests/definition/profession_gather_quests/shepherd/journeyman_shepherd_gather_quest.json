@@ -1,9 +1,6 @@
 {
+  "template": "strange:shepherd/journeyman_shepherd",
   "type": "gather",
-  "level": 3,
-  "professions": [
-    "shepherd"
-  ],
   "gather": [
     {
       "list": "strange:common_food_gather",
@@ -20,36 +17,6 @@
     {
       "list": "strange:uncommon_shepherd_gather",
       "amount": "24-30"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:common_wool_rewards",
-      "amount": "12-18"
-    },
-    {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:uncommon_wool_rewards",
-      "amount": "1-2"
     }
   ]
 }

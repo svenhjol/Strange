@@ -1,9 +1,6 @@
 {
+  "template": "strange:butcher/novice_butcher",
   "type": "gather",
-  "level": 1,
-  "professions": [
-    "butcher"
-  ],
   "gather": [
     {
       "item": "coal",
@@ -12,20 +9,6 @@
     {
       "list": "strange:common_food_gather",
       "amount": "6-8"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "1-3"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "2-4"
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "1-2"
     }
   ]
 }

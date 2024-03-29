@@ -1,0 +1,10 @@
+{
+  "level": 2,
+  "reward_items": [
+    {
+      "item": "emerald",
+      "amount": "4-7"
+    }
+  ],
+  "reward_experience": 2
+}

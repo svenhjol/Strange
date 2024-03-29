@@ -1,0 +1,30 @@
+{
+  "template": "strange:novice",
+  "professions": [
+    "armorer"
+  ],
+  "reward_items": [
+    {
+      "list": "strange:leather_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_horse_rewards",
+      "amount": 1
+    },
+    {
+      "list": "strange:common_metalworking_rewards",
+      "amount": 1
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 0.5
+    }
+  ]
+}

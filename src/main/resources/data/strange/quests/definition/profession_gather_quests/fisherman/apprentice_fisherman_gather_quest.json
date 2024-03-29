@@ -1,9 +1,6 @@
 {
+  "template": "strange:fisherman/apprentice_fisherman",
   "type": "gather",
-  "level": 2,
-  "professions": [
-    "fisherman"
-  ],
   "gather": [
     {
       "item": "coal",
@@ -16,30 +13,6 @@
     {
       "list": "strange:common_fishing_gather",
       "amount": "12-18"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
-    {
-      "item": "cod_bucket",
-      "amount": 2
-    },
-    {
-      "list": "strange:fishing_tool_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "5-8"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 0.75
     }
   ]
 }
