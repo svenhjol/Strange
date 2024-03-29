@@ -59,7 +59,7 @@ public class DefaultRewards {
         rewardItems = items.subList(0, Math.min(max, items.size()));
 
         // Populate experience levels.
-        rewardExperience = new RewardExperience(quest, definition.rewardExperience());
+        rewardExperience = new RewardExperience(quest, definition.rewardExperience(), definition.rewardMultiplier());
     }
 
     public List<RewardItem> items() {

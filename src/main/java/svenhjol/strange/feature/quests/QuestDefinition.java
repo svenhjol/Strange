@@ -40,6 +40,7 @@ public class QuestDefinition {
     private List<Map<String, Object>> reward_items = new ArrayList<>();
     private List<Map<String, Object>> reward_item_functions = new ArrayList<>();
     private int reward_experience = 0;
+    private double reward_multiplier = 1.0d;
     private QuestDefinition cachedTemplate = null;
 
     public static QuestDefinition deserialize(ResourceLocation id, String namespace, ResourceManager manager, Resource resource) throws IOException {
@@ -180,6 +181,11 @@ public class QuestDefinition {
     public int rewardExperience() {
         var fromTemplate = template().map(QuestDefinition::rewardExperience).orElse(0);
         return reward_experience > 0 ? reward_experience : fromTemplate;
+    }
+
+    public double rewardMultiplier() {
+        var fromTemplate = template().map(QuestDefinition::rewardMultiplier).orElse(1.0d);
+        return reward_multiplier > 1 ? reward_multiplier : fromTemplate;
     }
 
     private ResourceLocation tryParse(String id) {

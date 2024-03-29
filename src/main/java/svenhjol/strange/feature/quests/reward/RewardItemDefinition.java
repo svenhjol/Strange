@@ -69,6 +69,7 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
     public List<RewardItem> items() {
         var max = 4;
         var localAmount = amount;
+        var multiplier = definition.rewardMultiplier();
 
         List<ItemStack> out = new ArrayList<>();
 
@@ -101,7 +102,7 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
             }
 
             for (var item : sublist) {
-                out.add(new ItemStack(item, localAmount));
+                out.add(new ItemStack(item, Math.min(item.getMaxStackSize(), (int)(localAmount * multiplier))));
             }
         }
 
