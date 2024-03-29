@@ -1,9 +1,6 @@
 {
+  "template": "strange:leatherworker/expert_leatherworker",
   "type": "hunt",
-  "level": 4,
-  "professions": [
-    "leatherworker"
-  ],
   "hunt": [
     {
       "mob": "hoglin",
@@ -24,42 +21,6 @@
     {
       "list": "strange:rare_hostile_mob_hunt",
       "amount": "5-7"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "list": "strange:chainmail_armor_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:leather_armor_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "15-20"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:uncommon_horse_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:rare_horse_rewards",
-      "amount": 1
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0
     }
   ]
 }

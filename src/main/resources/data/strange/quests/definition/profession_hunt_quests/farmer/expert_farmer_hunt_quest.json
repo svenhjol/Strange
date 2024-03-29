@@ -1,9 +1,6 @@
 {
+  "template": "strange:farmer/expert_farmer",
   "type": "hunt",
-  "level": 4,
-  "professions": [
-    "farmer"
-  ],
   "hunt": [
     {
       "mob": "hoglin",
@@ -16,35 +13,6 @@
     {
       "list": "strange:rare_hostile_mob_hunt",
       "amount": "2-3"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "item": "suspicious_stew",
-      "amount": "10-13"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "15-20"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:rare_food_rewards",
-      "amount": "2-4"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "make_suspicious_stew",
-      "duration": 30,
-      "effects": "speed,jump_boost,luck"
     }
   ]
 }

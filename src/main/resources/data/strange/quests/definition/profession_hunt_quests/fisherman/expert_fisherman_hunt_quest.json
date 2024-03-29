@@ -1,9 +1,6 @@
 {
+  "template": "strange:fisherman/expert_fisherman",
   "type": "hunt",
-  "level": 4,
-  "professions": [
-    "fisherman"
-  ],
   "hunt": [
     {
       "mob": "drowned",
@@ -20,43 +17,6 @@
     {
       "list": "strange:rare_ambient_mob_hunt",
       "amount": "4-6"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "item": "suspicious_stew",
-      "amount": "10-13"
-    },
-    {
-      "list": "strange:fishing_tool_rewards",
-      "amount": "1-2"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "15-20"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:rare_food_rewards",
-      "amount": "2-4"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0
-    },
-    {
-      "name": "make_suspicious_stew",
-      "duration": 30,
-      "effects": "health_boost,water_breathing,invisibility"
     }
   ]
 }

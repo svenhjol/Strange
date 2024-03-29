@@ -1,9 +1,6 @@
 {
+  "template": "strange:shepherd/apprentice_shepherd",
   "type": "hunt",
-  "level": 2,
-  "professions": [
-    "shepherd"
-  ],
   "hunt": [
     {
       "mob": "pillager",
@@ -16,24 +13,6 @@
     {
       "list": "strange:common_hostile_mob_hunt",
       "amount": "10-12"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "3-4"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "5-8"
-    },
-    {
-      "list": "strange:common_wool_rewards",
-      "amount": "8-10"
     }
   ]
 }

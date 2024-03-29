@@ -1,9 +1,6 @@
 {
+  "template": "strange:farmer/journeyman_farmer",
   "type": "hunt",
-  "level": 3,
-  "professions": [
-    "farmer"
-  ],
   "hunt": [
     {
       "mob": "pillager",
@@ -32,35 +29,6 @@
     {
       "list": "strange:uncommon_neutral_mob_hunt",
       "amount": "10-12"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "item": "cookie",
-      "amount": "18-22"
-    },
-    {
-      "item": "suspicious_stew",
-      "amount": "5-10"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "9-12"
-    },
-    {
-      "list": "strange:uncommon_food_rewards",
-      "amount": "5-8"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "make_suspicious_stew",
-      "duration": 15,
-      "effects": "speed,jump_boost,luck"
     }
   ]
 }

@@ -1,9 +1,6 @@
 {
+  "template": "strange:weaponsmith/expert_weaponsmith",
   "type": "hunt",
-  "level": 4,
-  "professions": [
-    "weaponsmith"
-  ],
   "hunt": [
     {
       "mob": "vindicator",
@@ -28,35 +25,6 @@
     {
       "list": "strange:rare_hostile_mob_hunt",
       "amount": "5-7"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "10-15"
-    },
-    {
-      "list": "strange:iron_weapon_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:diamond_weapon_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:uncommon_metalworking_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:rare_metalworking_rewards",
-      "amount": 1
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0,
-      "level": 22
     }
   ]
 }

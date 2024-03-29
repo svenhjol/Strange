@@ -1,9 +1,6 @@
 {
+  "template": "strange:armorer/journeyman_armorer",
   "type": "hunt",
-  "level": 3,
-  "professions": [
-    "armorer"
-  ],
   "hunt": [
     {
       "mob": "vindicator",
@@ -20,42 +17,6 @@
     {
       "list": "strange:uncommon_hostile_mob_hunt",
       "amount": "10-12"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    },
-    {
-      "list": "strange:chainmail_armor_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:iron_armor_rewards",
-      "amount": 2
-    },
-    {
-      "list": "strange:common_horse_rewards",
-      "amount": "2-3"
-    },
-    {
-      "list": "strange:common_metalworking_rewards",
-      "amount": "4-5"
-    },
-    {
-      "list": "strange:uncommon_horse_rewards",
-      "amount": "1-2"
-    },
-    {
-      "list": "strange:uncommon_metalworking_rewards",
-      "amount": 1
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0
     }
   ]
 }

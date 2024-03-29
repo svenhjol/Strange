@@ -1,27 +1,10 @@
 {
+  "template": "strange:butcher/novice_butcher",
   "type": "hunt",
-  "level": 2,
-  "professions": [
-    "butcher"
-  ],
   "hunt": [
     {
       "list": "strange:common_hostile_mob_hunt",
       "amount": "4-5"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "1-3"
-    },
-    {
-      "list": "strange:common_food_rewards",
-      "amount": "2-4"
-    },
-    {
-      "list": "strange:common_crafted_rewards",
-      "amount": "1-2"
     }
   ]
 }

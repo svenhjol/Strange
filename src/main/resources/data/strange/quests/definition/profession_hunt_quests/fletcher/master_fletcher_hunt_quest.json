@@ -1,46 +1,10 @@
 {
+  "template": "strange:fletcher/master_fletcher",
   "type": "hunt",
-  "level": 5,
-  "professions": [
-    "fletcher"
-  ],
   "hunt": [
     {
       "list": "strange:rare_hostile_mob_hunt",
       "amount": "10-12"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "15-23"
-    },
-    {
-      "list": "strange:projectile_weapon_rewards",
-      "amount": 1
-    },
-    {
-      "list": "strange:uncommon_crafted_rewards",
-      "amount": "13-15"
-    },
-    {
-      "list": "strange:uncommon_projectile_rewards",
-      "amount": "55-65"
-    },
-    {
-      "list": "strange:rare_crafted_rewards",
-      "amount": "1-2"
-    },
-    {
-      "list": "strange:rare_projectile_rewards",
-      "amount": "40-50"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0,
-      "level": 31
     }
   ]
 }

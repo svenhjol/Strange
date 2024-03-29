@@ -1,9 +1,6 @@
 {
+  "template": "strange:toolsmith/master_toolsmith",
   "type": "hunt",
-  "level": 5,
-  "professions": [
-    "toolsmith"
-  ],
   "hunt": [
     {
       "mob": "evoker",
@@ -16,23 +13,6 @@
     {
       "list": "strange:rare_hostile_mob_hunt",
       "amount": "10-12"
-    }
-  ],
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "15-23"
-    },
-    {
-      "list": "strange:rare_metalworking_rewards",
-      "amount": "1-2"
-    }
-  ],
-  "reward_item_functions": [
-    {
-      "name": "enchant_item",
-      "chance": 1.0,
-      "level": 31
     }
   ]
 }
