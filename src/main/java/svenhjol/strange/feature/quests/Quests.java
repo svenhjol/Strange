@@ -253,8 +253,6 @@ public class Quests extends CommonFeature {
             DEFINITIONS.add(definition);
             mod().log().debug(getClass(), "Registered quest definition " + id);
         }
-
-        mod().log().debug(getClass(), "here");
     }
 
     /**
