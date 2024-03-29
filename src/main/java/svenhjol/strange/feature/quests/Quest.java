@@ -135,6 +135,14 @@ public abstract class Quest {
     }
 
     public static Quest create(QuestDefinition definition, ServerPlayer player, UUID villagerUuid) {
+        // Some sense checking before trying to use the definition to make a quest.
+        if (definition.type() == null) {
+            throw new RuntimeException("QuestDefinition does not have a type: " + definition.id());
+        }
+        if (definition.level() < 1 || definition.level() > 5) {
+            throw new RuntimeException("QuestDefinition level is incorrect: " + definition.id());
+        }
+
         var type = definition.type();
         var quest = type.makeQuest();
         quest.make(definition, player, villagerUuid);

@@ -33,7 +33,10 @@ import java.util.function.Supplier;
 
 public class Quests extends CommonFeature {
     public static final String QUESTS_TAG = "quests";
+    static final String DEFINITIONS_DIR = "quests/definition";
+    static final String DEFINITION_TEMPLATES_DIR = "quests/definition_template";
     static final List<QuestDefinition> DEFINITIONS = new ArrayList<>();
+    public static final Map<ResourceLocation, QuestDefinition> DEFINITION_TEMPLATES = new HashMap<>();
     private static final Map<UUID, QuestList> PLAYER_QUESTS = new HashMap<>();
     private static final Map<UUID, QuestList> VILLAGER_QUESTS = new HashMap<>();
     private static final Map<UUID, Long> VILLAGER_QUESTS_REFRESH = new HashMap<>();
@@ -195,12 +198,40 @@ public class Quests extends CommonFeature {
     }
 
     private void handleServerStart(MinecraftServer server) {
+        DEFINITION_TEMPLATES.clear();
         DEFINITIONS.clear();
 
         var manager = server.getResourceManager();
-        var resources = manager.listResources("quests/definition", file -> file.getPath().endsWith(".json"));
 
-        for (var entry : resources.entrySet()) {
+        var templates = manager.listResources(DEFINITION_TEMPLATES_DIR, file -> file.getPath().endsWith(".json"));
+        var definitions = manager.listResources(DEFINITIONS_DIR, file -> file.getPath().endsWith(".json"));
+
+        for (var entry : templates.entrySet()) {
+            var id = entry.getKey();
+            var namespace = id.getNamespace();
+            var path = id.getPath();
+
+            // The resourceName is the key for the template lookup.
+            var resourceName = path.replace(DEFINITION_TEMPLATES_DIR, "").replace(".json", "");
+            if (resourceName.startsWith("/")) {
+                resourceName = resourceName.substring(1);
+            }
+
+            var resource = entry.getValue();
+            QuestDefinition template;
+
+            try {
+                template = QuestDefinition.deserialize(id, namespace, manager, resource);
+            } catch (Exception e) {
+                mod().log().warn(getClass(), "Definition template " + id + " failed to load due to an error: " + e.getMessage());
+                continue;
+            }
+
+            DEFINITION_TEMPLATES.put(new ResourceLocation(namespace, resourceName), template);
+            mod().log().debug(getClass(), "Registered quest definition template " + id);
+        }
+
+        for (var entry : definitions.entrySet()) {
             var id = entry.getKey();
             var namespace = id.getNamespace();
             var resource = entry.getValue();
@@ -222,6 +253,8 @@ public class Quests extends CommonFeature {
             DEFINITIONS.add(definition);
             mod().log().debug(getClass(), "Registered quest definition " + id);
         }
+
+        mod().log().debug(getClass(), "here");
     }
 
     /**
