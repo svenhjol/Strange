@@ -179,8 +179,7 @@ public class QuestDefinition {
 
     public int rewardExperience() {
         var fromTemplate = template().map(QuestDefinition::rewardExperience).orElse(0);
-        var value = reward_experience > 0 ? reward_experience : fromTemplate;
-        return value == 1 ? Math.max(1, (int)(level() * (level() * 0.5f))) : value;
+        return reward_experience > 0 ? reward_experience : fromTemplate;
     }
 
     private ResourceLocation tryParse(String id) {
