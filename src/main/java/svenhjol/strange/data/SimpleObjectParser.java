@@ -6,6 +6,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 
 import java.util.*;
@@ -113,7 +114,11 @@ public interface SimpleObjectParser {
 
     default Optional<Item> parseItem(Object o) {
         var result = parseResourceLocation(o);
-        return result.map(BuiltInRegistries.ITEM::get);
+        var item = result.map(BuiltInRegistries.ITEM::get);
+        if (item.stream().allMatch(i -> i.equals(Items.AIR))) {
+            throw new RuntimeException("Invalid item: " + o);
+        }
+        return item;
     }
 
     default Optional<MobEffect> parseMobEffect(Object o) {
