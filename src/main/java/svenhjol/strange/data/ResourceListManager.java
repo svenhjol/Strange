@@ -33,8 +33,11 @@ public class ResourceListManager {
 
             var path = key.getPath()
                 .replace(folder, "")
-                .replace("/", "")
                 .replace(".json", "");
+
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
 
             var id = new ResourceLocation(key.getNamespace(), path);
 
