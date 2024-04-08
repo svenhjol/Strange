@@ -3,12 +3,19 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_brewing_gather",
-      "amount": "15-20"
+      "lists": [
+        "strange:brewing/sugar",
+        "strange:crafted/glass"
+      ],
+      "amount": "60-70"
     },
     {
-      "list": "strange:uncommon_brewing_gather",
-      "amount": "8-11"
+      "lists": [
+        "strange:brewing/spider_eye",
+        "strange:crafted/glass_bottle",
+        "strange:ores/gold_ingot"
+      ],
+      "amount": "20-25"
     }
   ]
 }

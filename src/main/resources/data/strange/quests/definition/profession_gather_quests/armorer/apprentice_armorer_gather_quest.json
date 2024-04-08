@@ -3,16 +3,30 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_metalworking_gather",
-      "amount": "35-45"
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/copper_ingot"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_metalworking_gather",
-      "amount": "15-20"
+      "lists": [
+        "strange:ores/gold_ingot",
+        "strange:stone/obsidian"
+      ],
+      "amount": "20-25"
     },
     {
-      "item": "lava_bucket",
-      "amount": "4-6"
+      "lists": [
+        "strange:ores/iron_ingot"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:crafted/lava_bucket"
+      ],
+      "amount": "8-10"
     }
   ]
 }

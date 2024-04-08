@@ -3,20 +3,28 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_food_gather",
-      "amount": "17-24"
+      "lists": [
+        "strange:food/pumpkin",
+        "strange:bees/honeycomb"
+      ],
+      "amount": "30-35"
     },
     {
-      "list": "strange:common_shepherd_gather",
-      "amount": "40-50"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:drops/sheep_wool",
+        "strange:flowers/dyes"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_food_gather",
-      "amount": "12-16"
-    },
-    {
-      "list": "strange:uncommon_shepherd_gather",
-      "amount": "24-30"
+      "lists": [
+        "strange:ores/coal",
+        "strange:drops/string",
+        "strange:ores/copper_block",
+        "strange:underwater/dried_kelp"
+      ],
+      "amount": "120-130"
     }
   ]
 }

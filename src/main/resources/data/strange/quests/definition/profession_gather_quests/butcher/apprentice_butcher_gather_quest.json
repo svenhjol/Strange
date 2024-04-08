@@ -3,16 +3,19 @@
   "type": "gather",
   "gather": [
     {
-      "item": "coal",
-      "amount": "24-30"
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/flint"
+      ],
+      "amount": "60-65"
     },
     {
-      "item": "leather",
-      "amount": "11-14"
-    },
-    {
-      "list": "strange:common_food_gather",
-      "amount": "11-14"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:food/beef",
+        "strange:mobs/leather"
+      ],
+      "amount": "30-35"
     }
   ]
 }

@@ -3,12 +3,37 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:uncommon_leatherworking_gather",
-      "amount": "90-110"
+      "lists": [
+        "strange:drops/rabbit_hide",
+        "strange:ores/iron_block"
+      ],
+      "amount": "32-24"
     },
     {
-      "list": "strange:rare_leatherworking_gather",
-      "amount": "5-8"
+      "lists": [
+        "strange:ores/copper_block",
+        "strange:ores/weathered_copper_blocks"
+      ],
+      "amount": "300-310"
+    },
+    {
+      "lists": [
+        "strange:food/beef",
+        "strange:drops/leather",
+        "strange:flowers/dyes",
+        "strange:food/uncooked_food"
+      ],
+      "amount": "230-240"
+    },
+    {
+      "lists": [
+        "strange:drops/string",
+        "strange:drops/bone",
+        "strange:ores/flint",
+        "strange:ores/copper_ingot",
+        "strange:underwater/dried_kelp"
+      ],
+      "amount": "490-500"
     }
   ]
 }

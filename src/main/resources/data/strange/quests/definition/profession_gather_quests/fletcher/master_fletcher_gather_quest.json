@@ -3,12 +3,31 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_fletching_gather",
-      "amount": "100-120"
+      "lists": [
+        "strange:drops/gunpowder"
+      ],
+      "amount": "120-130"
     },
     {
-      "list": "strange:uncommon_fletching_gather",
-      "amount": "90-120"
+      "lists": [
+        "strange:drops/feather"
+      ],
+      "amount": "240-250"
+    },
+    {
+      "lists": [
+        "strange:ores/redstone_block",
+        "strange:ores/copper_block"
+      ],
+      "amount": "300-310"
+    },
+    {
+      "lists": [
+        "strange:ores/flint",
+        "strange:drops/string",
+        "strange:brewing/glowstone_dust"
+      ],
+      "amount": "490-500"
     }
   ]
 }

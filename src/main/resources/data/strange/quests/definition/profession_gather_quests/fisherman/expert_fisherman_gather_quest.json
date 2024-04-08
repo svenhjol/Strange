@@ -3,12 +3,32 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_fishing_gather",
-      "amount": "35-50"
+      "lists": [
+        "strange:drops/scute"
+      ],
+      "amount": "8-10"
     },
     {
-      "list": "strange:uncommon_fishing_gather",
-      "amount": "15-20"
+      "lists": [
+        "strange:fish/pufferfish",
+        "strange:fish/tropical_fish"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:food/cod",
+        "strange:food/salmon"
+      ],
+      "amount": "120-130"
+    },
+    {
+      "lists": [
+        "strange:drops/string",
+        "strange:underwater/dried_kelp"
+      ],
+      "amount": "240-250"
     }
   ]
 }

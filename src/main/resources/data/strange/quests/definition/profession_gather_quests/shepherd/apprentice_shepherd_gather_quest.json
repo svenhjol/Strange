@@ -3,16 +3,21 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_food_gather",
-      "amount": "11-14"
+      "lists": [
+        "strange:drops/string",
+        "strange:ores/coal",
+        "strange:ores/copper_ingot"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:common_shepherd_gather",
-      "amount": "20-25"
-    },
-    {
-      "list": "strange:uncommon_shepherd_gather",
-      "amount": "14-18"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:drops/sheep_wool",
+        "strange:flowers/dyes",
+        "strange:ores/iron_ingot"
+      ],
+      "amount": "30-35"
     }
   ]
 }

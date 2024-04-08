@@ -3,12 +3,18 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_food_gather",
-      "amount": "6-8"
+      "lists": [
+        "strange:drops/string",
+        "strange:ores/coal"
+      ],
+      "amount": "30-35"
     },
     {
-      "list": "strange:common_shepherd_gather",
-      "amount": "8-10"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:drops/sheep_wool"
+      ],
+      "amount": "12-15"
     }
   ]
 }

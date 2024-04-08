@@ -3,16 +3,34 @@
   "type": "gather",
   "gather": [
     {
-      "item": "coal",
-      "amount": "75-90"
+      "lists": [
+        "strange:drops/scute",
+        "strange:drops/rabbit_foot"
+      ],
+      "amount": "8-10"
     },
     {
-      "list": "strange:uncommon_leatherworking_gather",
-      "amount": "60-72"
+      "lists": [
+        "strange:drops/rabbit_hide",
+        "strange:ores/iron_block"
+      ],
+      "amount": "20-22"
     },
     {
-      "list": "strange:rare_leatherworking_gather",
-      "amount": "3-5"
+      "lists": [
+        "strange:food/beef",
+        "strange:drops/leather",
+        "strange:flowers/dyes"
+      ],
+      "amount": "120-130"
+    },
+    {
+      "lists": [
+        "strange:drops/string",
+        "strange:ores/flint",
+        "strange:drops/bone"
+      ],
+      "amount": "220-230"
     }
   ]
 }

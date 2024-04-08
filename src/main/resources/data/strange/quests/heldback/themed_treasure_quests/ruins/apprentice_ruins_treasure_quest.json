@@ -10,10 +10,7 @@
     }
   ],
   "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
+
     {
       "list": "strange:common_scholar_rewards",
       "amount": "6-9"

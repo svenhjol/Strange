@@ -3,12 +3,20 @@
   "type": "gather",
   "gather": [
     {
-      "item": "clay_ball",
-      "amount": "40-50"
+      "lists": [
+        "strange:stone/overworld_igneous_rocks"
+      ],
+      "amount": "120-130"
     },
     {
-      "list": "strange:common_stone_gather",
-      "amount": "18-24"
+      "lists": [
+        "strange:earth/clay",
+        "strange:earth/sand",
+        "strange:earth/gravel",
+        "strange:stone/stone",
+        "strange:stone/deepslate"
+      ],
+      "amount": "200-210"
     }
   ]
 }

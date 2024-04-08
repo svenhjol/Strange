@@ -3,12 +3,41 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_scholar_gather",
-      "amount": "25-35"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/map",
+        "strange:crafted/clock"
+      ],
+      "amount": "10-15"
     },
     {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "6-9"
+      "lists": [
+        "strange:ores/gold_ingot",
+        "strange:stone/obsidian"
+      ],
+      "amount": "20-25"
+    },
+    {
+      "lists": [
+        "strange:drops/leather",
+        "strange:ores/iron_ingot"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:ores/coal",
+        "strange:crafted/paper",
+        "strange:drops/string"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:plants/sugar_cane",
+        "strange:ores/redstone"
+      ],
+      "amount": "100-110"
     }
   ]
 }

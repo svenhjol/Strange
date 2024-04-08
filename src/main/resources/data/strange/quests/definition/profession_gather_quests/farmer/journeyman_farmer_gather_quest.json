@@ -3,12 +3,39 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_farming_gather",
-      "amount": "50-65"
+      "lists": [
+        "strange:crafted/milk_bucket"
+      ],
+      "amount": "16-20"
     },
     {
-      "list": "strange:uncommon_farming_gather",
-      "amount": "10-12"
+      "lists": [
+        "strange:food/melon",
+        "strange:food/pumpkin",
+        "strange:crops/hay_block"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:food/uncooked_food"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:crops/village_crops",
+        "strange:ores/coal",
+        "strange:seeds/pumpkin_seeds",
+        "strange:seeds/melon_seeds"
+      ],
+      "amount": "120-130"
+    },
+    {
+      "lists": [
+        "strange:seeds/wheat_seeds"
+      ],
+      "amount": "290-300"
     }
   ]
 }

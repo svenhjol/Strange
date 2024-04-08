@@ -3,12 +3,26 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:uncommon_brewing_gather",
-      "amount": "14-18"
+      "lists": [
+        "strange:drops/blaze_rod",
+        "strange:drops/scute"
+      ],
+      "amount": "3-4"
     },
     {
-      "list": "strange:rare_brewing_gather",
-      "amount": "3-4"
+      "lists": [
+        "strange:brewing/fermented_spider_eye",
+        "strange:food/melon"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:ores/gold_ingot",
+        "strange:food/melon_slice",
+        "strange:plants/nether_wart"
+      ],
+      "amount": "95-100"
     }
   ]
 }

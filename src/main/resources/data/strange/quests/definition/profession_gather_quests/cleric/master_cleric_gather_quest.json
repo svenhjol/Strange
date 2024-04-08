@@ -3,12 +3,24 @@
   "type": "gather",
   "gather": [
     {
-      "item": "nether_wart",
-      "amount": "120-140"
+      "lists": [
+        "strange:drops/scute"
+      ],
+      "amount": "20-22"
     },
     {
-      "list": "strange:rare_brewing_gather",
-      "amount": "11-14"
+      "lists": [
+        "strange:ores/gold_block",
+        "strange:gems/diamond",
+        "strange:gems/emerald_block"
+      ],
+      "amount": "32-34"
+    },
+    {
+      "lists": [
+        "strange:plants/nether_wart"
+      ],
+      "amount": "390-400"
     }
   ]
 }

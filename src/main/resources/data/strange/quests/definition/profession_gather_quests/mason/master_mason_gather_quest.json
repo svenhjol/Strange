@@ -5,6 +5,19 @@
     {
       "list": "strange:uncommon_stone_gather",
       "amount": "130-150"
+    },
+    {
+      "lists": [
+        "strange:brewing/glowstone_dust",
+        "strange:gems/lapis_lazuli",
+        "strange:gems/amethyst_shard",
+        "strange:gems/quartz",
+        "strange:ores/redstone_block",
+        "strange:ores/copper_block",
+        "strange:ores/weathered_copper_blocks",
+        "strange:stone/overworld_geode_rocks"
+      ],
+      "amount": "400-410"
     }
   ]
 }

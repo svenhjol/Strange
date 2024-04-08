@@ -3,12 +3,20 @@
   "type": "gather",
   "gather": [
     {
-      "item": "redstone",
-      "amount": "150-170"
+      "lists": [
+        "strange:ores/redstone_block",
+        "strange:ores/copper_block",
+        "strange:ores/weathered_copper_blocks"
+      ],
+      "amount": "300-310"
     },
     {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "35-50"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/map",
+        "strange:crafted/clock"
+      ],
+      "amount": "120-130"
     }
   ]
 }

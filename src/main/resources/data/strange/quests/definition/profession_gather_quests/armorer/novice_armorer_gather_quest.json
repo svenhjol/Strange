@@ -3,8 +3,11 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_metalworking_gather",
-      "amount": "20-24"
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/copper_ingot"
+      ],
+      "amount": "30-35"
     }
   ]
 }

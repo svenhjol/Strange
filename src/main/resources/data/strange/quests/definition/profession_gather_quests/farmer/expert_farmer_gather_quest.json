@@ -3,12 +3,28 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_farming_gather",
-      "amount": "80-110"
+      "lists": [
+        "strange:crops/hay_block",
+        "strange:food/melon",
+        "strange:food/pumpkin"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_farming_gather",
-      "amount": "20-30"
+      "lists": [
+        "strange:crops/village_crops",
+        "strange:drops/bone",
+        "strange:seeds/pumpkin_seeds",
+        "strange:seeds/melon_seeds"
+      ],
+      "amount": "240-250"
+    },
+    {
+      "lists": [
+        "strange:crops/bone_meal",
+        "strange:seeds/wheat_seeds"
+      ],
+      "amount": "490-500"
     }
   ]
 }

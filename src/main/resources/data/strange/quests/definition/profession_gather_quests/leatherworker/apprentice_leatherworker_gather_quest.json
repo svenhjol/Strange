@@ -3,12 +3,20 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_leatherworking_gather",
-      "amount": "14-20"
+      "lists": [
+        "strange:drops/string",
+        "strange:ores/flint"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_leatherworking_gather",
-      "amount": "14-18"
+      "lists": [
+        "strange:food/beef",
+        "strange:drops/leather",
+        "strange:flowers/dyes",
+        "strange:ores/iron_ingot"
+      ],
+      "amount": "30-35"
     }
   ]
 }

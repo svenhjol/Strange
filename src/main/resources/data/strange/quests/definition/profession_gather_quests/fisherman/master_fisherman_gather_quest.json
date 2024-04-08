@@ -3,12 +3,20 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_fishing_gather",
-      "amount": "60-80"
+      "lists": [
+        "strange:fish/pufferfish",
+        "strange:fish/tropical_fish"
+      ],
+      "amount": "120-130"
     },
     {
-      "list": "strange:uncommon_fishing_gather",
-      "amount": "30-35"
+      "lists": [
+        "strange:stone/prismarine_blocks",
+        "strange:food/uncooked_food",
+        "strange:food/cod",
+        "strange:food/salmon"
+      ],
+      "amount": "230-240"
     }
   ]
 }

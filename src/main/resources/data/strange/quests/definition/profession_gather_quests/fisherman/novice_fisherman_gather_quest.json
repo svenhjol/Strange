@@ -3,16 +3,19 @@
   "type": "gather",
   "gather": [
     {
-      "item": "coal",
-      "amount": "13-16"
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/flint",
+        "strange:drops/string"
+      ],
+      "amount": "30-35"
     },
     {
-      "item": "string",
-      "amount": "13-16"
-    },
-    {
-      "list": "strange:common_fishing_gather",
-      "amount": "6-9"
+      "lists": [
+        "strange:food/cod",
+        "strange:food/salmon"
+      ],
+      "amount": "12-15"
     }
   ]
 }

@@ -15,10 +15,7 @@
     }
   ],
   "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
+
     {
       "item": "lapis_lazuli",
       "amount": "10-14"

@@ -3,12 +3,22 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_food_gather",
-      "amount": "40-55"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:drops/sheep_wool",
+        "strange:flowers/dyes"
+      ],
+      "amount": "220-230"
     },
     {
-      "list": "strange:uncommon_food_gather",
-      "amount": "36-50"
+      "lists": [
+        "strange:drops/string",
+        "strange:drops/bone",
+        "strange:ores/flint",
+        "strange:ores/copper_ingot",
+        "strange:underwater/dried_kelp"
+      ],
+      "amount": "490-500"
     }
   ]
 }

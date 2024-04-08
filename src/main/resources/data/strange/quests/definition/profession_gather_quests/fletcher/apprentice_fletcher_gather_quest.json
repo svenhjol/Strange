@@ -3,12 +3,34 @@
   "type": "gather",
   "gather": [
     {
-      "item": "gravel",
-      "amount": "30-40"
+      "lists": [
+        "strange:crafted/lava_bucket",
+        "strange:crafted/milk_bucket"
+      ],
+      "amount": "8-10"
     },
     {
-      "list": "strange:common_fletching_gather",
-      "amount": "14-20"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:ores/iron_ingot",
+        "strange:drops/feather"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/flint",
+        "strange:ores/copper_ingot",
+        "strange:drops/string"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:earth/gravel"
+      ],
+      "amount": "180-200"
     }
   ]
 }

@@ -3,12 +3,12 @@
   "type": "gather",
   "gather": [
     {
-      "item": "redstone",
-      "amount": "100-125"
-    },
-    {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "20-30"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/map",
+        "strange:crafted/clock"
+      ],
+      "amount": "60-65"
     }
   ]
 }

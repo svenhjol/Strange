@@ -3,12 +3,26 @@
   "type": "gather",
   "gather": [
     {
-      "item": "nether_wart",
-      "amount": "60-80"
+      "lists": [
+        "strange:drops/blaze_rod",
+        "strange:drops/scute"
+      ],
+      "amount": "8-10"
     },
     {
-      "list": "strange:rare_brewing_gather",
-      "amount": "6-8"
+      "lists": [
+        "strange:ores/gold_block",
+        "strange:gems/diamond",
+        "strange:gems/emerald_block"
+      ],
+      "amount": "20-22"
+    },
+    {
+      "lists": [
+        "strange:ores/gold_ingot",
+        "strange:plants/nether_wart"
+      ],
+      "amount": "190-200"
     }
   ]
 }

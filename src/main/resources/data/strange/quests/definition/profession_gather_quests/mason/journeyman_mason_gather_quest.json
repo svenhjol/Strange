@@ -3,16 +3,34 @@
   "type": "gather",
   "gather": [
     {
-      "item": "clay_ball",
-      "amount": "90-110"
+      "lists": [
+        "strange:brewing/glowstone_dust",
+        "strange:gems/lapis_lazuli",
+        "strange:gems/amethyst_shard",
+        "strange:gems/quartz",
+        "strange:ores/redstone_block",
+        "strange:ores/copper_block",
+        "strange:ores/weathered_copper_blocks",
+        "strange:stone/overworld_geode_rocks"
+      ],
+      "amount": "110-120"
     },
     {
-      "list": "strange:common_stone_gather",
-      "amount": "50-70"
+      "lists": [
+        "strange:nether_igneous_rocks"
+      ],
+      "amount": "200-210"
     },
     {
-      "list": "strange:uncommon_stone_gather",
-      "amount": "30-50"
+      "lists": [
+        "strange:earth/clay",
+        "strange:earth/sand",
+        "strange:earth/gravel",
+        "strange:stone/stone",
+        "strange:stone/deepslate",
+        "strange:stone/overworld_igneous_rocks"
+      ],
+      "amount": "400-410"
     }
   ]
 }

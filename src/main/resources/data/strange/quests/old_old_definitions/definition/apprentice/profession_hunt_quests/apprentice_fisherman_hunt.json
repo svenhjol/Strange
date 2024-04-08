@@ -15,10 +15,7 @@
     }
   ],
   "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
+
     {
       "list": "strange:cooked_food",
       "amount": "5-8"

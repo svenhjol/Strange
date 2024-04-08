@@ -3,12 +3,30 @@
   "type": "gather",
   "gather": [
     {
-      "item": "pumpkin",
-      "amount": "5-6"
+      "lists": [
+        "strange:crafted/milk_bucket"
+      ],
+      "amount": "8-10"
     },
     {
-      "list": "strange:common_farming_gather",
-      "amount": "25-35"
+      "lists": [
+        "strange:food/pumpkin",
+        "strange:crops/hay_block"
+      ],
+      "amount": "12-15"
+    },
+    {
+      "lists": [
+        "strange:food/uncooked_food"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:crops/village_crops",
+        "strange:ores/coal"
+      ],
+      "amount": "60-65"
     }
   ]
 }

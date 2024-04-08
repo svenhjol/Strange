@@ -3,12 +3,33 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_fletching_gather",
-      "amount": "35-50"
+      "lists": [
+        "strange:drops/gunpowder"
+      ],
+      "amount": "20-22"
     },
     {
-      "list": "strange:uncommon_fletching_gather",
-      "amount": "40-50"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:drops/feather"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:ores/iron_ingot",
+        "strange:brewing/glowstone_dust"
+      ],
+      "amount": "100-110"
+    },
+    {
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/flint",
+        "strange:ores/copper_ingot",
+        "strange:drops/string"
+      ],
+      "amount": "120-130"
     }
   ]
 }

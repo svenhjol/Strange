@@ -3,12 +3,34 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "35-50"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/clock",
+        "strange:crafted/writable_book"
+      ],
+      "amount": "120-130"
     },
     {
-      "list": "strange:uncommon_librarian_gather",
-      "amount": "80-100"
+      "lists": [
+        "strange:crafted/book"
+      ],
+      "amount": "210-220"
+    },
+    {
+      "lists": [
+        "strange:drops/leather",
+        "strange:drops/feather",
+        "strange:drops/ink_sac"
+      ],
+      "amount": "240-250"
+    },
+    {
+      "lists": [
+        "strange:ores/redstone_block",
+        "strange:ores/copper_block",
+        "strange:ores/weathered_copper_blocks"
+      ],
+      "amount": "300-310"
     }
   ]
 }

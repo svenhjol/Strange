@@ -3,8 +3,25 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_scholar_gather",
-      "amount": "15-23"
+      "lists": [
+        "strange:drops/leather",
+        "strange:crafted/glass_bottle"
+      ],
+      "amount": "12-15"
+    },
+    {
+      "lists": [
+        "strange:ores/coal",
+        "strange:crafted/paper"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:plants/sugar_cane",
+        "strange:ores/redstone"
+      ],
+      "amount": "45-50"
     }
   ]
 }

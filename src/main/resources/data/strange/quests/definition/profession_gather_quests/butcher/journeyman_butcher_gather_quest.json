@@ -3,16 +3,32 @@
   "type": "gather",
   "gather": [
     {
-      "item": "leather",
-      "amount": "17-24"
+      "lists": [
+        "strange:underwater/dried_kelp"
+      ],
+      "amount": "120-130"
     },
     {
-      "list": "strange:common_food_gather",
-      "amount": "17-24"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:food/beef",
+        "strange:mobs/leather"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_food_gather",
-      "amount": "12-16"
+      "lists": [
+        "strange:food/melon",
+        "strange:food/pumpkin",
+        "strange:bees/honeycomb"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:underwater/dried_kelp_block"
+      ],
+      "amount": "15-20"
     }
   ]
 }

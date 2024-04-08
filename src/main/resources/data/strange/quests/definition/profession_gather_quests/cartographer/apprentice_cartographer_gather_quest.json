@@ -3,12 +3,24 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_scholar_gather",
-      "amount": "25-35"
+      "lists": [
+        "strange:crafted/glass_pane",
+        "strange:crafted/paper"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "6-9"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/map"
+      ],
+      "amount": "10-15"
+    },
+    {
+      "lists": [
+        "strange:ores/iron_ingot"
+      ],
+      "amount": "30-35"
     }
   ]
 }

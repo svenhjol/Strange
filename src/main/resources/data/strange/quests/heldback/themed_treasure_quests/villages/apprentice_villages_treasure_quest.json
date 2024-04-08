@@ -25,10 +25,7 @@
     }
   ],
   "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
+
     {
       "item": "cod_bucket",
       "amount": 2

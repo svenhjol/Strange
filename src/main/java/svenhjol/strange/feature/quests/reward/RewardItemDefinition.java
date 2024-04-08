@@ -4,8 +4,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.strange.data.LinkedItemList;
-import svenhjol.strange.feature.quests.QuestDefinition;
 import svenhjol.strange.feature.quests.BaseDefinition;
+import svenhjol.strange.feature.quests.QuestDefinition;
+import svenhjol.strange.feature.quests.Quests;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
-    public ResourceLocation list;
+    public List<ResourceLocation> lists = new ArrayList<>();
     public ResourceLocation lootTable;
     public Item item;
     public int amount;
@@ -32,7 +33,12 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
 
             switch (key) {
                 case "list": {
-                    this.list = parseResourceLocation(val).orElseThrow();
+                    var list = parseResourceLocation(val).orElseThrow();
+                    this.lists.add(list);
+                    break;
+                }
+                case "lists": {
+                    this.lists = parseResourceLocationList(val).orElseThrow();
                     break;
                 }
                 case "item": {
@@ -67,8 +73,6 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
     }
 
     public List<RewardItem> items() {
-        var max = 4;
-        var localAmount = amount;
         var multiplier = definition.rewardMultiplier();
 
         List<ItemStack> out = new ArrayList<>();
@@ -79,30 +83,33 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
 
         // TODO: loot tables
 
-        if (item != null && list != null) {
-            localAmount /= 2; // Half the full amount goes each of the item and the list
-            max -= 1; // One is now the item, the rest is the list
-        }
-
+        // Handle case when single item type.
         if (item != null) {
-            out.add(new ItemStack(item, localAmount));
+            out.add(new ItemStack(item, amount));
         }
 
-        if (list != null) {
-            List<Item> sublist = new ArrayList<>();
-            var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
-            if (items.isEmpty()) {
-                throw new RuntimeException("Reward item list is empty: " + list);
+        // Handle case when list or lists.
+        if (!lists.isEmpty()) {
+            LinkedItemList allItems = new LinkedItemList();
+            LinkedItemList limitedItems = new LinkedItemList();
+
+            for (var list : lists) {
+                var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
+                if (items.isEmpty()) {
+                    throw new RuntimeException("Reward item list is empty: " + list + " in " + definition.id());
+                }
+                allItems.addAll(items);
             }
 
-            if (weight < 0) {
-                sublist.addAll(items.subset(max, random()));
+            if (weight <= 0) {
+                limitedItems.addAll(allItems.subset(Quests.maxQuestRewards, random()));
             } else {
-                sublist.addAll(items.subset(max, weight, 0.1d, random()));
+                limitedItems.addAll(allItems.subset(Quests.maxQuestRewards, weight, 0.1d, random()));
             }
 
-            for (var item : sublist) {
-                out.add(new ItemStack(item, Math.min(item.getMaxStackSize(), (int)(localAmount * multiplier))));
+            for (var item : limitedItems) {
+                var count = Math.min(item.getMaxStackSize(), (int)(amount * multiplier));
+                out.add(new ItemStack(item, count));
             }
         }
 

@@ -3,8 +3,23 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_farming_gather",
-      "amount": "18-22"
+      "lists": [
+        "strange:food/uncooked_food"
+      ],
+      "amount": "12-15"
+    },
+    {
+      "lists": [
+        "strange:crops/village_crops",
+        "strange:ores/coal"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:plants/sugar_cane"
+      ],
+      "amount": "45-50"
     }
   ]
 }

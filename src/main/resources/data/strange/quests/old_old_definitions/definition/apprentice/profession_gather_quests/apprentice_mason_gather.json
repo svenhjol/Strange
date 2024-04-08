@@ -15,10 +15,7 @@
     }
   ],
   "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
+
     {
       "item": "brick",
       "amount": "22-28"

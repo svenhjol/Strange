@@ -3,12 +3,29 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:common_scholar_gather",
-      "amount": "50-65"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/map",
+        "strange:crafted/clock"
+      ],
+      "amount": "30-35"
     },
     {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "12-18"
+      "lists": [
+        "strange:drops/leather",
+        "strange:drops/feather",
+        "strange:drops/ink_sac",
+        "strange:ores/coal",
+        "strange:ores/copper_ingot"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:gems/lapis_lazuli",
+        "strange:gems/amethyst_shard"
+      ],
+      "amount": "110-120"
     }
   ]
 }

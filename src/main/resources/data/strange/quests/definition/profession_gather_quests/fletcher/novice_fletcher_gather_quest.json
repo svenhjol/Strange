@@ -3,16 +3,30 @@
   "type": "gather",
   "gather": [
     {
-      "item": "stick",
-      "amount": "28-32"
-    },
-    {
-      "item": "gravel",
+      "lists": [
+        "strange:drops/feather"
+      ],
       "amount": "12-15"
     },
     {
-      "list": "strange:common_fletching_gather",
-      "amount": "5-8"
+      "lists": [
+        "strange:ores/coal",
+        "strange:ores/flint",
+        "strange:drops/string"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:earth/gravel"
+      ],
+      "amount": "90-100"
+    },
+    {
+      "lists": [
+        "strange:wood/stick"
+      ],
+      "amount": "180-200"
     }
   ]
 }

@@ -3,20 +3,33 @@
   "type": "gather",
   "gather": [
     {
-      "item": "rabbit_hide",
+      "lists": [
+        "strange:drops/scute",
+        "strange:drops/rabbit_foot"
+      ],
+      "amount": "3-4"
+    },
+    {
+      "lists": [
+        "strange:drops/rabbit_hide"
+      ],
       "amount": "8-10"
     },
     {
-      "item": "coal",
-      "amount": "50-60"
+      "lists": [
+        "strange:drops/string",
+        "strange:ores/flint"
+      ],
+      "amount": "120-130"
     },
     {
-      "list": "strange:common_leatherworking_gather",
-      "amount": "35-50"
-    },
-    {
-      "list": "strange:uncommon_leatherworking_gather",
-      "amount": "36-42"
+      "lists": [
+        "strange:ores/coal",
+        "strange:food/beef",
+        "strange:drops/leather",
+        "strange:flowers/dyes"
+      ],
+      "amount": "60-65"
     }
   ]
 }

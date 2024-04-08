@@ -3,20 +3,27 @@
   "type": "gather",
   "gather": [
     {
-      "item": "coal",
-      "amount": "42-54"
+      "lists": [
+        "strange:fish/pufferfish",
+        "strange:fish/tropical_fish"
+      ],
+      "amount": "30-35"
     },
     {
-      "item": "string",
-      "amount": "42-54"
+      "lists": [
+        "strange:food/uncooked_food",
+        "strange:food/cod",
+        "strange:food/salmon"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:common_fishing_gather",
-      "amount": "22-28"
-    },
-    {
-      "list": "strange:uncommon_fishing_gather",
-      "amount": "9-13"
+      "lists": [
+        "strange:ores/coal",
+        "strange:drops/string",
+        "strange:underwater/dried_kelp"
+      ],
+      "amount": "120-130"
     }
   ]
 }

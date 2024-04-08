@@ -93,10 +93,10 @@ public interface SimpleObjectParser {
         return Optional.empty();
     }
 
-    @SuppressWarnings("unchecked")
     default Optional<List<ResourceLocation>> parseResourceLocationList(Object rs) {
         if (rs instanceof List<?> rsl) {
-            return Optional.of((List<ResourceLocation>) rsl);
+            var out = rsl.stream().map(s -> parseResourceLocation(s).orElseThrow()).toList();
+            return Optional.of(out);
         } else if (rs instanceof String str) {
             var list = Arrays.stream(str.split(",")).toList();
             List<ResourceLocation> out = new ArrayList<>();

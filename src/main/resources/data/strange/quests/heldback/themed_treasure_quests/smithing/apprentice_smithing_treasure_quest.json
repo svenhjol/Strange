@@ -20,10 +20,7 @@
     }
   ],
   "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "4-7"
-    },
+
     {
       "list": "strange:general_tool_rewards",
       "amount": 2

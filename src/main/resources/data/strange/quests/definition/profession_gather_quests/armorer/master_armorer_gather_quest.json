@@ -3,8 +3,16 @@
   "type": "gather",
   "gather": [
     {
-      "list": "strange:uncommon_metalworking_gather",
-      "amount": "200-220"
+      "lists": [
+        "strange:ores/iron_block",
+        "strange:ores/gold_block",
+        "strange:gems/diamond"
+      ],
+      "amount": "32-34"
+    },
+    {
+      "list": "strange:ores/netherite_scrap",
+      "amount": "18-20"
     }
   ]
 }

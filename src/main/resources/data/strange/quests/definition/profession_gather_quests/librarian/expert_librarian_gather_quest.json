@@ -3,16 +3,35 @@
   "type": "gather",
   "gather": [
     {
-      "item": "writable_book",
-      "amount": "25-35"
+      "lists": [
+        "strange:crafted/compass",
+        "strange:crafted/clock",
+        "strange:crafted/writable_book"
+      ],
+      "amount": "60-65"
     },
     {
-      "list": "strange:uncommon_scholar_gather",
-      "amount": "20-30"
+      "lists": [
+        "strange:crafted/book"
+      ],
+      "amount": "110-120"
     },
     {
-      "list": "strange:uncommon_librarian_gather",
-      "amount": "40-60"
+      "lists": [
+        "strange:drops/leather",
+        "strange:drops/feather",
+        "strange:drops/ink_sac"
+      ],
+      "amount": "120-130"
+    },
+    {
+      "lists": [
+        "strange:gems/lapis_lazuli",
+        "strange:gems/amethyst_shard",
+        "strange:ores/redstone_block",
+        "strange:ores/copper_block"
+      ],
+      "amount": "220-230"
     }
   ]
 }
