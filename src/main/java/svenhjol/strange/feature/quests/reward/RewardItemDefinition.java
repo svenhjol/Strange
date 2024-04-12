@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests.reward;
 
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -100,6 +101,8 @@ public class RewardItemDefinition extends BaseDefinition<RewardItemDefinition> {
                 }
                 allItems.addAll(items);
             }
+
+            Util.shuffle(allItems, random());
 
             if (weight <= 0) {
                 limitedItems.addAll(allItems.subset(Quests.maxQuestRewards, random()));

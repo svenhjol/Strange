@@ -1,6 +1,7 @@
 package svenhjol.strange.feature.quests.gather;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -84,6 +85,8 @@ public class GatherDefinition extends BaseDefinition<GatherDefinition> {
                 }
                 allItems.addAll(items);
             }
+
+            Util.shuffle(allItems, random());
 
             var max = Math.min(
                 Math.min(Quests.maxQuestRequirements, allItems.size()),
