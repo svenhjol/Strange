@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 public class HuntDefinition extends BaseDefinition<HuntDefinition> {
-    private ResourceLocation list;
     private EntityType<?> entity;
     private int amount = 1;
     private double weight = -1;
+    private List<ResourceLocation> lists = new ArrayList<>();
 
     public HuntDefinition(QuestDefinition definition) {
         super(definition);
@@ -32,7 +32,12 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
 
             switch (key) {
                 case "list": {
-                    this.list = parseResourceLocation(val).orElseThrow();
+                    var list = parseResourceLocation(val).orElseThrow();
+                    this.lists.add(list);
+                    break;
+                }
+                case "lists": {
+                    this.lists = parseResourceLocationList(val).orElseThrow();
                     break;
                 }
                 case "mob", "entity": {
@@ -60,43 +65,44 @@ public class HuntDefinition extends BaseDefinition<HuntDefinition> {
 
     public List<Pair<EntityType<?>, Integer>> mobs() {
         List<Pair<EntityType<?>, Integer>> out = new ArrayList<>();
-        List<EntityType<?>> sublist = new ArrayList<>();
 
-        var localAmount = amount;
-        var localMax = Quests.maxQuestRequirements;
-
-        if (entity != null && list != null) {
-            localAmount /= 2;
-            localMax -= 1;
-        }
-
+        // Handle case when single mob.
         if (entity != null) {
-            out.add(Pair.of(entity, localAmount));
+            out.add(Pair.of(entity, amount));
+            return out;
         }
 
-        if (list != null) {
-            var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
-            if (mobs.isEmpty()) {
-                throw new RuntimeException("Hunt entity list is empty: " + list);
+        // Handle case when list or lists.
+        if (!lists.isEmpty()) {
+            LinkedEntityTypeList allEntities = new LinkedEntityTypeList();
+            LinkedEntityTypeList limitedEntities = new LinkedEntityTypeList();
+
+            for (var list : lists) {
+                var mobs = LinkedEntityTypeList.load(entries().getOrDefault(list, new LinkedList<>()));
+                if (mobs.isEmpty()) {
+                    throw new RuntimeException("Hunt entity list is empty: " + list + " in " + definition.id());
+                }
+                allEntities.addAll(mobs);
             }
 
-            Util.shuffle(mobs, random());
+            Util.shuffle(allEntities, random());
 
             var max = Math.min(
-                Math.min(localMax, mobs.size()),
+                Math.min(Quests.maxQuestRequirements, allEntities.size()),
                 definition.level() + random().nextInt(2));
 
             if (weight <= 0) {
-                sublist.addAll(mobs.subset(max, random()));
+                limitedEntities.addAll(allEntities.subset(max, random()));
             } else {
-                sublist.addAll(mobs.subset(max, weight, 0.1d, random()));
+                limitedEntities.addAll(allEntities.subset(max, weight, 0.1d, random()));
             }
 
-            for (var mob : sublist) {
-                out.add(Pair.of(mob, localAmount / max));
+            for (var mob : limitedEntities) {
+                out.add(Pair.of(mob, amount / max));
             }
+            return out;
         }
 
-        return out;
+        throw new RuntimeException("Hunt items failed to populate: " + definition.id());
     }
 }
