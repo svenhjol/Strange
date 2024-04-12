@@ -3,16 +3,19 @@
   "type": "gather",
   "gather": [
     {
-      "item": "flint",
-      "amount": "65-75"
+      "lists": [
+        "strange:ores/iron_ingot",
+        "strange:ores/gold_ingot",
+        "strange:ores/flint"
+      ],
+      "amount": "100-110"
     },
     {
-      "list": "strange:common_metalworking_gather",
-      "amount": "70-90"
-    },
-    {
-      "list": "strange:uncommon_metalworking_gather",
-      "amount": "50-70"
+      "lists": [
+        "strange:ores/iron_block",
+        "strange:ores/gold_block"
+      ],
+      "amount": "12-14"
     }
   ]
 }

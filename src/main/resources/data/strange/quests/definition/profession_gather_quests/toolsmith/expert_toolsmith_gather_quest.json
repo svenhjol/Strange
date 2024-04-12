@@ -3,16 +3,18 @@
   "type": "gather",
   "gather": [
     {
-      "item": "flint",
-      "amount": "110-130"
+      "lists": [
+        "strange:ores/iron_block",
+        "strange:ores/gold_block",
+        "strange:gems/diamond"
+      ],
+      "amount": "20-22"
     },
     {
-      "list": "strange:common_metalworking_gather",
-      "amount": "120-140"
-    },
-    {
-      "list": "strange:uncommon_metalworking_gather",
-      "amount": "100-120"
+      "lists": [
+        "strange:ores/netherite_scrap"
+      ],
+      "amount": "10-12"
     }
   ]
 }

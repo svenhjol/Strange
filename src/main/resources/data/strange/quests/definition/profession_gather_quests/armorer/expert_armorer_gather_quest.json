@@ -5,6 +5,7 @@
     {
       "lists": [
         "strange:ores/iron_block",
+        "strange:ores/gold_block",
         "strange:gems/diamond"
       ],
       "amount": "20-22"

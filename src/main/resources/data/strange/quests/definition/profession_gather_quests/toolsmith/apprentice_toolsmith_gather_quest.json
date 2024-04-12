@@ -3,16 +3,31 @@
   "type": "gather",
   "gather": [
     {
-      "item": "flint",
+      "lists": [
+        "strange:ores/copper_ingot",
+        "strange:ores/flint"
+      ],
+      "amount": "60-65"
+    },
+    {
+      "lists": [
+        "strange:ores/gold_ingot",
+        "strange:stone/obsidian"
+      ],
+      "amount": "20-25"
+    },
+    {
+      "lists": [
+        "strange:ores/iron_ingot"
+      ],
       "amount": "30-35"
     },
     {
-      "list": "strange:common_metalworking_gather",
-      "amount": "35-45"
-    },
-    {
-      "list": "strange:uncommon_metalworking_gather",
-      "amount": "15-20"
+      "lists": [
+        "strange:crafted/lava_bucket",
+        "strange:crafted/water_bucket"
+      ],
+      "amount": "8-10"
     }
   ]
 }

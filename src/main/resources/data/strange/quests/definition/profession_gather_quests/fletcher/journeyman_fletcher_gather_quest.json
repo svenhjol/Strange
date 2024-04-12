@@ -24,7 +24,6 @@
     },
     {
       "lists": [
-        "strange:ores/coal",
         "strange:ores/flint",
         "strange:ores/copper_ingot",
         "strange:drops/string"
