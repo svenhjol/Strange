@@ -3,28 +3,27 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "husk",
-      "amount": "20-24"
+      "lists": [
+        "strange:evoker"
+      ],
+      "amount": "2-3"
     },
     {
-      "mob": "stray",
-      "amount": "20-24"
+      "lists": [
+        "strange:vindicator",
+        "strange:ghast"
+      ],
+      "amount": "15-20"
     },
     {
-      "mob": "guardian",
-      "amount": "12-15"
-    },
-    {
-      "mob": "evoker",
-      "amount": "1-2"
-    },
-    {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "18-20"
-    },
-    {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "5-7"
+      "lists": [
+        "strange:enderman",
+        "strange:magma_cube",
+        "strange:witch",
+        "strange:uncommon_zombies",
+        "strange:uncommon_skeletons"
+      ],
+      "amount": "30-35"
     }
   ]
 }

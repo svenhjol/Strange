@@ -3,32 +3,27 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "pillager",
-      "amount": "10-12"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:zombified_piglin",
+        "strange:sheep",
+        "strange:cow",
+        "strange:chicken",
+        "strange:cod"
+      ],
+      "amount": "30-35"
     },
     {
-      "mob": "zombie_villager",
-      "amount": "10-12"
-    },
-    {
-      "mob": "cave_spider",
-      "amount": "10-12"
-    },
-    {
-      "mob": "hoglin",
-      "amount": "4-5"
-    },
-    {
-      "mob": "drowned",
-      "amount": "10-12"
-    },
-    {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "10-12"
-    },
-    {
-      "list": "strange:uncommon_neutral_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:creeper",
+        "strange:zombie_villager",
+        "strange:hoglin",
+        "strange:bat",
+        "strange:fox",
+        "strange:rabbit"
+      ],
+      "amount": "10-15"
     }
   ]
 }

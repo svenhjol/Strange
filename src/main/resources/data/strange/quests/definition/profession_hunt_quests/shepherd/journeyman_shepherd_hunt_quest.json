@@ -3,16 +3,27 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "cave_spider",
-      "amount": "10-12"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:zombified_piglin",
+        "strange:sheep",
+        "strange:cow",
+        "strange:chicken",
+        "strange:cod"
+      ],
+      "amount": "30-35"
     },
     {
-      "mob": "sheep",
-      "amount": "30-40"
-    },
-    {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "12-14"
+      "lists": [
+        "strange:creeper",
+        "strange:zombie_villager",
+        "strange:hoglin",
+        "strange:bat",
+        "strange:fox",
+        "strange:rabbit"
+      ],
+      "amount": "10-15"
     }
   ]
 }

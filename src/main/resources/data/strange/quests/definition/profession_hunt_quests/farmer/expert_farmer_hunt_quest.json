@@ -3,16 +3,26 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "hoglin",
-      "amount": "13-15"
+      "lists": [
+        "strange:ghast",
+        "strange:shulker",
+        "strange:axolotl",
+        "strange:panda",
+        "strange:strider"
+      ],
+      "amount": "12-15"
     },
     {
-      "mob": "drowned",
-      "amount": "18-20"
-    },
-    {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "2-3"
+      "lists": [
+        "strange:witch",
+        "strange:slime",
+        "strange:magma_cube",
+        "strange:hoglin",
+        "strange:llama",
+        "strange:camel",
+        "strange:horse"
+      ],
+      "amount": "30-35"
     }
   ]
 }

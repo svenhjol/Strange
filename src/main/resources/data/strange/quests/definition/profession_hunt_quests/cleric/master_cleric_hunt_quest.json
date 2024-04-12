@@ -3,12 +3,25 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "elder_guardian",
-      "amount": "3-4"
+      "lists": [
+        "strange:evoker"
+      ],
+      "amount": "5-7"
     },
     {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:vex",
+        "strange:shulker"
+      ],
+      "amount": "12-15"
+    },
+    {
+      "lists": [
+        "strange:vindicator",
+        "strange:ghast",
+        "strange:strider"
+      ],
+      "amount": "30-35"
     }
   ]
 }

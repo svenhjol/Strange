@@ -3,8 +3,15 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "5-7"
+      "lists": [
+        "strange:ghast",
+        "strange:shulker",
+        "strange:vindicadtor",
+        "strange:axolotl",
+        "strange:panda",
+        "strange:ocelot"
+      ],
+      "amount": "30-35"
     }
   ]
 }

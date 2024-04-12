@@ -3,8 +3,21 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:common_ambient_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:sheep",
+        "strange:cow",
+        "strange:pig",
+        "strange:chicken"
+      ],
+      "amount": "5-10"
+    },
+    {
+      "lists": [
+        "strange:zombie_villager"
+      ],
+      "amount": "2-4"
     }
   ]
 }

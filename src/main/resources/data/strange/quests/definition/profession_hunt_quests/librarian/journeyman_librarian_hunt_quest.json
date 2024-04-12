@@ -3,16 +3,28 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "vex",
-      "amount": "2-3"
+      "lists": [
+        "strange:vindicator",
+        "strange:ghast"
+      ],
+      "amount": "5-7"
     },
     {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:zombified_piglin"
+      ],
+      "amount": "30-35"
     },
     {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:pillager",
+        "strange:hoglin",
+        "strange:uncommon_zombies",
+        "strange:uncommon_skeletons"
+      ],
+      "amount": "12-15"
     }
   ]
 }

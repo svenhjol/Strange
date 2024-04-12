@@ -3,12 +3,26 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "20-22"
+      "lists": [
+        "strange:ghast",
+        "strange:shulker",
+        "strange:axolotl",
+        "strange:panda",
+        "strange:strider"
+      ],
+      "amount": "12-15"
     },
     {
-      "list": "strange:rare_ambient_mob_hunt",
-      "amount": "4-6"
+      "lists": [
+        "strange:witch",
+        "strange:slime",
+        "strange:magma_cube",
+        "strange:hoglin",
+        "strange:llama",
+        "strange:camel",
+        "strange:horse"
+      ],
+      "amount": "30-35"
     }
   ]
 }

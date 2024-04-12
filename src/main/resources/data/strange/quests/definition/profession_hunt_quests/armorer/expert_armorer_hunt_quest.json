@@ -3,28 +3,38 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "vindicator",
-      "amount": "10-12"
-    },
-    {
-      "mob": "ravager",
-      "amount": "3-4"
-    },
-    {
-      "mob": "guardian",
+      "lists": [
+        "strange:wither_skeleton",
+        "strange:ghast"
+      ],
       "amount": "12-15"
     },
     {
-      "mob": "piglin_brute",
-      "amount": "1-2"
+      "lists": [
+        "strange:piglin_brute"
+      ],
+      "amount": "2-3"
     },
     {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "18-20"
-    },
-    {
-      "list": "strange:rare_hostile_mob_hunt",
+      "lists": [
+        "strange:ravager"
+      ],
       "amount": "5-7"
+    },
+    {
+      "lists": [
+        "strange:vindicator",
+        "strange:guardian"
+      ],
+      "amount": "15-20"
+    },
+    {
+      "lists": [
+        "strange:phantom",
+        "strange:magma_cube",
+        "strange:zombie_villager"
+      ],
+      "amount": "30-35"
     }
   ]
 }

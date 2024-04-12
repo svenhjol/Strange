@@ -3,16 +3,22 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "pillager",
-      "amount": "4-5"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:sheep",
+        "strange:cow",
+        "strange:pig",
+        "strange:chicken"
+      ],
+      "amount": "15-20"
     },
     {
-      "mob": "sheep",
-      "amount": "20-25"
-    },
-    {
-      "list": "strange:common_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:creeper",
+        "strange:zombie_villager"
+      ],
+      "amount": "5-7"
     }
   ]
 }

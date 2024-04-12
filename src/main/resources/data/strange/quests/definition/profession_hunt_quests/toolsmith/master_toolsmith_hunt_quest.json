@@ -3,16 +3,24 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "evoker",
-      "amount": "3-5"
+      "lists": [
+        "strange:wither_skeleton",
+        "strange:ghast"
+      ],
+      "amount": "30-35"
     },
     {
-      "mob": "piglin_brute",
-      "amount": "3-5"
+      "lists": [
+        "strange:piglin_brute"
+      ],
+      "amount": "5-7"
     },
     {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:ravager",
+        "strange:vex"
+      ],
+      "amount": "12-15"
     }
   ]
 }

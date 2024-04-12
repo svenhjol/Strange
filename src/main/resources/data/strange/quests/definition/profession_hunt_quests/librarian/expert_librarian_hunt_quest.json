@@ -3,16 +3,27 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "evoker",
-      "amount": "1-2"
+      "lists": [
+        "strange:evoker"
+      ],
+      "amount": "2-3"
     },
     {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "18-20"
+      "lists": [
+        "strange:vindicator",
+        "strange:ghast"
+      ],
+      "amount": "15-20"
     },
     {
-      "list": "strange:rare_ambient_mob_hunt",
-      "amount": "4-6"
+      "lists": [
+        "strange:enderman",
+        "strange:magma_cube",
+        "strange:witch",
+        "strange:uncommon_zombies",
+        "strange:uncommon_skeletons"
+      ],
+      "amount": "30-35"
     }
   ]
 }

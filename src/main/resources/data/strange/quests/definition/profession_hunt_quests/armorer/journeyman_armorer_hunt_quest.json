@@ -3,20 +3,34 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "vindicator",
-      "amount": "4-5"
+      "lists": [
+        "strange:zombie",
+        "strange:skeleton",
+        "strange:spider"
+      ],
+      "amount": "30-35"
     },
     {
-      "mob": "iron_golem",
+      "lists": [
+        "strange:pillager",
+        "strange:creeper",
+        "strange:zombie_villager",
+        "strange:witch"
+      ],
+      "amount": "10-15"
+    },
+    {
+      "lists": [
+        "strange:vindicator",
+        "strange:guardian"
+      ],
+      "amount": "5-7"
+    },
+    {
+      "lists": [
+        "strange:iron_golem"
+      ],
       "amount": "2-3"
-    },
-    {
-      "mob": "guardian",
-      "amount": "4-5"
-    },
-    {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "10-12"
     }
   ]
 }
