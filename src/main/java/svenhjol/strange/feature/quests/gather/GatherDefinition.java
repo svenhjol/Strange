@@ -103,43 +103,4 @@ public class GatherDefinition extends BaseDefinition<GatherDefinition> {
 
         throw new RuntimeException("Gather items failed to populate: " + definition.id());
     }
-
-//    public List<Pair<ItemStack, Integer>> _items() {
-//        List<Pair<ItemStack, Integer>> out = new ArrayList<>();
-//        var localAmount = amount;
-//        var localMax = Quests.maxQuestRequirements;
-//
-//        if (item != null && list != null) {
-//            localAmount /= 2; // Half the full amount goes each of the item and the list
-//            localMax -= 1; // One is now the item, the rest is the list
-//        }
-//
-//        if (item != null) {
-//            out.add(Pair.of(new ItemStack(item), localAmount));
-//        }
-//
-//        if (list != null) {
-//            List<Item> sublist = new ArrayList<>();
-//            var items = LinkedItemList.load(entries().getOrDefault(list, new LinkedList<>()));
-//            if (items.isEmpty()) {
-//                throw new RuntimeException("Gather item list is empty: " + list);
-//            }
-//
-//            var max = Math.min(
-//                Math.min(localMax, items.size()),
-//                definition.level() + random().nextInt(2));
-//
-//            if (weight <= 0) {
-//                sublist.addAll(items.subset(max, random()));
-//            } else {
-//                sublist.addAll(items.subset(max, weight, 0.1d, random()));
-//            }
-//
-//            for (var item : sublist) {
-//                out.add(Pair.of(new ItemStack(item), localAmount / max));
-//            }
-//        }
-//
-//        return out;
-//    }
 }
