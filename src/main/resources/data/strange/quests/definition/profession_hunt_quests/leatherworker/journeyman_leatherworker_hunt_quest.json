@@ -3,24 +3,32 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "hoglin",
-      "amount": "4-5"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:sheep",
+        "strange:cow",
+        "strange:zombified_piglin"
+      ],
+      "amount": "30-35"
     },
     {
-      "mob": "cow",
-      "amount": "30-40"
+      "lists": [
+        "strange:pillager",
+        "strange:witch",
+        "strange:creeper",
+        "strange:zombie_villager",
+        "strange:piglin",
+        "strange:polar_bear"
+      ],
+      "amount": "12-15"
     },
     {
-      "mob": "zombified_piglin",
-      "amount": "12-14"
-    },
-    {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "10-12"
-    },
-    {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:guardian",
+        "strange:hoglin"
+      ],
+      "amount": "5-7"
     }
   ]
 }

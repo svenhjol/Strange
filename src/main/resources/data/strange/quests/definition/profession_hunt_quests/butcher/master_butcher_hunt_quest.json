@@ -6,10 +6,11 @@
       "lists": [
         "strange:ghast",
         "strange:shulker",
-        "strange:vindicadtor",
+        "strange:vindicator",
         "strange:axolotl",
         "strange:panda",
-        "strange:ocelot"
+        "strange:zoglin",
+        "strange:turtle"
       ],
       "amount": "30-35"
     }

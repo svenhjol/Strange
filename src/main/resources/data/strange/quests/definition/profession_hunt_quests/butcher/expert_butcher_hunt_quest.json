@@ -5,10 +5,11 @@
     {
       "lists": [
         "strange:ghast",
-        "strange:shulker",
         "strange:axolotl",
         "strange:panda",
-        "strange:strider"
+        "strange:strider",
+        "strange:zoglin",
+        "strange:turtle"
       ],
       "amount": "12-15"
     },
@@ -20,7 +21,8 @@
         "strange:hoglin",
         "strange:llama",
         "strange:camel",
-        "strange:horse"
+        "strange:horse",
+        "strange:polar_bear"
       ],
       "amount": "30-35"
     }

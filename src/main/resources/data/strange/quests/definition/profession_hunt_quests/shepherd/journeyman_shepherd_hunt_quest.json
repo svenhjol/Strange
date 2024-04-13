@@ -21,9 +21,11 @@
         "strange:hoglin",
         "strange:bat",
         "strange:fox",
-        "strange:rabbit"
+        "strange:rabbit",
+        "strange:polar_bear",
+        "strange:wolf"
       ],
-      "amount": "10-15"
+      "amount": "12-15"
     }
   ]
 }

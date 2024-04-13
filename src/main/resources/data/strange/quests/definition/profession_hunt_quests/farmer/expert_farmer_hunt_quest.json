@@ -5,10 +5,9 @@
     {
       "lists": [
         "strange:ghast",
-        "strange:shulker",
-        "strange:axolotl",
         "strange:panda",
-        "strange:strider"
+        "strange:strider",
+        "strange:mooshroom"
       ],
       "amount": "12-15"
     },

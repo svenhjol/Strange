@@ -3,20 +3,18 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "hoglin",
-      "amount": "13-15"
-    },
-    {
-      "mob": "zombified_piglin",
+      "lists": [
+        "strange:strider",
+        "strange:vindicator",
+        "strange:panda"
+      ],
       "amount": "30-35"
     },
     {
-      "list": "strange:rare_ambient_mob_hunt",
-      "amount": "12-15"
-    },
-    {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:piglin_brute"
+      ],
+      "amount": "5-7"
     }
   ]
 }

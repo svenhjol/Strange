@@ -3,8 +3,25 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:rare_ambient_mob_hunt",
-      "amount": "12-15"
+      "lists": [
+        "strange:strider",
+        "strange:axolotl"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:guardian",
+        "strange:drowned",
+        "strange:silverfish"
+      ],
+      "amount": "40-50"
+    },
+    {
+      "lists": [
+        "strange:elder_guardian"
+      ],
+      "amount": "5-7"
     }
   ]
 }

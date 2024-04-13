@@ -3,24 +3,27 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "hoglin",
-      "amount": "13-15"
+      "lists": [
+        "strange:vindicator",
+        "strange:hoglin"
+      ],
+      "amount": "15-20"
     },
     {
-      "mob": "zombified_piglin",
-      "amount": "20-25"
+      "lists": [
+        "strange:piglin_brute"
+      ],
+      "amount": "2-3"
     },
     {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "18-20"
-    },
-    {
-      "list": "strange:rare_ambient_mob_hunt",
-      "amount": "4-6"
-    },
-    {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "5-7"
+      "lists": [
+        "strange:witch",
+        "strange:pillager",
+        "strange:phantom",
+        "strange:piglin",
+        "strange:polar_bear"
+      ],
+      "amount": "30-35"
     }
   ]
 }

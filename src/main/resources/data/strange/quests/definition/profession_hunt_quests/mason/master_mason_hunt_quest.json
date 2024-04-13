@@ -3,8 +3,26 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:wither_skeleton",
+        "strange:ghast"
+      ],
+      "amount": "30-35"
+    },
+    {
+      "lists": [
+        "strange:piglin_brute"
+      ],
+      "amount": "5-7"
+    },
+    {
+      "lists": [
+        "strange:ravager",
+        "strange:vex",
+        "strange:blaze",
+        "strange:iron_golem"
+      ],
+      "amount": "12-15"
     }
   ]
 }

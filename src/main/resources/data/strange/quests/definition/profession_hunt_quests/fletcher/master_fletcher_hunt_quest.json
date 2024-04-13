@@ -3,8 +3,18 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:wither_skeleton",
+        "strange:vindicator",
+        "strange:uncommon_skeletons"
+      ],
+      "amount": "40-50"
+    },
+    {
+      "lists": [
+        "strange:elder_guardian"
+      ],
+      "amount": "5-7"
     }
   ]
 }

@@ -3,20 +3,30 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "drowned",
-      "amount": "10-12"
+      "lists": [
+        "strange:zombie",
+        "strange:spider",
+        "strange:sheep",
+        "strange:squid",
+        "strange:cod",
+        "strange:salmon"
+      ],
+      "amount": "30-35"
     },
     {
-      "mob": "guardian",
-      "amount": "4-5"
+      "lists": [
+        "strange:drowned",
+        "strange:zombie_villager",
+        "strange:pillager",
+        "strange:witch"
+      ],
+      "amount": "12-15"
     },
     {
-      "mob": "squid",
-      "amount": "10-12"
-    },
-    {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "10-12"
+      "lists": [
+        "strange:guardian"
+      ],
+      "amount": "5-7"
     }
   ]
 }

@@ -3,20 +3,33 @@
   "type": "hunt",
   "hunt": [
     {
-      "mob": "drowned",
-      "amount": "13-15"
+      "lists": [
+        "strange:strider",
+        "strange:axolotl"
+      ],
+      "amount": "12-15"
     },
     {
-      "mob": "glow_squid",
-      "amount": "10-12"
+      "lists":[
+        "strange:guardian",
+        "strange:silverfish"
+      ],
+      "amount": "15-20"
     },
     {
-      "list": "strange:uncommon_ambient_mob_hunt",
-      "amount": "20-22"
+      "lists": [
+        "strange:elder_guardian"
+      ],
+      "amount": "2-3"
     },
     {
-      "list": "strange:rare_ambient_mob_hunt",
-      "amount": "4-6"
+      "lists": [
+        "strange:witch",
+        "strange:drowned",
+        "strange:slime",
+        "strange:pufferfish"
+      ],
+      "amount": "30-35"
     }
   ]
 }

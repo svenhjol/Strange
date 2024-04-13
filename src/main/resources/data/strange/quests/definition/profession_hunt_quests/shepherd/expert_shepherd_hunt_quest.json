@@ -5,7 +5,6 @@
     {
       "lists": [
         "strange:ghast",
-        "strange:shulker",
         "strange:axolotl",
         "strange:panda",
         "strange:strider"
@@ -20,7 +19,9 @@
         "strange:hoglin",
         "strange:llama",
         "strange:camel",
-        "strange:horse"
+        "strange:horse",
+        "strange:polar_bear",
+        "strange:wolf"
       ],
       "amount": "30-35"
     }

@@ -3,12 +3,26 @@
   "type": "hunt",
   "hunt": [
     {
-      "list": "strange:uncommon_hostile_mob_hunt",
-      "amount": "18-20"
+      "lists":[
+        "strange:wither_skeleton",
+        "strange:vindicator"
+      ],
+      "amount": "15-20"
     },
     {
-      "list": "strange:rare_hostile_mob_hunt",
-      "amount": "5-7"
+      "lists": [
+        "strange:elder_guardian"
+      ],
+      "amount": "2-3"
+    },
+    {
+      "lists": [
+        "strange:witch",
+        "strange:pillager",
+        "strange:uncommon_skeletons",
+        "strange:phantom"
+      ],
+      "amount": "30-35"
     }
   ]
 }

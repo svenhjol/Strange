@@ -4,12 +4,17 @@
   "hunt": [
     {
       "lists": [
+        "strange:ocelot",
+        "strange:sniffer"
+      ],
+      "amount": "12-15"
+    },
+    {
+      "lists": [
         "strange:ghast",
-        "strange:shulker",
-        "strange:vindicadtor",
+        "strange:vindicator",
         "strange:axolotl",
-        "strange:panda",
-        "strange:ocelot"
+        "strange:panda"
       ],
       "amount": "30-35"
     }
