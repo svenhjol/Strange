@@ -12,8 +12,8 @@
     },
     {
       "lists": [
-        "strange:mobs/leather",
-        "strange:mobs/beef",
+        "strange:drops/leather",
+        "strange:drops/beef",
         "strange:food/uncooked_food"
       ],
       "amount": "230-240"
