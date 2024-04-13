@@ -21,8 +21,13 @@ public class DefaultRewards {
         var items = definition.rewardItems().stream()
             .flatMap(i -> i.items().stream()).collect(Collectors.toCollection(ArrayList::new));
 
+        // We want a subset of the possible items.
+        var max = Math.min(Math.max(2, definition.level()), Quests.maxQuestRewards);
+        Util.shuffle(items, random);
+        var limitedItems = items.subList(0, Math.min(max, items.size()));
+
         // Assign the current quest to each item.
-        items.forEach(i -> i.setQuest(quest));
+        limitedItems.forEach(i -> i.setQuest(quest));
 
         var functions = definition.rewardItemFunctions().stream()
             .map(RewardItemFunctionDefinition::function).collect(Collectors.toCollection(ArrayList::new));
@@ -50,13 +55,10 @@ public class DefaultRewards {
                 Util.shuffle(funcs, random);
             }
             var func = funcs.get(0);
-            items.forEach(func::apply);
+            limitedItems.forEach(func::apply);
         }
 
-        // We want a subset of the possible items.
-        var max = Math.min(Math.max(2, definition.level()), Quests.maxQuestRewards);
-        Util.shuffle(items, random);
-        rewardItems = items.subList(0, Math.min(max, items.size()));
+        rewardItems = limitedItems;
 
         // Populate experience levels.
         rewardExperience = new RewardExperience(quest, definition.rewardExperience(), definition.rewardMultiplier());
