@@ -40,6 +40,11 @@ public class QuestOffersScreen extends Screen {
     }
 
     @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    @Override
     protected void init() {
         super.init();
         midX = width / 2;
