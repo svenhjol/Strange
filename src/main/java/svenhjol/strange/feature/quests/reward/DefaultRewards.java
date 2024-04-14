@@ -58,10 +58,17 @@ public class DefaultRewards {
             limitedItems.forEach(func::apply);
         }
 
-        rewardItems = limitedItems;
+        var multiplier = definition.rewardMultiplier();
 
         // Populate experience levels.
-        rewardExperience = new RewardExperience(quest, definition.rewardExperience(), definition.rewardMultiplier());
+        var experience = new RewardExperience(quest, definition.rewardExperience());
+
+        // Apply multiplier to each reward item and experience
+        limitedItems.forEach(i -> i.applyMultiplier(multiplier));
+        experience.applyMultiplier(multiplier);
+
+        rewardItems = limitedItems;
+        rewardExperience = experience;
     }
 
     public List<RewardItem> items() {

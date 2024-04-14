@@ -2,6 +2,7 @@ package svenhjol.strange.feature.quests.reward;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import svenhjol.strange.feature.quests.Quest;
 import svenhjol.strange.feature.quests.QuestsHelper;
 import svenhjol.strange.feature.quests.Reward;
@@ -56,5 +57,18 @@ public class RewardItem implements Reward {
         var itemTag = new CompoundTag();
         stack.save(itemTag);
         tag.put(STACK_TAG, itemTag);
+    }
+
+    @Override
+    public void applyMultiplier(double multiplier) {
+        // Exceptions.
+        if (stack.is(Items.FILLED_MAP)) {
+            return;
+        }
+
+        var originalCount = stack.getCount();
+        var newCount = Math.min(stack.getMaxStackSize(), originalCount * multiplier);
+
+        stack.setCount((int)newCount);
     }
 }

@@ -92,6 +92,10 @@ public class QuestDefinition {
     }
 
     public int loyalty() {
+        if (Quests.ignoreLoyalty) {
+            return 0;
+        }
+
         int fromTemplate = template().map(QuestDefinition::loyalty).orElse(0);
 
         if (loyalty > 0) {

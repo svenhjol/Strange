@@ -57,6 +57,7 @@ public class Quests extends CommonFeature {
     public static int maxVillagerLoyalty = 128;
     public static boolean allowLowerVillagerLevels = true;
     public static boolean loyaltyIncreasesWhenVillagerLevelMatches = true;
+    public static boolean ignoreLoyalty = true; // TODO: this should be false by default
 
     @Override
     public void register() {

@@ -18,4 +18,6 @@ public interface Reward {
     void load(CompoundTag tag);
 
     void save(CompoundTag tag);
+
+    void applyMultiplier(double multiplier);
 }
