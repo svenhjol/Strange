@@ -1,10 +1,4 @@
 {
   "level": 3,
-  "reward_items": [
-    {
-      "item": "emerald",
-      "amount": "7-10"
-    }
-  ],
   "reward_experience": 4
 }
