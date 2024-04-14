@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests.treasure;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +11,13 @@ import svenhjol.strange.feature.quests.QuestsResources;
 import svenhjol.strange.feature.quests.client.BaseQuestRenderer;
 import svenhjol.strange.feature.quests.treasure.TreasureQuest.TreasureItem;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
+    int spriteSelection = 0;
+
     @Override
     public int getPagedOfferHeight() {
         return super.getPagedOfferHeight();
@@ -39,51 +46,60 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
     @Override
     protected void renderRequirements(GuiGraphics guiGraphics, int xOffset, int yOffset, int mouseX, int mouseY) {
         var font = screen.font;
+        var level = Minecraft.getInstance().level;
 
         var xo = midX + xOffset + 1;
         var yo = yOffset;
 
-        for (int i = 0; i < Math.min(3, quest.lootTables().size()); i++) {
-            var lootTable = quest.lootTables().get(i);
-            var sprite = QuestsResources.LOOT_SPRITES.get(lootTable);
+        if (quest.lootTables.isEmpty()) {
+            return;
+        }
 
-            switch (screenType) {
-                case PAGED_ACTIVE, SELECTED_ACTIVE:
-                    guiGraphics.fill(xo, yo - 2, xo + 20, yo + 30, requirementBackgroundColor);
+        if (level != null && level.getGameTime() % 20 == 0) {
+            spriteSelection = level.getRandom().nextInt(quest.lootTables.size());
+        }
 
-                    if (sprite != null) {
-                        guiGraphics.blitSprite(sprite, xo + 2, yo + 6, 16, 16);
-                    } else {
-                        guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo + 6);
-                    }
+        var lootSprite = quest.lootTables().get(spriteSelection);
+        List<Component> lootTableNames = quest.lootTables.stream()
+                .map(l -> Component.translatableWithFallback(
+                        "loot_table." + l.getNamespace() + "." + l.getPath().replace("/", "."),
+                        niceLootTableName(l)))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-                    if (mouseX >= xo && mouseX <= xo + 16
-                        && mouseY >= yo + 6 && mouseY <= yo + 28) {
-                        var component = Component.translatableWithFallback("loot_table." + lootTable.getNamespace() + "." + lootTable.getPath().replace("/", "."),
-                            niceLootTableName(lootTable));
-                        guiGraphics.renderTooltip(font, component, xo, yo + 27);
-                    }
+        var sprite = QuestsResources.LOOT_SPRITES.get(lootSprite);
 
-                    xo += 22;
-                    break;
+        switch (screenType) {
+            case PAGED_ACTIVE, SELECTED_ACTIVE:
+                guiGraphics.fill(xo, yo - 2, xo + 20, yo + 30, requirementBackgroundColor);
 
-                case PAGED_OFFER:
-                    if (sprite != null) {
-                        guiGraphics.blitSprite(sprite, xo, yo, 16, 16);
-                    } else {
-                        guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo);
-                    }
+                if (sprite != null) {
+                    guiGraphics.blitSprite(sprite, xo + 2, yo + 6, 16, 16);
+                } else {
+                    guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo + 6);
+                }
 
-                    if (mouseX >= xo && mouseX <= xo + 16
-                        && mouseY >= yo && mouseY <= yo + 16) {
-                        var component = Component.translatableWithFallback("loot_table." + lootTable.getNamespace() + "." + lootTable.getPath().replace("/", "."),
-                            niceLootTableName(lootTable));
-                        guiGraphics.renderTooltip(font, component, xo, yo + 27);
-                    }
+                if (mouseX >= xo && mouseX <= xo + 16
+                    && mouseY >= yo + 6 && mouseY <= yo + 28) {
+                    guiGraphics.renderComponentTooltip(font, lootTableNames, xo, yo + 27);
+                }
 
-                    xo += 18;
-                    break;
-            }
+                xo += 22;
+                break;
+
+            case PAGED_OFFER:
+                if (sprite != null) {
+                    guiGraphics.blitSprite(sprite, xo, yo, 16, 16);
+                } else {
+                    guiGraphics.renderFakeItem(new ItemStack(Items.CHEST), xo, yo);
+                }
+
+                if (mouseX >= xo && mouseX <= xo + 16
+                    && mouseY >= yo && mouseY <= yo + 16) {
+                    guiGraphics.renderComponentTooltip(font, lootTableNames, xo, yo + 27);
+                }
+
+                xo += 18;
+                break;
         }
 
         for (var requirement : quest.requirements()) {
