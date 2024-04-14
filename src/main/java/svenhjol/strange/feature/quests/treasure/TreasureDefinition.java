@@ -89,7 +89,7 @@ public class TreasureDefinition extends BaseDefinition<TreasureDefinition> {
 
         Util.shuffle(lootTables, random());
 
-        var max = Math.min(Math.min(Quests.maxQuestRequirements, amount), lootTables.size());
+        var max = Math.min(amount, lootTables.size());
         for (int i = 0; i < max; i++) {
             out.add(lootTables.get(i));
         }
