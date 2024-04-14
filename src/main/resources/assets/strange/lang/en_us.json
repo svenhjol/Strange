@@ -81,6 +81,7 @@
   "gui.strange.quests.treasure": "Treasure",
   "gui.strange.quests.treasure_requirement": "Treasure:",
   "gui.strange.quests.treasure_reward": "Rewards:",
+  "gui.strange.quests.treasure_loot_tables": "Search locations:",
   "gui.strange.quests.battle": "Battle",
   "gui.strange.quests.battle_requirement": "Defeat:",
   "gui.strange.quests.battle_reward": "Rewards:",
