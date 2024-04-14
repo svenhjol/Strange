@@ -60,11 +60,14 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
         }
 
         var lootSprite = quest.lootTables().get(spriteSelection);
-        List<Component> lootTableNames = quest.lootTables.stream()
+        List<Component> lootTableNames = new ArrayList<>();
+        lootTableNames.add(Component.translatable("gui.strange.quests.treasure_loot_tables"));
+
+        lootTableNames.addAll(quest.lootTables.stream()
                 .map(l -> Component.translatableWithFallback(
                         "loot_table." + l.getNamespace() + "." + l.getPath().replace("/", "."),
                         niceLootTableName(l)))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toCollection(ArrayList::new)));
 
         var sprite = QuestsResources.LOOT_SPRITES.get(lootSprite);
 
