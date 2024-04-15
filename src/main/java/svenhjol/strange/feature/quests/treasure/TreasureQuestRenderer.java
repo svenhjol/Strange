@@ -101,7 +101,7 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
                     guiGraphics.renderComponentTooltip(font, lootTableNames, xo, yo + 27);
                 }
 
-                xo += 18;
+                xo += 20;
                 break;
         }
 
