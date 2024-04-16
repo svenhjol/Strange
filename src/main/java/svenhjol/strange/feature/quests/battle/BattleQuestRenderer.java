@@ -76,7 +76,5 @@ public class BattleQuestRenderer extends BaseQuestRenderer<BattleQuest> {
                 xo += 27 + width;
             }
         }
-
-        renderSatisfied(guiGraphics, xo, yo, mouseX, mouseY);
     }
 }

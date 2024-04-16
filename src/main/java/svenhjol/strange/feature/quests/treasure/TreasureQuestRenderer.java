@@ -150,8 +150,6 @@ public class TreasureQuestRenderer extends BaseQuestRenderer<TreasureQuest> {
 
             }
         }
-
-        renderSatisfied(guiGraphics, xo, yo + 5, mouseX, mouseY);
     }
 
     protected String niceLootTableName(ResourceLocation id) {

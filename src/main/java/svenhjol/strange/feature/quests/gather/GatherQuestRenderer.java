@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.quests.gather;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -85,7 +86,5 @@ public class GatherQuestRenderer extends BaseQuestRenderer<GatherQuest> {
                 }
             }
         }
-
-        renderSatisfied(guiGraphics, xo, yo + 5, mouseX, mouseY);
     }
 }

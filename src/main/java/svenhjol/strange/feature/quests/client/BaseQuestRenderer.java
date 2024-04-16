@@ -124,23 +124,31 @@ public abstract class BaseQuestRenderer<Q extends Quest> {
     public abstract ItemStack getQuestIcon();
 
     public void renderPagedActive(GuiGraphics guiGraphics, int yOffset, int mouseX, int mouseY) {
-        guiGraphics.drawString(screen.font, questTitle, midX - 105, yOffset, titleColor, false);
-        renderRequirements(guiGraphics, -105, yOffset + 12, mouseX, mouseY);
+        guiGraphics.drawString(screen.font, questTitle, midX - 110, yOffset, titleColor, false);
+        renderRequirements(guiGraphics, -110, yOffset + 12, mouseX, mouseY);
+
+        // Renders the tick next to the title
+        var titleWidth = screen.font.width(questTitle);
+        renderSatisfied(guiGraphics, midX - 110 + titleWidth + 2, yOffset - 4, mouseX, mouseY);
 
         if (!renderedButtons) {
             var sprites = QuestsButtons.LEVEL_TO_SCROLL_BUTTON.get(quest.villagerLevel());
-            var button = new QuestsButtons.ScrollImageButton(sprites, midX + 88, yOffset + 17, onUpdate, QuestsResources.QUEST_INFO_TEXT);
+            var button = new QuestsButtons.ScrollImageButton(sprites, midX + 92, yOffset + 17, onUpdate, QuestsResources.QUEST_INFO_TEXT);
             screen.addRenderableWidget(button);
             renderedButtons = true;
         }
     }
 
     public void renderSelectedActive(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(screen.font, getRequirementText(), midX - 105, 40, titleColor, false);
-        renderRequirements(guiGraphics, -105, 52, mouseX, mouseY);
+        guiGraphics.drawString(screen.font, getRequirementText(), midX - 110, 40, titleColor, false);
+        renderRequirements(guiGraphics, -110, 52, mouseX, mouseY);
 
-        guiGraphics.drawString(screen.font, getRewardText(), midX - 105, 95, titleColor, false);
-        renderRewards(guiGraphics, -105, 107, mouseX, mouseY);
+        // Renders the tick next to the title "Gather"
+        var titleWidth = screen.font.width(getRequirementText());
+        renderSatisfied(guiGraphics, midX - 110 + titleWidth, 36, mouseX, mouseY);
+
+        guiGraphics.drawString(screen.font, getRewardText(), midX - 110, 95, titleColor, false);
+        renderRewards(guiGraphics, -110, 107, mouseX, mouseY);
 
         // Show the professions that this quest can be returned to.
         Component professionInfo;

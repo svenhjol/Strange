@@ -113,7 +113,5 @@ public class HuntQuestRenderer extends BaseQuestRenderer<HuntQuest> {
                 }
             }
         }
-
-        renderSatisfied(guiGraphics, xo, yo + 5, mouseX, mouseY);
     }
 }
