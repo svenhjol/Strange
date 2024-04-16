@@ -1,0 +1,18 @@
+{
+  "template": "strange:treasure/master_treasure_rewards",
+  "type": "treasure",
+  "epic": true,
+  "loyalty": 10,
+  "treasure": [
+    {
+      "list": "strange:trail_ruins_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.15
+    },
+    {
+      "list": "strange:desert_well_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.33
+    }
+  ]
+}

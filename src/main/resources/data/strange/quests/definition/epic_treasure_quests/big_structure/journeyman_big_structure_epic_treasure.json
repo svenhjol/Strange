@@ -1,0 +1,18 @@
+{
+  "template": "strange:treasure/journeyman_treasure_rewards",
+  "type": "treasure",
+  "epic": true,
+  "loyalty": 10,
+  "treasure": [
+    {
+      "list": "strange:stronghold_loot_tables",
+      "amount": 3,
+      "chance": 0.25
+    },
+    {
+      "list": "strange:bastion_loot_tables",
+      "amount": 3,
+      "chance": 0.5
+    }
+  ]
+}

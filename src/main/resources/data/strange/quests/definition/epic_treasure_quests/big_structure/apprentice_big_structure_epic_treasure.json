@@ -1,0 +1,23 @@
+{
+  "template": "strange:treasure/apprentice_treasure_rewards",
+  "type": "treasure",
+  "epic": true,
+  "loyalty": 10,
+  "treasure": [
+    {
+      "list": "strange:stronghold_loot_tables",
+      "amount": 3,
+      "chance": 0.85
+    },
+    {
+      "list": "strange:nether_fortress_loot_tables",
+      "amount": 2,
+      "chance": 0.33
+    },
+    {
+      "list": "strange:desert_pyramid_loot_tables",
+      "amount": 2,
+      "chance": 0.12
+    }
+  ]
+}

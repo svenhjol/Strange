@@ -1,0 +1,38 @@
+{
+  "template": "strange:mason/apprentice_mason",
+  "type": "treasure",
+  "loyalty": 3,
+  "reward_multiplier": 2,
+  "treasure": [
+    {
+      "list": "strange:shipwreck_loot_tables",
+      "amount": 3,
+      "chance": 0.8
+    },
+    {
+      "list": "strange:igloo_loot_tables",
+      "amount": 2,
+      "chance": 1.0
+    },
+    {
+      "list": "strange:mineshaft_loot_tables",
+      "amount": 2,
+      "chance": 1.0
+    },
+    {
+      "list": "strange:pillager_outpost_loot_tables",
+      "amount": 2,
+      "chance": 0.8
+    },
+    {
+      "list": "strange:village_loot_tables",
+      "amount": 10,
+      "chance": 0.75
+    },
+    {
+      "list": "strange:fishing_loot_tables",
+      "amount": 2,
+      "chance": 0.025
+    }
+  ]
+}

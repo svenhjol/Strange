@@ -1,0 +1,13 @@
+{
+  "template": "strange:treasure/novice_treasure_rewards",
+  "type": "treasure",
+  "epic": true,
+  "loyalty": 10,
+  "treasure": [
+    {
+      "list": "strange:desert_pyramid_loot_tables",
+      "amount": 2,
+      "chance": 0.33
+    }
+  ]
+}

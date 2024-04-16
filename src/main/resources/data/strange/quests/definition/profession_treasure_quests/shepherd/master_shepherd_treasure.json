@@ -1,0 +1,38 @@
+{
+  "template": "strange:shepherd/master_shepherd",
+  "type": "treasure",
+  "loyalty": 3,
+  "reward_multiplier": 2,
+  "treasure": [
+    {
+      "list": "strange:nether_fortress_loot_tables",
+      "amount": 1,
+      "chance": 0.05
+    },
+    {
+      "list": "strange:bastion_loot_tables",
+      "amount": 2,
+      "chance": 0.25
+    },
+    {
+      "list": "strange:woodland_mansion_loot_tables",
+      "amount": 1,
+      "chance": 0.25
+    },
+    {
+      "list": "strange:stronghold_loot_tables",
+      "amount": 2,
+      "chance": 0.25
+    },
+    {
+      "list": "strange:desert_pyramid_loot_tables",
+      "amount": 1,
+      "chance": 0.05
+    },
+    {
+      "list": "strange:jungle_temple_loot_tables",
+      "amount": 1,
+      "chance": 0.05
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "template": "strange:treasure/expert_treasure_rewards",
+  "type": "treasure",
+  "epic": true,
+  "loyalty": 10,
+  "treasure": [
+    {
+      "list": "strange:desert_pyramid_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.05
+    },
+    {
+      "list": "strange:ocean_ruin_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.18
+    },
+    {
+      "list": "strange:trail_ruins_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.4
+    },
+    {
+      "list": "strange:desert_well_archaeology_loot_tables",
+      "amount": 2,
+      "chance": 0.75
+    }
+  ]
+}

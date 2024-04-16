@@ -1,0 +1,34 @@
+{
+  "level": 3,
+  "reward_items": [
+    {
+      "list": "strange:iron_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:iron_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:chainmail_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:projectile_weapon_rewards",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 20,
+      "allow_treasure": true
+    }
+  ],
+  "reward_experience": 20
+}

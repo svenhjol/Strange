@@ -1,0 +1,53 @@
+{
+  "template": "strange:farmer/journeyman_farmer",
+  "type": "treasure",
+  "loyalty": 3,
+  "reward_multiplier": 2,
+  "treasure": [
+    {
+      "list": "strange:shipwreck_loot_tables",
+      "amount": 3,
+      "chance": 0.5
+    },
+    {
+      "list": "strange:igloo_loot_tables",
+      "amount": 2,
+      "chance": 0.5
+    },
+    {
+      "list": "strange:mineshaft_loot_tables",
+      "amount": 2,
+      "chance": 0.33
+    },
+    {
+      "list": "strange:pillager_outpost_loot_tables",
+      "amount": 2,
+      "chance": 0.6
+    },
+    {
+      "list": "strange:nether_fortress_loot_tables",
+      "amount": 2,
+      "chance": 0.8
+    },
+    {
+      "list": "strange:village_loot_tables",
+      "amount": 8,
+      "chance": 0.5
+    },
+    {
+      "list": "strange:ocean_ruin_loot_tables",
+      "amount": 3,
+      "chance": 0.75
+    },
+    {
+      "list": "strange:desert_pyramid_loot_tables",
+      "amount": 2,
+      "chance": 0.75
+    },
+    {
+      "list": "strange:jungle_temple_loot_tables",
+      "amount": 2,
+      "chance": 0.8
+    }
+  ]
+}

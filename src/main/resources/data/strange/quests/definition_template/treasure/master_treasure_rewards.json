@@ -1,0 +1,30 @@
+{
+  "level": 5,
+  "reward_items": [
+    {
+      "list": "strange:diamond_armor_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_tool_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:diamond_weapon_rewards",
+      "amount": 2
+    },
+    {
+      "list": "strange:projectile_weapon_rewards",
+      "amount": 2
+    }
+  ],
+  "reward_item_functions": [
+    {
+      "name": "enchant_item",
+      "chance": 1.0,
+      "level": 30,
+      "allow_treasure": true
+    }
+  ],
+  "reward_experience": 30
+}

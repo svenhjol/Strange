@@ -1,0 +1,18 @@
+{
+  "template": "strange:treasure/master_treasure_rewards",
+  "type": "treasure",
+  "epic": true,
+  "loyalty": 10,
+  "treasure": [
+    {
+      "list": "strange:ancient_city_loot_tables",
+      "amount": 2,
+      "chance": 0.17
+    },
+    {
+      "list": "strange:end_city_loot_tables",
+      "amount": 2,
+      "chance": 0.17
+    }
+  ]
+}
