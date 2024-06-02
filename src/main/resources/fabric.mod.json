@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "strange",
+  "version": "${mod_version}",
+
+  "name": "Strange",
+  "description": "Charm, but stranger.",
+  "authors": [
+    "svenhjol",
+    "Coranthes"
+  ],
+  "icon": "icon.png",
+
+  "license": "MIT",
+  "environment": "*",
+  "mixins": [
+    "strange.mixins.json"
+  ],
+
+  "entrypoints": {
+    "main": [
+      "svenhjol.strange.fabric.CommonInitializer"
+    ],
+    "client": [
+      "svenhjol.strange.fabric.ClientInitializer"
+    ]
+  },
+
+  "accessWidener": "strange.accesswidener",
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "*",
+    "java": ">=21"
+  }
+}
