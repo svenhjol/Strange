@@ -1,0 +1,94 @@
+{
+  "template": {
+    "textures": {
+      "end": "strange:block/RUNESTONE_runestone_end",
+      "pillar": "strange:block/RUNESTONE_runestone_side1",
+      "particle": "strange:block/RUNESTONE_runestone_end"
+    },
+    "elements": [
+      {
+        "name": "top",
+        "from": [0, 14, 0],
+        "to": [16, 16, 16],
+        "rotation": {"angle": 0, "axis": "y", "origin": [0, 14, 0]},
+        "faces": {
+          "north": {"uv": [0, 0, 16, 2], "texture": "#pillar"},
+          "east": {"uv": [0, 0, 16, 2], "texture": "#pillar"},
+          "south": {"uv": [0, 0, 16, 2], "texture": "#pillar"},
+          "west": {"uv": [0, 0, 16, 2], "rotation": 180, "texture": "#pillar"},
+          "up": {"uv": [0, 0, 16, 16], "texture": "#end"},
+          "down": {"uv": [0, 0, 16, 16], "texture": "#end"}
+        }
+      },
+      {
+        "name": "pillar",
+        "from": [0, 2, 0],
+        "to": [2, 14, 2],
+        "faces": {
+          "north": {"uv": [14, 2, 16, 14], "texture": "#pillar"},
+          "east": {"uv": [12, 2, 14, 14], "texture": "#pillar"},
+          "south": {"uv": [4, 14, 2, 2], "texture": "#pillar"},
+          "west": {"uv": [0, 2, 2, 14], "texture": "#pillar"},
+          "up": {"uv": [6, 0, 8, 2], "texture": "#pillar"},
+          "down": {"uv": [8, 0, 10, 2], "texture": "#pillar"}
+        }
+      },
+      {
+        "name": "pillar",
+        "from": [0, 2, 14],
+        "to": [2, 14, 16],
+        "rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 16]},
+        "faces": {
+          "north": {"uv": [12, 2, 14, 14], "texture": "#pillar"},
+          "east": {"uv": [4, 14, 2, 2], "texture": "#pillar"},
+          "south": {"uv": [0, 2, 2, 14], "texture": "#pillar"},
+          "west": {"uv": [14, 2, 16, 14], "texture": "#pillar"},
+          "up": {"uv": [6, 0, 8, 2], "rotation": 270, "texture": "#pillar"},
+          "down": {"uv": [8, 0, 10, 2], "rotation": 90, "texture": "#pillar"}
+        }
+      },
+      {
+        "name": "pillar",
+        "from": [14, 2, 14],
+        "to": [16, 14, 16],
+        "rotation": {"angle": 0, "axis": "y", "origin": [16, 0, 16]},
+        "faces": {
+          "north": {"uv": [4, 14, 2, 2], "texture": "#pillar"},
+          "east": {"uv": [0, 2, 2, 14], "texture": "#pillar"},
+          "south": {"uv": [14, 2, 16, 14], "texture": "#pillar"},
+          "west": {"uv": [12, 2, 14, 14], "texture": "#pillar"},
+          "up": {"uv": [6, 0, 8, 2], "rotation": 180, "texture": "#pillar"},
+          "down": {"uv": [8, 0, 10, 2], "rotation": 180, "texture": "#pillar"}
+        }
+      },
+      {
+        "name": "pillar",
+        "from": [14, 2, 0],
+        "to": [16, 14, 2],
+        "rotation": {"angle": 0, "axis": "y", "origin": [16, 0, 0]},
+        "faces": {
+          "north": {"uv": [0, 2, 2, 14], "texture": "#pillar"},
+          "east": {"uv": [14, 2, 16, 14], "texture": "#pillar"},
+          "south": {"uv": [12, 2, 14, 14], "texture": "#pillar"},
+          "west": {"uv": [4, 14, 2, 2], "texture": "#pillar"},
+          "up": {"uv": [6, 0, 8, 2], "rotation": 90, "texture": "#pillar"},
+          "down": {"uv": [8, 0, 10, 2], "rotation": 270, "texture": "#pillar"}
+        }
+      },
+      {
+        "name": "bottom",
+        "from": [0, 0, 0],
+        "to": [16, 2, 16],
+        "faces": {
+          "north": {"uv": [0, 14, 16, 16], "texture": "#pillar"},
+          "east": {"uv": [0, 14, 16, 16], "texture": "#pillar"},
+          "south": {"uv": [0, 14, 16, 16], "texture": "#pillar"},
+          "west": {"uv": [0, 14, 16, 16], "texture": "#pillar"},
+          "up": {"uv": [0, 0, 16, 16], "texture": "#end"},
+          "down": {"uv": [0, 0, 16, 16], "texture": "#end"}
+        }
+      }
+    ]
+  },
+  "variants": "runestone"
+}

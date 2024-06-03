@@ -1,0 +1,13 @@
+{
+  "template": {
+    "variants": {
+      "activated=false": {
+        "model": "strange:block/RUNESTONE_runestone"
+      },
+      "activated=true": {
+        "model": "strange:block/RUNESTONE_runestone_activated"
+      }
+    }
+  },
+  "variants": "runestone"
+}

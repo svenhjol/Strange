@@ -2,6 +2,7 @@ package svenhjol.strange;
 
 import net.minecraft.resources.ResourceLocation;
 import svenhjol.charm.charmony.common.CommonFeature;
+import svenhjol.strange.feature.runestones.Runestones;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public final class Strange {
     }
 
     public static List<Class<? extends CommonFeature>> features() {
-        return List.of();
+        return List.of(
+            Runestones.class
+        );
     }
 }

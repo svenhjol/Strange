@@ -1,0 +1,10 @@
+{
+  "block.strange.blackstone_runestone": "Blackstone Runestone",
+  "block.strange.obsidian_runestone": "Obsidian Runestone",
+  "block.strange.stone_runestone": "Stone Runestone",
+  "gui.strange.runestone.discovered_by": "Discovered by %s",
+  "gui.strange.runestone.unsure": "%s...?",
+  "gui.strange.runestone.unknown": "???",
+  "subtitles.strange.block.runestone.activate": "Runestone activates",
+  "subtitles.strange.block.runestone.travel": "Runestone teleports"
+}

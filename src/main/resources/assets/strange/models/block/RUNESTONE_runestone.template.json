@@ -1,0 +1,15 @@
+{
+  "template": {
+    "parent": "minecraft:block/cube",
+    "textures": {
+      "north": "strange:block/RUNESTONE_runestone_side1",
+      "east": "strange:block/RUNESTONE_runestone_side2",
+      "south": "strange:block/RUNESTONE_runestone_side3",
+      "west": "strange:block/RUNESTONE_runestone_side4",
+      "up": "strange:block/RUNESTONE_runestone_end",
+      "down": "strange:block/RUNESTONE_runestone_end",
+      "particle": "strange:block/RUNESTONE_runestone_end"
+    }
+  },
+  "variants": "runestone"
+}
