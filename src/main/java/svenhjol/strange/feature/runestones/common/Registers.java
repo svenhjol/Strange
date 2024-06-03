@@ -36,7 +36,12 @@ public final class Registers extends RegisterHolder<Runestones> {
         blockItems.add(registry.item(OBSIDIAN_ID, () -> new RunestoneBlock.BlockItem(obsidianBlock)));
 
         // Server packet senders
-        registry.serverPacketSender(Networking.S2CWorldSeed.TYPE, Networking.S2CWorldSeed.CODEC);
+        registry.serverPacketSender(Networking.S2CWorldSeed.TYPE,
+            Networking.S2CWorldSeed.CODEC);
+        registry.serverPacketSender(Networking.S2CSacrificeInProgress.TYPE,
+            Networking.S2CSacrificeInProgress.CODEC);
+        registry.serverPacketSender(Networking.S2CActivateRunestone.TYPE,
+            Networking.S2CActivateRunestone.CODEC);
     }
 
     @Override

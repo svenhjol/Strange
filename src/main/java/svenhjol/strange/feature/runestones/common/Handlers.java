@@ -55,7 +55,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         }
 
         if (!definitions.containsKey(block)) {
-            log().error("No definition found for runestone block " + block + " at pos " + pos);
+            log().error("No definition found for runestone block " + block + " at itemPos " + pos);
             return;
         }
 
@@ -65,14 +65,14 @@ public final class Handlers extends FeatureHolder<Runestones> {
         var sacrifice = definition.sacrifice(level, pos, random);
 
         if (location.isEmpty()) {
-            log().error("Failed to get a location from runestone at pos " + pos);
+            log().error("Failed to get a location from runestone at itemPos " + pos);
             return;
         }
 
         runestone.location = location.get();
         runestone.sacrifice = new ItemStack(sacrifice.get());
 
-        log().debug("Set runestone location = " + runestone.location.id() + ", sacrifice = " + runestone.sacrifice.toString() + " at pos " + pos);
+        log().debug("Set runestone location = " + runestone.location.id() + ", sacrifice = " + runestone.sacrifice.toString() + " at itemPos " + pos);
         runestone.setChanged();
     }
 }

@@ -2,6 +2,8 @@ package svenhjol.strange.feature.runestones.common;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -78,6 +80,27 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
     @Override
     protected RenderShape getRenderShape(BlockState blockState) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        super.animateTick(state, level, pos, random);
+
+        if (!state.getValue(ACTIVATED)) {
+            return;
+        }
+
+        if (random.nextFloat() > 0.8f) {
+            return;
+        }
+
+        var particle = ParticleTypes.ENCHANT;
+        var dist = 3.0d;
+
+        for (var i = 0; i < 4; i++) {
+            level.addParticle(particle, pos.getX() + 0.5d, pos.getY() + 1.3d, pos.getZ() + 0.5d,
+                (dist / 2) - (random.nextDouble() * dist), random.nextDouble() - 1.65d, (dist / 2) - (random.nextDouble() * dist));
+        }
     }
 
     public static class BlockItem extends net.minecraft.world.item.BlockItem {

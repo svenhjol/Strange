@@ -5,6 +5,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import svenhjol.charm.charmony.feature.RegisterHolder;
 import svenhjol.strange.feature.runestones.RunestonesClient;
+import svenhjol.strange.feature.runestones.common.Networking;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,12 @@ public final class Registers extends RegisterHolder<RunestonesClient> {
 
         // Attach the block entity renderer to the runestone block entity.
         registry.blockEntityRenderer(linked.registers.blockEntity, () -> RunestoneRenderer::new);
+
+        // Client packet receivers.
+        registry.packetReceiver(Networking.S2CSacrificeInProgress.TYPE,
+            () -> feature.handlers::sacrificePositionReceived);
+        registry.packetReceiver(Networking.S2CActivateRunestone.TYPE,
+            () -> feature.handlers::activateRunestoneReceived);
     }
 
     @Override
