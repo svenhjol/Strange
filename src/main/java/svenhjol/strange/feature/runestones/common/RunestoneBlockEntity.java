@@ -3,9 +3,11 @@ package svenhjol.strange.feature.runestones.common;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import svenhjol.charm.charmony.Resolve;
 import svenhjol.charm.charmony.common.block.entity.CharmBlockEntity;
 import svenhjol.strange.api.impl.RunestoneLocation;
@@ -16,6 +18,7 @@ public class RunestoneBlockEntity extends CharmBlockEntity<Runestones> {
     public static final String LOCATION_TAG = "location";
     public static final String SACRIFICE_TAG = "sacrifice";
 
+    // TODO: get+set for these
     public RunestoneLocation location;
     public ItemStack sacrifice;
 
@@ -63,9 +66,14 @@ public class RunestoneBlockEntity extends CharmBlockEntity<Runestones> {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, RunestoneBlockEntity runestone) {
-        if (level.getGameTime() % 120 == 0) {
-            if (runestone.location != null) {
-                RUNESTONES.log().debug(runestone.location.toString());
+        if (level.getGameTime() % 100 == 0) {
+            if (runestone.location != null && runestone.sacrifice != null) {
+                var itemEntities = level.getEntitiesOfClass(ItemEntity.class, (new AABB(pos)).inflate(3.2d));
+                for (var itemEntity : itemEntities) {
+                    if (itemEntity.getItem().is(runestone.sacrifice.getItem())) {
+                        RUNESTONES.log().debug("Found item nearby!");
+                    }
+                }
             }
         }
     }
