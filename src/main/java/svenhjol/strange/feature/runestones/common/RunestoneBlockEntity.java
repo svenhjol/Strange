@@ -3,6 +3,7 @@ package svenhjol.strange.feature.runestones.common;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.charmony.Resolve;
@@ -13,8 +14,10 @@ import svenhjol.strange.feature.runestones.Runestones;
 public class RunestoneBlockEntity extends CharmBlockEntity<Runestones> {
     public static final Runestones RUNESTONES = Resolve.feature(Runestones.class);
     public static final String LOCATION_TAG = "location";
+    public static final String SACRIFICE_TAG = "sacrifice";
 
     public RunestoneLocation location;
+    public ItemStack sacrifice;
 
     public RunestoneBlockEntity(BlockPos pos, BlockState state) {
         super(Resolve.feature(Runestones.class).registers.blockEntity.get(), pos, state);
@@ -27,6 +30,10 @@ public class RunestoneBlockEntity extends CharmBlockEntity<Runestones> {
         if (tag.contains(LOCATION_TAG)) {
             this.location = RunestoneLocation.load(tag.getCompound(LOCATION_TAG));
         }
+        if (tag.contains(SACRIFICE_TAG)) {
+            this.sacrifice = ItemStack.parse(provider, tag.getCompound(SACRIFICE_TAG)).orElseThrow();
+        }
+
 
         // TODO: other tag data
     }
@@ -37,6 +44,9 @@ public class RunestoneBlockEntity extends CharmBlockEntity<Runestones> {
 
         if (location != null) {
             tag.put(LOCATION_TAG, location.save());
+        }
+        if (sacrifice != null) {
+            tag.put(SACRIFICE_TAG, sacrifice.save(provider));
         }
 
         // TODO: other tag data

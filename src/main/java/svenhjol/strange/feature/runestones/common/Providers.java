@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -49,127 +50,84 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
     }
 
     private RunestoneDefinition stone() {
-        return new RunestoneDefinition() {
-            public final String material = "stone";
-            public boolean isRare;
-
+        return new DefaultRunestoneDefinition("stone", 0.12d, 0.25d, 0.75d) {
             @Override
             public Supplier<? extends Block> block() {
                 return feature().registers.stoneBlock;
-            }
-
-            @Override
-            public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
-                isRare = random.nextDouble() < 0.12d;
-                return randomLocation(this, level, random, 0.25d, 0.75d);
-            }
-
-            @Override
-            public Optional<TagKey<Item>> items() {
-                return makeItemTag(material, isRare);
-            }
-
-            @Override
-            public Optional<TagKey<Biome>> biomes() {
-                return makeBiomeTag(material, isRare);
-            }
-
-            @Override
-            public Optional<TagKey<Structure>> structures() {
-                return makeStructureTag(material, isRare);
             }
         };
     }
 
     private RunestoneDefinition blackstone() {
-        return new RunestoneDefinition() {
-            public final String material = "blackstone";
-            public boolean isRare;
-
+        return new DefaultRunestoneDefinition("blackstone", 0.0d, 0.33d, 0.7d) {
             @Override
             public Supplier<? extends Block> block() {
                 return feature().registers.blackstoneBlock;
-            }
-
-            @Override
-            public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
-                isRare = random.nextDouble() < 0.5d;
-                return randomLocation(this, level, random, 0.33d, 0.7d);
-            }
-
-            @Override
-            public Optional<TagKey<Item>> items() {
-                return makeItemTag(material, isRare);
-            }
-
-            @Override
-            public Optional<TagKey<Biome>> biomes() {
-                return makeBiomeTag(material, isRare);
-            }
-
-            @Override
-            public Optional<TagKey<Structure>> structures() {
-                return makeStructureTag(material, isRare);
             }
         };
     }
 
     private RunestoneDefinition obsidian() {
-        return new RunestoneDefinition() {
-            public final String material = "obsidian";
-            public boolean isRare;
-
+        return new DefaultRunestoneDefinition("obsidian", 0.0d, 0.25d, 0.8d) {
             @Override
             public Supplier<? extends Block> block() {
-                return feature().registers.blackstoneBlock;
-            }
-
-            @Override
-            public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
-                isRare = random.nextDouble() < 0.5d;
-                return randomLocation(this, level, random, 0.33d, 0.8d);
-            }
-
-            @Override
-            public Optional<TagKey<Item>> items() {
-                return makeItemTag(material, isRare);
-            }
-
-            @Override
-            public Optional<TagKey<Biome>> biomes() {
-                return makeBiomeTag(material, isRare);
-            }
-
-            @Override
-            public Optional<TagKey<Structure>> structures() {
-                return makeStructureTag(material, isRare);
+                return feature().registers.obsidianBlock;
             }
         };
     }
 
-    private Optional<RunestoneLocation> randomLocation(RunestoneDefinition definition, LevelAccessor level,
-                                                       RandomSource random, double biomeChance, double structureChance) {
-        if (random.nextDouble() < biomeChance) {
-            return Helpers.randomBiome(level, definition.biomes().orElseThrow(), random);
+    /**
+     * A simple implementation of RunestoneDefinition that allows for chance of a runestone to link to a biome
+     * or structure, falling back to player spawn point.
+     * Rarity calculation also adds some chance of more lucrative biomes and locations for the overworld.
+     */
+    private abstract static class DefaultRunestoneDefinition implements RunestoneDefinition {
+        private final String material;
+        private final double rareChance;
+        private final double biomeChance;
+        private final double structureChance;
+        private boolean isRare;
+
+        public DefaultRunestoneDefinition(String material, double rareChance, double biomeChance, double structureChance) {
+            this.material = material;
+            this.rareChance = rareChance;
+            this.biomeChance = biomeChance;
+            this.structureChance = structureChance;
         }
-        if (random.nextDouble() < structureChance) {
-            return Helpers.randomStructure(level, definition.structures().orElseThrow(), random);
+
+        @Override
+        public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+            this.isRare = random.nextDouble() < rareChance;
+
+            if (random.nextDouble() < biomeChance) {
+                return Helpers.randomBiome(level, makeBiomeTag(), random);
+            }
+            if (random.nextDouble() < structureChance) {
+                return Helpers.randomStructure(level, makeStructureTag(), random);
+            }
+
+            return Optional.of(Helpers.SPAWN_POINT);
         }
-        return Optional.of(Helpers.SPAWN_POINT);
-    }
 
-    private Optional<TagKey<Biome>> makeBiomeTag(String material, boolean isRare) {
-        return Optional.of(TagKey.create(Registries.BIOME,
-            Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_biome_located")));
-    }
+        @Override
+        public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+            return () -> Helpers.randomItem(level, makeItemTag(), random).orElseThrow(
+                () -> new RuntimeException("Could not find an item to use for the sacrifice"));
+        }
 
-    private Optional<TagKey<Structure>> makeStructureTag(String material, boolean isRare) {
-        return Optional.of(TagKey.create(Registries.STRUCTURE,
-            Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_structure_located")));
-    }
+        private TagKey<Biome> makeBiomeTag() {
+            return TagKey.create(Registries.BIOME,
+                Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_biome_located"));
+        }
 
-    private Optional<TagKey<Item>> makeItemTag(String material, boolean isRare) {
-        return Optional.of(TagKey.create(Registries.ITEM,
-            Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_item_sacrifices")));
+        private TagKey<Structure> makeStructureTag() {
+            return TagKey.create(Registries.STRUCTURE,
+                Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_structure_located"));
+        }
+
+        private TagKey<Item> makeItemTag() {
+            return TagKey.create(Registries.ITEM,
+                Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_item_sacrifices"));
+        }
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -61,6 +62,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         var random = RandomSource.create(pos.asLong());
         var definition = definitions.get(block);
         var location = definition.location(level, pos, random);
+        var sacrifice = definition.sacrifice(level, pos, random);
 
         if (location.isEmpty()) {
             log().error("Failed to get a location from runestone at pos " + pos);
@@ -68,7 +70,9 @@ public final class Handlers extends FeatureHolder<Runestones> {
         }
 
         runestone.location = location.get();
-        log().debug("Set type " + runestone.location.id() + " for runestone at pos " + pos);
+        runestone.sacrifice = new ItemStack(sacrifice.get());
+
+        log().debug("Set runestone location = " + runestone.location.id() + ", sacrifice = " + runestone.sacrifice.toString() + " at pos " + pos);
         runestone.setChanged();
     }
 }

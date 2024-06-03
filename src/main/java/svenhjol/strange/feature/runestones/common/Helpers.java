@@ -1,9 +1,11 @@
 package svenhjol.strange.feature.runestones.common;
 
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -42,6 +44,17 @@ public final class Helpers {
             return Optional.of(location);
         }
 
+        return Optional.empty();
+    }
+
+    /**
+     * Get a random runestone sacrifice item from a given item tag.
+     */
+    public static Optional<Item> randomItem(LevelAccessor level, TagKey<Item> tag, RandomSource random) {
+        var values = TagHelper.getValues(level.registryAccess().registryOrThrow(Registries.ITEM), tag);
+        if (!values.isEmpty()) {
+            return Optional.of(values.get(random.nextInt(values.size())));
+        }
         return Optional.empty();
     }
 
