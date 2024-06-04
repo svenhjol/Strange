@@ -1,0 +1,49 @@
+{
+  "runestone_activate": {
+    "sounds": [
+      {
+        "name": "strange:runestone_activate1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:runestone_activate2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:runestone_activate3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.runestone.activate"
+  },
+  "runestone_power_up": {
+    "sounds": [
+      {
+        "name": "strange:runestone_resonance1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:runestone_resonance2",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.runestone.power_up"
+  },
+  "runestone_fizzle_item": {
+    "sounds": [
+      {
+        "name": "strange:runestone_whispers",
+        "volume": 1.0
+      }
+    ]
+  },
+  "runestone_travel": {
+    "sounds": [
+      {
+        "name": "strange:runestone_travel",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.block.runestone.travel"
+  }
+}

@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -121,6 +122,15 @@ public final class Handlers extends FeatureHolder<Runestones> {
                 }
             }
             if (foundItem != null) {
+                if (runestone.sacrificeChecks == 0) {
+                    // Don't allow item to be picked up.
+                    foundItem.setPickUpDelay(10000);
+
+                    // Start the powerup sound.
+                    level.playSound(null, pos, feature().registers.powerUpSound.get(), SoundSource.BLOCKS);
+                    level.playSound(null, BlockPos.containing(foundItem.position()), feature().registers.fizzleItemSound.get(), SoundSource.PLAYERS);
+                }
+
                 var itemPos = foundItem.position();
 
                 // Add particle effect around the item to be consumed. This needs to be done via network packet.
@@ -188,6 +198,8 @@ public final class Handlers extends FeatureHolder<Runestones> {
         // Activation effect for all nearby players.
         PlayerHelper.getPlayersInRange(level, pos, 8.0d)
             .forEach(player -> Networking.S2CActivateRunestone.send((ServerPlayer)player, pos));
+
+        level.playSound(null, pos, feature().registers.activateSound.get(), SoundSource.BLOCKS);
     }
 
     public boolean trySetLocation(ServerLevel level, RunestoneBlockEntity runestone) {

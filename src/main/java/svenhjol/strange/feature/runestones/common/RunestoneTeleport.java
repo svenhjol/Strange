@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.Level;
@@ -85,8 +86,7 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         }
         effects.forEach(player::addEffect);
 
-        // TODO: Play teleportation sound.
-        //player.level().playSound(null, player.blockPosition(), Runestones.travelSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+        level.playSound(null, player.blockPosition(), feature().registers.travelSound.get(), SoundSource.BLOCKS);
 
         // Do the teleport to the location - repositioning comes later.
         if (!player.getAbilities().instabuild) {

@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.runestones.common;
 
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.charmony.event.EntityJoinEvent;
 import svenhjol.charm.charmony.event.PlayerTickEvent;
@@ -21,6 +22,10 @@ public final class Registers extends RegisterHolder<Runestones> {
     public final Supplier<RunestoneBlock> blackstoneBlock;
     public final Supplier<RunestoneBlock> obsidianBlock;
     public final List<Supplier<RunestoneBlock.BlockItem>> blockItems = new LinkedList<>();
+    public final Supplier<SoundEvent> activateSound;
+    public final Supplier<SoundEvent> fizzleItemSound;
+    public final Supplier<SoundEvent> powerUpSound;
+    public final Supplier<SoundEvent> travelSound;
 
     public Registers(Runestones feature) {
         super(feature);
@@ -43,6 +48,12 @@ public final class Registers extends RegisterHolder<Runestones> {
             Networking.S2CSacrificeInProgress.CODEC);
         registry.serverPacketSender(Networking.S2CActivateRunestone.TYPE,
             Networking.S2CActivateRunestone.CODEC);
+
+        // Sound effects
+        activateSound = registry.soundEvent("runestone_activate");
+        fizzleItemSound = registry.soundEvent("runestone_fizzle_item");
+        powerUpSound = registry.soundEvent("runestone_power_up");
+        travelSound = registry.soundEvent("runestone_travel");
     }
 
     @Override
