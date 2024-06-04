@@ -10,12 +10,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -30,6 +33,8 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public final class Handlers extends FeatureHolder<Runestones> {
+    public static final int MAX_SACRIFICE_CHECKS = 10;
+
     public final Map<Block, RunestoneDefinition> definitions = new HashMap<>();
     public final Map<UUID, RunestoneTeleport> teleports = new HashMap<>();
 
@@ -102,6 +107,40 @@ public final class Handlers extends FeatureHolder<Runestones> {
             } else {
                 log().debug("Removing completed teleport for " + uuid);
                 teleports.remove(uuid);
+            }
+        }
+    }
+
+    public void tickRunestone(ServerLevel level, BlockPos pos, BlockState state, RunestoneBlockEntity runestone) {
+        if (!runestone.isActivated() && runestone.isValid() && level.getGameTime() % 10 == 0) {
+            ItemEntity foundItem = null;
+            var itemEntities = level.getEntitiesOfClass(ItemEntity.class, (new AABB(pos)).inflate(4.0d));
+            for (var itemEntity : itemEntities) {
+                if (itemEntity.getItem().is(runestone.sacrifice.getItem())) {
+                    foundItem = itemEntity;
+                    break;
+                }
+            }
+            if (foundItem != null) {
+                var itemPos = foundItem.position();
+
+                // Add particle effect around the item to be consumed. This needs to be done via network packet.
+                PlayerHelper.getPlayersInRange(level, pos, 8.0d)
+                    .forEach(player -> Networking.S2CSacrificeInProgress.send((ServerPlayer)player, pos, itemPos));
+
+                // Increase the number of checks. If maximum, consume the item and activate the runestone.
+                runestone.sacrificeChecks++;
+                if (runestone.sacrificeChecks >= MAX_SACRIFICE_CHECKS) {
+                    var stack = foundItem.getItem();
+                    if (stack.getCount() > 1) {
+                        stack.shrink(1);
+                    } else {
+                        foundItem.discard();
+                    }
+                    runestone.activate(level, pos, state);
+                }
+            } else {
+                runestone.sacrificeChecks = 0;
             }
         }
     }
