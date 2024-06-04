@@ -1,16 +1,47 @@
 package svenhjol.strange.feature.runestones.client;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import svenhjol.charm.charmony.feature.FeatureHolder;
+import svenhjol.strange.api.impl.RunestoneLocation;
 import svenhjol.strange.feature.runestones.RunestonesClient;
+import svenhjol.strange.feature.runestones.common.Helpers;
 import svenhjol.strange.feature.runestones.common.Networking;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 @SuppressWarnings("unused")
 public final class Handlers extends FeatureHolder<RunestonesClient> {
+    private long seed;
+    private boolean hasReceivedSeed = false;
+
+    public final Map<String, String> cachedRuneNames = new WeakHashMap<>();
+
     public Handlers(RunestonesClient feature) {
         super(feature);
+    }
+
+    public void hudRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        feature().registers.hudRenderer.renderLabel(guiGraphics, deltaTracker);
+    }
+
+    public void playerTick(Player player) {
+        if (player.level().isClientSide()) {
+            feature().registers.hudRenderer.tick(player);
+        }
+    }
+
+    public void worldSeedReceived(Player player, Networking.S2CWorldSeed packet) {
+        this.seed = packet.seed();
+        this.hasReceivedSeed = true;
+        feature().handlers.cachedRuneNames.clear();
     }
 
     public void sacrificePositionReceived(Player player, Networking.S2CSacrificeInProgress packet) {
@@ -53,5 +84,39 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
                 pos.getY() + 0.5d + ((random.nextDouble() * (range / 2)) - (random.nextDouble() * (range / 2))),
                 pos.getZ() + 0.5d + ((random.nextDouble() * range) - (random.nextDouble() * range)), 0, 0, 0);
         }
+    }
+
+    public String runicName(RunestoneLocation location) {
+        if (!hasReceivedSeed) {
+            throw new RuntimeException("Client has not received the level seed");
+        }
+
+        var combined = location.type().name().substring(0, 2) + location.id().getPath();
+
+        if (!cachedRuneNames.containsKey(combined)) {
+            var random = RandomSource.create(seed);
+            cachedRuneNames.put(combined, Helpers.generateRunes(combined, 16, random));
+        }
+
+        return cachedRuneNames.get(combined);
+    }
+
+    public BlockPos lookingAtBlock(Player player) {
+        var cameraPosVec = player.getEyePosition(1.0f);
+        var rotationVec = player.getViewVector(1.0f);
+        var vec3d = cameraPosVec.add(rotationVec.x * 6, rotationVec.y * 6, rotationVec.z * 6);
+        var raycast = player.level().clip(new ClipContext(cameraPosVec, vec3d, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        return raycast.getBlockPos();
+    }
+
+    public String localeKey(RunestoneLocation location) {
+        var namespace = location.id().getNamespace();
+        var path = location.id().getPath();
+
+        return switch (location.type()) {
+            case BIOME -> "biome." + namespace + "." + path;
+            case STRUCTURE -> "structure." + namespace + "." + path;
+            case PLAYER -> "player." + namespace + "." + path;
+        };
     }
 }

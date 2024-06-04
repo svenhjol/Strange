@@ -8,11 +8,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import svenhjol.charm.charmony.Resolve;
-import svenhjol.charm.charmony.common.block.entity.CharmBlockEntity;
+import svenhjol.charm.charmony.common.block.entity.CharmSyncedBlockEntity;
 import svenhjol.strange.api.impl.RunestoneLocation;
 import svenhjol.strange.feature.runestones.Runestones;
 
-public class RunestoneBlockEntity extends CharmBlockEntity<Runestones> {
+public class RunestoneBlockEntity extends CharmSyncedBlockEntity<Runestones> {
     private static final Runestones RUNESTONES = Resolve.feature(Runestones.class);
 
     public static final String LOCATION_TAG = "location";

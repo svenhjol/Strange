@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
@@ -28,10 +29,15 @@ import svenhjol.strange.feature.runestones.Runestones;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public final class Helpers {
-    public static final Runestones RUNESTONES = Resolve.feature(Runestones.class);
+    private static final Runestones RUNESTONES = Resolve.feature(Runestones.class);
+    private static final char FIRST_RUNE = 'a';
+    private static final char LAST_RUNE = 'z';
+    private static final int NUM_RUNES = 26;
+
     public static final ResourceLocation SPAWN_POINT_ID = Strange.id("spawn_point");
     public static final RunestoneLocation SPAWN_POINT = new RunestoneLocation(RunestoneLocationType.PLAYER, SPAWN_POINT_ID);
 
@@ -171,5 +177,53 @@ public final class Helpers {
         }
 
         return new BlockPos(pos.getX(), surface, pos.getZ());
+    }
+
+    /**
+     * Generate runes for a given input string. The string is filtered to make it alphanumeric.
+     * Each character of the string is shifted through the alphabet randomly.
+     */
+    public static String generateRunes(String input, int length, RandomSource random) {
+        int alphaStart = FIRST_RUNE;
+        int alphaEnd = LAST_RUNE;
+
+        String filtered = input.replaceAll("[^a-zA-Z0-9]", "");
+        StringBuilder in = new StringBuilder(filtered);
+        StringBuilder out = new StringBuilder();
+
+        for (int tries = 0; tries < 9; tries++) {
+            if (in.length() >= length) {
+                random.nextInt();
+                char[] chars = in.toString().toLowerCase(Locale.ROOT).toCharArray();
+
+                // Work over the string backwards by character.
+                for (int i = Math.min(chars.length, length) - 1; i >= 0; --i) {
+                    int chr = chars[i];
+
+                    if (chr >= alphaStart && chr <= alphaEnd) {
+                        // Shift the char with a random number of the total runes, wrapping around if it goes out of bounds.
+                        int ri = chr + random.nextInt(NUM_RUNES);
+                        if (ri > alphaEnd) {
+                            chr = Mth.clamp(alphaStart + (ri - alphaEnd), alphaStart + 1, alphaEnd);
+                        }
+
+                        // Shift the char again with a random number of half the total runes, wrapping again as necessary.
+                        ri += random.nextInt(NUM_RUNES / 2);
+                        if (ri > alphaEnd) {
+                            chr = Mth.clamp(alphaStart + (ri - alphaEnd), alphaStart + 1, alphaEnd);
+                        }
+
+                        out.append((char)chr);
+                    }
+                }
+
+                return out.reverse().toString();
+            }
+
+            // Keep adding the input string to the end of the builder to bring the length up.
+            in.append(filtered);
+        }
+
+        throw new RuntimeException("Maximum loops reached when checking string length");
     }
 }
