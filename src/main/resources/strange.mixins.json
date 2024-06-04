@@ -6,6 +6,7 @@
   "refmap": "${refmap_file}",
   "plugin": "svenhjol.strange.mixin.MixinConfig",
   "mixins": [
+    "feature.runestones.ThrownEnderpearlMixin"
   ],
   "client": [
   ],

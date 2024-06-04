@@ -46,3 +46,10 @@ accessible field net/minecraft/client/particle/Particle speedUpWhenYMotionIsBloc
 accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
 accessible method net/minecraft/client/particle/Particle setAlpha (F)V
 mutable    field net/minecraft/client/RecipeBookCategories AGGREGATE_CATEGORIES Ljava/util/Map;
+
+# Runestones
+accessible field net/minecraft/server/level/ServerPlayer isChangingDimension Z
+accessible field net/minecraft/server/level/ServerPlayer lastSentExp I
+accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
+accessible field net/minecraft/server/level/ServerPlayer lastSentFood I
+accessible method net/minecraft/world/entity/Entity unsetRemoved ()V

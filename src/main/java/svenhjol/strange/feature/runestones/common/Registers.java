@@ -2,6 +2,7 @@ package svenhjol.strange.feature.runestones.common;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import svenhjol.charm.charmony.event.EntityJoinEvent;
+import svenhjol.charm.charmony.event.PlayerTickEvent;
 import svenhjol.charm.charmony.event.ServerStartEvent;
 import svenhjol.charm.charmony.feature.RegisterHolder;
 import svenhjol.strange.feature.runestones.Runestones;
@@ -48,5 +49,6 @@ public final class Registers extends RegisterHolder<Runestones> {
     public void onEnabled() {
         ServerStartEvent.INSTANCE.handle(feature().handlers::serverStart);
         EntityJoinEvent.INSTANCE.handle(feature().handlers::entityJoin);
+        PlayerTickEvent.INSTANCE.handle(feature().handlers::playerTick);
     }
 }
