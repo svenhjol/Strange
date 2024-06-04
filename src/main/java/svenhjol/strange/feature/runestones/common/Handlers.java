@@ -56,10 +56,10 @@ public final class Handlers extends FeatureHolder<Runestones> {
         }
     }
 
-    public boolean enderpearlImpact(ThrownEnderpearl thrown, HitResult hitResult) {
+    public boolean enderpearlImpact(ThrownEnderpearl enderpearl, HitResult hitResult) {
         var type = hitResult.getType();
-        var owner = thrown.getOwner();
-        var level = thrown.level();
+        var owner = enderpearl.getOwner();
+        var level = enderpearl.level();
 
         if (!(level instanceof ServerLevel serverLevel)) {
             return false;
@@ -84,7 +84,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
                 return false;
             }
 
-            thrown.discard();
+            enderpearl.discard();
             tryTeleportPlayer(serverPlayer, runestone);
             return true;
         }
@@ -176,7 +176,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
                     return false;
                 }
 
-                // Wrap structure in holder and holderset so that it's in the right format for find
+                // Wrap structure in holder and holderset so that it's in the right format for finding.
                 var set = HolderSet.direct(Holder.direct(structure));
                 var result = level.getChunkSource().getGenerator()
                     .findNearestMapStructure(level, set, target, 100, false);
@@ -208,7 +208,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         level.removeBlock(pos, false);
     }
 
-    public boolean tryTeleportPlayer(ServerPlayer player, RunestoneBlockEntity runestone) {
+    public void tryTeleportPlayer(ServerPlayer player, RunestoneBlockEntity runestone) {
         runestone.discovered = player.getScoreboardName();
         runestone.setChanged();
 
@@ -217,6 +217,5 @@ public final class Handlers extends FeatureHolder<Runestones> {
 
         var teleport = new RunestoneTeleport(player, runestone);
         teleports.put(player.getUUID(), teleport);
-        return true;
     }
 }
