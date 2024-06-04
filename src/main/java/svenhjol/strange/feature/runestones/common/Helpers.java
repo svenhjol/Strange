@@ -120,7 +120,6 @@ public final class Helpers {
 
     /**
      * @see ServerPlayer#changeDimension
-     * TODO: move to charmony
      */
     public static void changeDimension(ServerPlayer serverPlayer, ServerLevel newDimension, Vec3 pos) {
         serverPlayer.isChangingDimension = true;

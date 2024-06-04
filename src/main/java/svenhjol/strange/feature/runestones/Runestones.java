@@ -10,7 +10,10 @@ import svenhjol.strange.feature.runestones.common.Networking;
 import svenhjol.strange.feature.runestones.common.Providers;
 import svenhjol.strange.feature.runestones.common.Registers;
 
-@Feature
+@Feature(description = """
+    Runestones are blocks that teleport players to interesting structures and biomes.
+    Each runestone will show what item is needed as a sacrifice. Drop the item near the runestone to activate it.
+    Once the runestone is activated, throw an enderpearl at it to teleport.""")
 public final class Runestones extends CommonFeature {
     public final Registers registers;
     public final Handlers handlers;
