@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.runestones.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -7,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.api.impl.RunestoneLocation;
@@ -21,6 +23,8 @@ import java.util.WeakHashMap;
 public final class Handlers extends FeatureHolder<RunestonesClient> {
     private long seed;
     private boolean hasReceivedSeed = false;
+    private float scaleX = 1.0f;
+    private float scaleY = 1.0f;
 
     public final Map<String, String> cachedRuneNames = new WeakHashMap<>();
 
@@ -29,7 +33,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
     }
 
     public void hudRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        feature().registers.hudRenderer.renderLabel(guiGraphics, deltaTracker);
+        feature().registers.hudRenderer.render(guiGraphics, deltaTracker);
     }
 
     public void playerTick(Player player) {
@@ -55,7 +59,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         var itemDist = 0.1d;
         var itemPos = packet.itemPos();
 
-        var runestoneDist = 3.0d;
+        var runestoneDist = 2.4d;
         var runestonePos = packet.runestonePos();
 
         for (var i = 0; i < 8; i++) {
@@ -64,7 +68,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         }
 
         for (var i = 0; i < 8; i++) {
-            level.addParticle(runestoneParticle, runestonePos.getX() + 0.5d, runestonePos.getY() + 0.68d, runestonePos.getZ() + 0.5d,
+            level.addParticle(runestoneParticle, runestonePos.getX() + 0.5d, runestonePos.getY() + 0.60d, runestonePos.getZ() + 0.5d,
                 (runestoneDist / 2) - (random.nextDouble() * runestoneDist), random.nextDouble(), (runestoneDist / 2) - (random.nextDouble() * runestoneDist));
         }
     }
@@ -118,5 +122,20 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
             case STRUCTURE -> "structure." + namespace + "." + path;
             case PLAYER -> "player." + namespace + "." + path;
         };
+    }
+
+    public void renderScaledGuiItem(ItemStack stack, GuiGraphics guiGraphics, int x, int y, float scaleX, float scaleY) {
+        var minecraft = Minecraft.getInstance();
+        var itemRenderer = minecraft.getItemRenderer();
+        var level = minecraft.level;
+
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        guiGraphics.renderFakeItem(stack, x, y);
+    }
+
+    public void scaleItem(ItemStack stack, PoseStack poseStack) {
+        poseStack.scale(scaleX, scaleY, 1.0f);
+        scaleX = scaleY = 1.0f;
     }
 }

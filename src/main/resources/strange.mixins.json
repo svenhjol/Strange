@@ -9,6 +9,7 @@
     "feature.runestones.ThrownEnderpearlMixin"
   ],
   "client": [
+    "feature.runestones.GuiGraphicsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

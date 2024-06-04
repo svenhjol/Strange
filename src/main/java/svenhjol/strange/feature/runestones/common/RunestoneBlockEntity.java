@@ -71,7 +71,6 @@ public class RunestoneBlockEntity extends CharmSyncedBlockEntity<Runestones> {
         return Runestones.class;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isActivated() {
         var state = getBlockState();
         return state.getValue(RunestoneBlock.ACTIVATED);

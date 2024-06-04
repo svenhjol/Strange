@@ -2,6 +2,7 @@
   "block.strange.blackstone_runestone": "Blackstone Runestone",
   "block.strange.obsidian_runestone": "Obsidian Runestone",
   "block.strange.stone_runestone": "Stone Runestone",
+  "gui.strange.runestone.activate_with": "Activate with:",
   "gui.strange.runestone.discovered_by": "Discovered by %s",
   "gui.strange.runestone.unsure": "%s...?",
   "gui.strange.runestone.unknown": "???",
