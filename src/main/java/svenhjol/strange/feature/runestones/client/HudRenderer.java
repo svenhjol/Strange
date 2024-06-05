@@ -40,7 +40,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
     public HudRenderer(RunestonesClient feature) {
         super(feature);
 
-        fadeInSpeed = 2;
+        fadeInSpeed = 3;
         fadeOutSpeed = 10;
         runesColor = 0xbfaf9f;
         nameColor = 0xf8f8ff;

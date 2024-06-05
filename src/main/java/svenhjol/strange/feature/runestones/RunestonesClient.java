@@ -17,7 +17,7 @@ public final class RunestonesClient extends ClientFeature implements LinkedFeatu
         name = "Dim rune display background",
         description = "If true, focusing on a runestone will dim the background to make the text clearer."
     )
-    private static boolean hudHasBackground = true;
+    private static boolean hudHasBackground = false;
 
     @Configurable(
         name = "Text shadow on rune display",
