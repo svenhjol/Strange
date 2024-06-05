@@ -1,6 +1,15 @@
 {
   "values": [
     "minecraft:emerald",
-    "minecraft:diamond"
+    "minecraft:diamond",
+    "minecraft:prismarine_shard",
+    "minecraft:golden_apple",
+    "minecraft:phantom_membrane",
+    "minecraft:heart_of_the_sea",
+    "minecraft:nautilus_shell",
+    "minecraft:goat_horn",
+    "minecraft:echo_shard",
+    "minecraft:turtle_scute",
+    "minecraft:armadillo_scute"
   ]
 }

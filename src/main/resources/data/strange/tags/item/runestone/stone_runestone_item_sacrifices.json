@@ -1,6 +1,20 @@
 {
   "values": [
-    "minecraft:carrot",
-    "minecraft:potato"
+    "minecraft:copper_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:gold_ingot",
+    "minecraft:amethyst_shard",
+    "minecraft:lapis_lazuli",
+    "minecraft:redstone",
+    "minecraft:obsidian",
+    "minecraft:spider_eye",
+    "minecraft:gunpowder",
+    "minecraft:leather",
+    "minecraft:rotten_flesh",
+    "minecraft:glow_berries",
+    "minecraft:sugar",
+    "minecraft:clay_ball",
+    "minecraft:coal",
+    "minecraft:flint"
   ]
 }

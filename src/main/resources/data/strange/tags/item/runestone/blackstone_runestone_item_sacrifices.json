@@ -1,6 +1,12 @@
 {
   "values": [
     "minecraft:iron_ingot",
-    "minecraft:gold_ingot"
+    "minecraft:gold_ingot",
+    "minecraft:ender_pearl",
+    "minecraft:ender_eye",
+    "minecraft:crying_obsidian",
+    "minecraft:gold_block",
+    "minecraft:blaze_rod",
+    "minecraft:glowstone_dust"
   ]
 }
