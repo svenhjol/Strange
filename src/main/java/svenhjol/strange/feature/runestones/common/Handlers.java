@@ -123,7 +123,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
             }
             if (foundItem != null) {
                 if (runestone.sacrificeChecks == 0) {
-                    // Don't allow item to be picked up.
+                    // Don't allow item to be picked up until the ritual is complete...
                     foundItem.setPickUpDelay(100);
 
                     // Start the powerup sound.
