@@ -112,7 +112,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
 
         if (runesStringLength > 0) {
             y += lineHeight;
-            int lx = (int) (midX - (float) (runesStringLength / 2) - 2) - 3;
+            int lx = (int) (midX - (float) (runesStringLength / 2) - 2);
             guiGraphics.drawString(font, runes, lx, y, runesColor | alpha, textShadow);
         }
 

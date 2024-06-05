@@ -82,7 +82,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         var pos = packet.pos();
         var range = 1.3d;
 
-        for (var i = 0; i < 80; i++) {
+        for (var i = 0; i < 60; i++) {
             level.addParticle(particle,
                 pos.getX() + 0.5d + ((random.nextDouble() * range) - (random.nextDouble() * range)),
                 pos.getY() + 0.5d + ((random.nextDouble() * (range / 2)) - (random.nextDouble() * (range / 2))),
@@ -99,7 +99,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
 
         if (!cachedRuneNames.containsKey(combined)) {
             var random = RandomSource.create(seed);
-            cachedRuneNames.put(combined, Helpers.generateRunes(combined, 16, random));
+            cachedRuneNames.put(combined, Helpers.generateRunes(combined, 10, random));
         }
 
         return cachedRuneNames.get(combined);

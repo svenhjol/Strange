@@ -114,7 +114,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
     public void tickRunestone(ServerLevel level, BlockPos pos, BlockState state, RunestoneBlockEntity runestone) {
         if (!runestone.isActivated() && runestone.isValid() && level.getGameTime() % 10 == 0) {
             ItemEntity foundItem = null;
-            var itemEntities = level.getEntitiesOfClass(ItemEntity.class, (new AABB(pos)).inflate(4.0d));
+            var itemEntities = level.getEntitiesOfClass(ItemEntity.class, (new AABB(pos)).inflate(4.8d));
             for (var itemEntity : itemEntities) {
                 if (itemEntity.getItem().is(runestone.sacrifice.getItem())) {
                     foundItem = itemEntity;
@@ -124,7 +124,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
             if (foundItem != null) {
                 if (runestone.sacrificeChecks == 0) {
                     // Don't allow item to be picked up.
-                    foundItem.setPickUpDelay(10000);
+                    foundItem.setPickUpDelay(100);
 
                     // Start the powerup sound.
                     level.playSound(null, pos, feature().registers.powerUpSound.get(), SoundSource.BLOCKS);
@@ -199,7 +199,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         PlayerHelper.getPlayersInRange(level, pos, 8.0d)
             .forEach(player -> Networking.S2CActivateRunestone.send((ServerPlayer)player, pos));
 
-        level.playSound(null, pos, feature().registers.activateSound.get(), SoundSource.BLOCKS);
+        level.playSound(null, pos, feature().registers.activateSound.get(), SoundSource.BLOCKS, 1.15f, 1.0f);
     }
 
     public boolean trySetLocation(ServerLevel level, RunestoneBlockEntity runestone) {

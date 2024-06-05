@@ -50,6 +50,7 @@ mutable    field net/minecraft/client/RecipeBookCategories AGGREGATE_CATEGORIES 
 # Runestones
 accessible field net/minecraft/server/level/ServerPlayer isChangingDimension Z
 accessible field net/minecraft/server/level/ServerPlayer lastSentExp I
-accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
 accessible field net/minecraft/server/level/ServerPlayer lastSentFood I
+accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
+accessible field net/minecraft/world/entity/item/ItemEntity pickupDelay I
 accessible method net/minecraft/world/entity/Entity unsetRemoved ()V

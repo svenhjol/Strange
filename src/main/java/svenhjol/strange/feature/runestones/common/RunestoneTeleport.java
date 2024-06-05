@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RunestoneTeleport implements FeatureResolver<Runestones> {
-    public static final int REPOSITION_TICKS = 20; // TODO: configurable
+    public static final int PLAY_SOUND_TICKS = 5;
+    public static final int TELEPORT_TICKS = 10;
+    public static final int REPOSITION_TICKS = 20;
 
     private final ServerPlayer player;
     private final ServerLevel level;
@@ -55,9 +57,14 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
 
         ticks++;
 
-        if (ticks < 10) return;
+        if (ticks == PLAY_SOUND_TICKS) {
+            log().debug("Playing teleport sound for player " + player);
+            level.playSound(null, player.blockPosition(), feature().registers.travelSound.get(), SoundSource.BLOCKS);
+        }
 
-        if (ticks == 10) {
+        if (ticks < TELEPORT_TICKS) return;
+
+        if (ticks == TELEPORT_TICKS) {
             teleport();
             return;
         }
@@ -73,6 +80,7 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
     }
 
     private void teleport() {
+        log().debug("Called teleport for player " + player);
         var protectionTicks = feature().protectionDuration();
 
         // Add protection and dizziness effects to the teleporting player.
@@ -82,11 +90,9 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
             new MobEffectInstance(MobEffects.REGENERATION, protectionTicks, 1)
         ));
         if (feature().dizzyEffect()) {
-            effects.add(new MobEffectInstance(MobEffects.CONFUSION, protectionTicks, 3));
+            effects.add(new MobEffectInstance(MobEffects.CONFUSION, protectionTicks, 4));
         }
         effects.forEach(player::addEffect);
-
-        level.playSound(null, player.blockPosition(), feature().registers.travelSound.get(), SoundSource.BLOCKS);
 
         // Do the teleport to the location - repositioning comes later.
         if (!player.getAbilities().instabuild) {

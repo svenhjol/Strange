@@ -1,6 +1,8 @@
 {
   "values": [
-    "minecraft:ruined_portal_nether",
-    "minecraft:nether_fossil"
+    "minecraft:bastion_remnant",
+    "minecraft:fortress",
+    "minecraft:nether_fossil",
+    "minecraft:ruined_portal_nether"
   ]
 }
