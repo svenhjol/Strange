@@ -6,6 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +19,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import svenhjol.charm.charmony.feature.FeatureResolver;
 import svenhjol.strange.feature.runestones.Runestones;
 
@@ -27,6 +31,8 @@ import java.util.function.Supplier;
 public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<Runestones> {
     public static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
     public static final MapCodec<RunestoneBlock> CODEC = simpleCodec(RunestoneBlock::new);
+    public static final VoxelShape B1, B2, B3;
+    public static final VoxelShape ACTIVATED_SHAPE;
 
     public RunestoneBlock() {
         this(Properties.ofFullCopy(Blocks.STONE)
@@ -83,6 +89,22 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
     }
 
     @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        if (state.getValue(ACTIVATED)) {
+            return ACTIVATED_SHAPE;
+        }
+        return super.getShape(state, getter, pos, context);
+    }
+
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        if (state.getValue(ACTIVATED)) {
+            return ACTIVATED_SHAPE;
+        }
+        return super.getCollisionShape(state, getter, pos, context);
+    }
+
+    @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
 
@@ -107,5 +129,12 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
         public BlockItem(Supplier<RunestoneBlock> block) {
             super(block.get(), new Properties());
         }
+    }
+
+    static {
+        B1 = Block.box(0.0d, 0.0d, 0.0d, 16.0d, 3.0d, 16.0d);
+        B2 = Block.box(4.0d, 3.0d, 4.0d, 12.0d, 13.0d, 12.0d);
+        B3 = Block.box(0.0d, 13.0d, 0.0d, 16.0d, 16.0d, 16.0d);
+        ACTIVATED_SHAPE = Shapes.or(B1, B2, B3);
     }
 }

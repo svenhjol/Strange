@@ -25,13 +25,15 @@ public class RunestoneRenderer<R extends RunestoneBlockEntity> implements BlockE
         var pose = poseStack.last().pose();
         var vertexConsumer = multiBufferSource.getBuffer(RenderType.endGateway());
 
-        var minMargin = 0.125f;
-        var maxMargin = 0.875f;
+        var sideMinMargin = 0.25f;
+        var sideMaxMargin = 0.75f;
+        var vertMinMargin = 0.1875f;
+        var vertMaxMargin = 0.8125f;
 
-        renderFace(pose, vertexConsumer, minMargin, maxMargin, minMargin, maxMargin, maxMargin, maxMargin, maxMargin, maxMargin); // South
-        renderFace(pose, vertexConsumer, minMargin, maxMargin, maxMargin, minMargin, minMargin, minMargin, minMargin, minMargin); // North
-        renderFace(pose, vertexConsumer, maxMargin, maxMargin, maxMargin, minMargin, minMargin, maxMargin, maxMargin, minMargin); // East
-        renderFace(pose, vertexConsumer, minMargin, minMargin, minMargin, maxMargin, minMargin, maxMargin, maxMargin, minMargin); // West
+        renderFace(pose, vertexConsumer, sideMinMargin, sideMaxMargin, vertMinMargin, vertMaxMargin, sideMaxMargin, sideMaxMargin, sideMaxMargin, sideMaxMargin); // South
+        renderFace(pose, vertexConsumer, sideMinMargin, sideMaxMargin, vertMaxMargin, vertMinMargin, sideMinMargin, sideMinMargin, sideMinMargin, sideMinMargin); // North
+        renderFace(pose, vertexConsumer, sideMaxMargin, sideMaxMargin, vertMaxMargin, vertMinMargin, sideMinMargin, sideMaxMargin, sideMaxMargin, sideMinMargin); // East
+        renderFace(pose, vertexConsumer, sideMinMargin, sideMinMargin, vertMinMargin, vertMaxMargin, sideMinMargin, sideMaxMargin, sideMaxMargin, sideMinMargin); // West
     }
 
     private void renderFace(Matrix4f pose, VertexConsumer vertexConsumer, float f, float g, float h, float i, float j, float k, float l, float m) {
