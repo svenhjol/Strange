@@ -98,15 +98,23 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
         @Override
         public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
             this.isRare = random.nextDouble() < rareChance;
+            var spawnPoint = Optional.of(Helpers.SPAWN_POINT);
+            Optional<RunestoneLocation> opt;
 
             if (random.nextDouble() < biomeChance) {
-                return Helpers.randomBiome(level, makeBiomeTag(), random);
-            }
-            if (random.nextDouble() < structureChance) {
-                return Helpers.randomStructure(level, makeStructureTag(), random);
+                opt = Helpers.randomBiome(level, makeBiomeTag(), random);
+            } else if (random.nextDouble() < structureChance) {
+                opt = Helpers.randomStructure(level, makeStructureTag(), random);
+            } else {
+                opt = Optional.empty();
             }
 
-            return Optional.of(Helpers.SPAWN_POINT);
+            // Default to spawnpoint if checks don't pass.
+            if (opt.isEmpty()) {
+                return spawnPoint;
+            }
+
+            return opt;
         }
 
         @Override

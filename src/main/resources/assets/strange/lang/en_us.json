@@ -41,6 +41,9 @@
   "structure.minecraft.ancient_city": "Ancient City",
   "structure.minecraft.trail_ruins": "Trail Ruins",
   "structure.minecraft.trial_chambers": "Trial Chambers",
+  "structure.strange.stone_circle_blackstone": "Stone Circle",
+  "structure.strange.stone_circle_obsidian": "Stone Circle",
+  "structure.strange.stone_circle_stone": "Stone Circle",
   "subtitles.strange.block.runestone.activate": "Runestone activates",
   "subtitles.strange.block.runestone.power_up": "Runestone powers up",
   "subtitles.strange.block.runestone.travel": "Runestone teleports"

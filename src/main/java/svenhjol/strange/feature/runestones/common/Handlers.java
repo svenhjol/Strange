@@ -15,6 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -26,17 +27,17 @@ import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.charm.charmony.helper.PlayerHelper;
 import svenhjol.strange.api.iface.RunestoneDefinition;
+import svenhjol.strange.api.impl.RunestoneLocation;
 import svenhjol.strange.feature.runestones.Runestones;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public final class Handlers extends FeatureHolder<Runestones> {
     public static final int MAX_SACRIFICE_CHECKS = 10;
 
-    public final Map<Block, RunestoneDefinition> definitions = new HashMap<>();
+    public final Map<Block, List<RunestoneDefinition>> definitions = new HashMap<>();
     public final Map<UUID, RunestoneTeleport> teleports = new HashMap<>();
 
     public Handlers(Runestones feature) {
@@ -49,7 +50,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
     public void serverStart(MinecraftServer server) {
         definitions.clear();
         for (var definition : feature().providers.definitions) {
-            this.definitions.put(definition.block().get(), definition);
+            this.definitions.computeIfAbsent(definition.block().get(), a -> new ArrayList<>()).add(definition);
         }
     }
 
@@ -170,17 +171,30 @@ public final class Handlers extends FeatureHolder<Runestones> {
         }
 
         var random = RandomSource.create(pos.asLong());
-        var definition = definitions.get(block);
-        var location = definition.location(level, pos, random);
-        var sacrifice = definition.sacrifice(level, pos, random);
+        var blockDefinitions = definitions.get(block);
+        Collections.shuffle(blockDefinitions, new Random(random.nextLong()));
 
-        if (location.isEmpty()) {
+        Optional<RunestoneLocation> foundLocation = Optional.empty();
+        Supplier<ItemLike> foundSacrifice = () -> null;
+
+        for (var blockDefinition : blockDefinitions) {
+            var location = blockDefinition.location(level, pos, random);
+            var sacrifice = blockDefinition.sacrifice(level, pos, random);
+
+            if (location.isPresent()) {
+                foundLocation = location;
+                foundSacrifice = sacrifice;
+                break;
+            }
+        }
+
+        if (foundLocation.isEmpty()) {
             log().error("Failed to get a location from runestone at itemPos " + pos);
             return;
         }
 
-        runestone.location = location.get();
-        runestone.sacrifice = new ItemStack(sacrifice.get());
+        runestone.location = foundLocation.get();
+        runestone.sacrifice = new ItemStack(foundSacrifice.get());
 
         log().debug("Set runestone location = " + runestone.location.id() + ", sacrifice = " + runestone.sacrifice.toString() + " at itemPos " + pos);
         runestone.setChanged();

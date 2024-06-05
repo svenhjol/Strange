@@ -5,7 +5,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
@@ -13,9 +16,14 @@ import svenhjol.charm.charmony.Api;
 import svenhjol.charm.charmony.Resolve;
 import svenhjol.charm.charmony.feature.ProviderHolder;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.enums.RunestoneLocationType;
+import svenhjol.strange.api.iface.RunestoneDefinition;
+import svenhjol.strange.api.iface.RunestoneDefinitionsProvider;
 import svenhjol.strange.api.iface.StoneCircleDefinition;
 import svenhjol.strange.api.iface.StoneCircleDefinitionsProvider;
+import svenhjol.strange.api.impl.RunestoneLocation;
 import svenhjol.strange.feature.runestones.Runestones;
+import svenhjol.strange.feature.runestones.common.Helpers;
 import svenhjol.strange.feature.stone_circles.StoneCircles;
 
 import java.util.HashMap;
@@ -24,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public final class Providers extends ProviderHolder<StoneCircles> implements StoneCircleDefinitionsProvider {
+public final class Providers extends ProviderHolder<StoneCircles> implements StoneCircleDefinitionsProvider, RunestoneDefinitionsProvider {
     public static final String DEFAULT = "stone";
 
     public Codec<StoneCircleDefinition> codec;
@@ -32,10 +40,7 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
 
     public Providers(StoneCircles feature) {
         super(feature);
-    }
 
-    @Override
-    public void onEnabled() {
         Api.consume(StoneCircleDefinitionsProvider.class, provider -> {
             for (var definition : provider.getStoneCircleDefinitions()) {
                 this.definitions.put(definition.name(), definition);
@@ -48,10 +53,13 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
 
     @Override
     public List<StoneCircleDefinition> getStoneCircleDefinitions() {
-        return List.of(overworld(), theNether(), theEnd());
+        return List.of(
+            stoneCirclesForOverworld(),
+            stoneCirclesForTheNether(),
+            stoneCirclesForTheEnd());
     }
 
-    private StoneCircleDefinition overworld() {
+    private StoneCircleDefinition stoneCirclesForOverworld() {
         return new StoneCircleDefinition() {
             @Override
             public String name() {
@@ -92,7 +100,7 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
         };
     }
 
-    private StoneCircleDefinition theNether() {
+    private StoneCircleDefinition stoneCirclesForTheNether() {
         return new StoneCircleDefinition() {
             @Override
             public String name() {
@@ -170,7 +178,7 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
         };
     }
 
-    private StoneCircleDefinition theEnd() {
+    private StoneCircleDefinition stoneCirclesForTheEnd() {
         return new StoneCircleDefinition() {
             @Override
             public String name() {
@@ -214,5 +222,74 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
                     .orElse(null));
             }
         };
+    }
+
+    @Override
+    public List<RunestoneDefinition> getRunestoneDefinitions() {
+        var runestones = Resolve.feature(Runestones.class);
+        var chance = feature().stoneCircleRunestoneChance();
+
+        return List.of(
+            new RunestoneDefinition() {
+                @Override
+                public Supplier<? extends Block> block() {
+                    return runestones.registers.stoneBlock;
+                }
+
+                @Override
+                public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+                    if (feature().isEnabled() && random.nextDouble() < chance) {
+                        return Optional.of(new RunestoneLocation(RunestoneLocationType.STRUCTURE, Strange.id("stone_circle_stone")));
+                    }
+                    return Optional.empty();
+                }
+
+                @Override
+                public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                    return () -> Helpers.randomItem(level, TagKey.create(Registries.ITEM,
+                        Strange.id("runestone/stone_runestone_item_sacrifices")), random).orElseThrow();
+                }
+            },
+            new RunestoneDefinition() {
+                @Override
+                public Supplier<? extends Block> block() {
+                    return runestones.registers.blackstoneBlock;
+                }
+
+                @Override
+                public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+                    if (feature().isEnabled() && random.nextDouble() < chance) {
+                        return Optional.of(new RunestoneLocation(RunestoneLocationType.STRUCTURE, Strange.id("stone_circle_blackstone")));
+                    }
+                    return Optional.empty();
+                }
+
+                @Override
+                public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                    return () -> Helpers.randomItem(level, TagKey.create(Registries.ITEM,
+                        Strange.id("runestone/blackstone_runestone_item_sacrifices")), random).orElseThrow();
+                }
+            },
+            new RunestoneDefinition() {
+                @Override
+                public Supplier<? extends Block> block() {
+                    return runestones.registers.obsidianBlock;
+                }
+
+                @Override
+                public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+                    if (feature().isEnabled() && random.nextDouble() < chance) {
+                        return Optional.of(new RunestoneLocation(RunestoneLocationType.STRUCTURE, Strange.id("stone_circle_obsidian")));
+                    }
+                    return Optional.empty();
+                }
+
+                @Override
+                public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                    return () -> Helpers.randomItem(level, TagKey.create(Registries.ITEM,
+                        Strange.id("runestone/obsidian_runestone_item_sacrifices")), random).orElseThrow();
+                }
+            }
+        );
     }
 }

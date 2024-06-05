@@ -71,6 +71,14 @@ public class StoneCirclePiece extends ScatteredFeaturePiece implements FeatureRe
         var runestoneChance = definition.runestoneChance();
         var generatedAnything = false;
 
+        if (!feature().isEnabled()) {
+            return; // Don't generate any blocks if feature disabled.
+        }
+
+        if (!RUNESTONES.isEnabled()) {
+            runestoneChance = 0; // Don't generate any runestones if runestones feature is disabled.
+        }
+
         // Avoid stone circles being placed on the roof of the dimension.
         // Delegate to the definition to reposition the stone circle.
         if (level.dimensionType().hasCeiling()) {

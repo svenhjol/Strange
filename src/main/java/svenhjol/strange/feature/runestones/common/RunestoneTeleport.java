@@ -57,6 +57,13 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
 
         ticks++;
 
+        if (ticks == 1) {
+            if (feature().dizzyEffect()) {
+                // Adds dizziness effect to the teleporting player.
+                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, feature().protectionDuration() * 2, 5));
+            }
+        }
+
         if (ticks == PLAY_SOUND_TICKS) {
             log().debug("Playing teleport sound for player " + player);
             level.playSound(null, player.blockPosition(), feature().registers.travelSound.get(), SoundSource.BLOCKS);
@@ -83,15 +90,12 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         log().debug("Called teleport for player " + player);
         var protectionTicks = feature().protectionDuration();
 
-        // Add protection and dizziness effects to the teleporting player.
+        // Add protection effects to the teleporting player.
         var effects = new ArrayList<>(Arrays.asList(
             new MobEffectInstance(MobEffects.FIRE_RESISTANCE, protectionTicks, 1),
             new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, protectionTicks, 1),
             new MobEffectInstance(MobEffects.REGENERATION, protectionTicks, 1)
         ));
-        if (feature().dizzyEffect()) {
-            effects.add(new MobEffectInstance(MobEffects.CONFUSION, protectionTicks, 4));
-        }
         effects.forEach(player::addEffect);
 
         // Do the teleport to the location - repositioning comes later.

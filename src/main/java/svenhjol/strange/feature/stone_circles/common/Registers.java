@@ -8,7 +8,6 @@ import svenhjol.strange.feature.stone_circles.StoneCircles;
 import java.util.function.Supplier;
 
 public final class Registers extends RegisterHolder<StoneCircles> {
-    private static final String STRUCTURE_ID = "stone_circle";
     private static final String PIECE_ID = "stone_circle_piece";
 
     public final Supplier<StructureType<StoneCircleStructure>> structureType;
@@ -18,7 +17,7 @@ public final class Registers extends RegisterHolder<StoneCircles> {
         super(feature);
         var registry = feature.registry();
 
-        structureType = registry.structure(STRUCTURE_ID, () -> StoneCircleStructure.CODEC);
+        structureType = registry.structure(StoneCircles.STRUCTURE_ID, () -> StoneCircleStructure.CODEC);
         structurePiece = registry.structurePiece(PIECE_ID, () -> StoneCirclePiece::new);
     }
 }
