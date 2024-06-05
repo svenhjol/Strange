@@ -3,9 +3,6 @@
     "minecraft:ender_pearl",
     "minecraft:ender_eye",
     "minecraft:diamond",
-    "minecraft:diamond_block",
-    "minecraft:emerald_block",
-    "minecraft:obsidian",
-    "minecraft:shulker_shell"
+    "minecraft:obsidian"
   ]
 }
