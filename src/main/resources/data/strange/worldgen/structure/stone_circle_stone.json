@@ -1,0 +1,7 @@
+{
+  "type": "strange:stone_circle",
+  "biomes": "#strange:has_structure/stone_circle_stone",
+  "spawn_overrides": {},
+  "stone_circle_definition": "stone",
+  "step": "surface_structures"
+}

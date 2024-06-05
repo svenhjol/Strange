@@ -1,0 +1,14 @@
+{
+  "values": [
+    "minecraft:savanna",
+    "minecraft:plains",
+    "minecraft:snowy_plains",
+    "minecraft:badlands",
+    "minecraft:desert",
+    "minecraft:beach",
+    "minecraft:snowy_beach",
+    "minecraft:river",
+    "minecraft:meadow",
+    "minecraft:swamp"
+  ]
+}
