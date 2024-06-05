@@ -24,7 +24,6 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
     private final int fadeInSpeed;
     private final int fadeOutSpeed;
     private boolean isValid = false;
-    private boolean textShadow;
 
     @Nullable
     private ItemStack sacrifice;
@@ -41,12 +40,11 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
     public HudRenderer(RunestonesClient feature) {
         super(feature);
 
-        fadeInSpeed = 4;
+        fadeInSpeed = 2;
         fadeOutSpeed = 10;
         runesColor = 0xbfaf9f;
         nameColor = 0xf8f8ff;
         discoveredColor = 0xafbfcf;
-        textShadow = true;
     }
 
     public void tick(Player player) {
@@ -87,6 +85,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
         var midX = (int)(window.getGuiScaledWidth() / 2.0f);
         var alpha = Math.max(4, Math.min(MAX_FADE_TICKS, ticksFade)) << 24 & 0xff000000;
         var scale = Math.max(0f, Math.min(1.0f, (ticksFade / (float) MAX_FADE_TICKS)));
+        var textShadow = feature().hudHasShadowText();
 
         int nameStringLength;
         int runesStringLength;
@@ -97,6 +96,10 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
         nameStringLength = name.getString().length() * 5;
         discoveredStringLength = discovered.getString().length() * 5;
         activateWithStringLength = activateWith.getString().length() * 5; // reserve space for the item!
+
+        if (feature().hudHasBackground()) {
+            guiGraphics.fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x505050 | alpha);
+        }
 
         if (nameStringLength > 0) {
             y += lineHeight;
