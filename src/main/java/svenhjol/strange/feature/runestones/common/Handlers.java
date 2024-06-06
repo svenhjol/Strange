@@ -175,6 +175,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
 
         for (var blockDefinition : blockDefinitions) {
             var location = blockDefinition.location(level, pos, random);
+            random.nextInt(15335251);
 
             if (location.isPresent()) {
                 var sacrifice = blockDefinition.sacrifice(level, pos, random).get();

@@ -56,7 +56,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
     }
 
     private RunestoneDefinition stone() {
-        return new CustomRunestoneDefinition(0.36d, 0.88d) {
+        return new CustomRunestoneDefinition(0.5d, 0.9d) {
             @Override
             public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.stoneBlock;
@@ -85,7 +85,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
     }
 
     private RunestoneDefinition stoneRare() {
-        return new CustomRunestoneDefinition(0.22d, 0.58d) {
+        return new CustomRunestoneDefinition(0.2d, 0.33d) {
             @Override
             public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.stoneBlock;
@@ -127,7 +127,10 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return Optional.of(Helpers.SPAWN_POINT);
+                if (random.nextDouble() < 0.33d) {
+                    return Optional.of(Helpers.SPAWN_POINT);
+                }
+                return Optional.empty();
             }
 
             @Override
@@ -138,7 +141,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
     }
 
     private RunestoneDefinition blackstone() {
-        return new CustomRunestoneDefinition(0.36d, 0.88d) {
+        return new CustomRunestoneDefinition(0.6d, 0.9d) {
             @Override
             public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.blackstoneBlock;
@@ -191,7 +194,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
     }
 
     private RunestoneDefinition obsidian() {
-        return new CustomRunestoneDefinition(0.36d, 0.88d) {
+        return new CustomRunestoneDefinition(0.5d, 0.9d) {
             @Override
             public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.obsidianBlock;
@@ -259,7 +262,8 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
         public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
             if (random.nextDouble() < biomeChance) {
                 return Helpers.randomBiome(level, random, TagKey.create(Registries.BIOME, Strange.id(biomeTagPath())));
-            } else if (random.nextDouble() < structureChance) {
+            }
+            if (random.nextDouble() < structureChance) {
                 return Helpers.randomStructure(level, random, TagKey.create(Registries.STRUCTURE, Strange.id(structureTagPath())));
             }
 
