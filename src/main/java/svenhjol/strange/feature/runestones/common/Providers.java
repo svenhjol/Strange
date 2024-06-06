@@ -85,7 +85,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
     }
 
     private RunestoneDefinition stoneRare() {
-        return new CustomRunestoneDefinition(0.28d, 0.66d) {
+        return new CustomRunestoneDefinition(0.22d, 0.58d) {
             @Override
             public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.stoneBlock;
