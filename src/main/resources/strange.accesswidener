@@ -54,3 +54,7 @@ accessible field net/minecraft/server/level/ServerPlayer lastSentFood I
 accessible field net/minecraft/server/level/ServerPlayer lastSentHealth F
 accessible field net/minecraft/world/entity/item/ItemEntity pickupDelay I
 accessible method net/minecraft/world/entity/Entity unsetRemoved ()V
+
+# Travel Journals
+accessible class net/minecraft/world/level/storage/LevelResource
+accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
