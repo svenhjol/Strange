@@ -4,12 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.block.Blocks;
 import svenhjol.charm.charmony.Api;
 import svenhjol.charm.charmony.feature.ProviderHolder;
 import svenhjol.strange.Strange;
@@ -35,7 +33,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
         Api.consume(RunestoneDefinitionsProvider.class, providers -> {
             for (var definition : providers.getRunestoneDefinitions()) {
                 // Add the block to the runestone block entity.
-                var blockSupplier = definition.block();
+                var blockSupplier = definition.runestoneBlock();
                 feature().registry().blockEntityBlocks(feature().registers.blockEntity, List.of(blockSupplier));
 
                 // Add the definition to the full set for mapping later.
@@ -46,96 +44,237 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
     @Override
     public List<RunestoneDefinition> getRunestoneDefinitions() {
-        return List.of(stone(), blackstone(), obsidian());
+        return List.of(
+            stone(),
+            stoneRare(),
+            stoneSpawnPoint(),
+            blackstone(),
+            blackstoneSpawnPoint(),
+            obsidian(),
+            obsidianSpawnPoint()
+        );
     }
 
     private RunestoneDefinition stone() {
-        return new DefaultRunestoneDefinition("stone", 0.12d, 0.25d, 0.75d) {
+        return new CustomRunestoneDefinition(0.36d, 0.88d) {
             @Override
-            public Supplier<? extends Block> block() {
+            public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.stoneBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.STONE;
+            }
+
+            @Override
+            public String biomeTagPath() {
+                return "runestone/stone_runestone_biome_located";
+            }
+
+            @Override
+            public String structureTagPath() {
+                return "runestone/stone_runestone_structure_located";
+            }
+
+            @Override
+            public String ItemTagPath() {
+                return "runestone/stone_runestone_item_sacrifices";
+            }
+        };
+    }
+
+    private RunestoneDefinition stoneRare() {
+        return new CustomRunestoneDefinition(0.28d, 0.66d) {
+            @Override
+            public Supplier<? extends Block> runestoneBlock() {
+                return feature().registers.stoneBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.COBBLESTONE;
+            }
+
+            @Override
+            public String biomeTagPath() {
+                return "runestone/stone_runestone_rare_biome_located";
+            }
+
+            @Override
+            public String structureTagPath() {
+                return "runestone/stone_runestone_rare_structure_located";
+            }
+
+            @Override
+            public String ItemTagPath() {
+                return "runestone/stone_runestone_rare_item_sacrifices";
+            }
+        };
+    }
+
+    private RunestoneDefinition stoneSpawnPoint() {
+        return new RunestoneDefinition() {
+            @Override
+            public Supplier<? extends Block> runestoneBlock() {
+                return feature().registers.stoneBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.MOSSY_COBBLESTONE;
+            }
+
+            @Override
+            public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return Optional.of(Helpers.SPAWN_POINT);
+            }
+
+            @Override
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/stone_runestone_item_sacrifices");
             }
         };
     }
 
     private RunestoneDefinition blackstone() {
-        return new DefaultRunestoneDefinition("blackstone", 0.0d, 0.33d, 0.7d) {
+        return new CustomRunestoneDefinition(0.36d, 0.88d) {
             @Override
-            public Supplier<? extends Block> block() {
+            public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.blackstoneBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.BLACKSTONE;
+            }
+
+            @Override
+            public String biomeTagPath() {
+                return "runestone/blackstone_runestone_biome_located";
+            }
+
+            @Override
+            public String structureTagPath() {
+                return "runestone/blackstone_runestone_structure_located";
+            }
+
+            @Override
+            public String ItemTagPath() {
+                return "runestone/blackstone_runestone_item_sacrifices";
+            }
+        };
+    }
+
+    private RunestoneDefinition blackstoneSpawnPoint() {
+        return new RunestoneDefinition() {
+            @Override
+            public Supplier<? extends Block> runestoneBlock() {
+                return feature().registers.blackstoneBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.GILDED_BLACKSTONE;
+            }
+
+            @Override
+            public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return Optional.of(Helpers.SPAWN_POINT);
+            }
+
+            @Override
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/blackstone_runestone_item_sacrifices");
             }
         };
     }
 
     private RunestoneDefinition obsidian() {
-        return new DefaultRunestoneDefinition("obsidian", 0.0d, 0.25d, 0.8d) {
+        return new CustomRunestoneDefinition(0.36d, 0.88d) {
             @Override
-            public Supplier<? extends Block> block() {
+            public Supplier<? extends Block> runestoneBlock() {
                 return feature().registers.obsidianBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.OBSIDIAN;
+            }
+
+            @Override
+            public String biomeTagPath() {
+                return "runestone/obsidian_runestone_biome_located";
+            }
+
+            @Override
+            public String structureTagPath() {
+                return "runestone/obsidian_runestone_structure_located";
+            }
+
+            @Override
+            public String ItemTagPath() {
+                return "runestone/obsidian_runestone_item_sacrifices";
+            }
+        };
+    }
+
+    private RunestoneDefinition obsidianSpawnPoint() {
+        return new RunestoneDefinition() {
+            @Override
+            public Supplier<? extends Block> runestoneBlock() {
+                return feature().registers.obsidianBlock;
+            }
+
+            @Override
+            public Supplier<? extends Block> baseBlock() {
+                return () -> Blocks.CRYING_OBSIDIAN;
+            }
+
+            @Override
+            public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return Optional.of(Helpers.SPAWN_POINT);
+            }
+
+            @Override
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/obsidian_runestone_item_sacrifices");
             }
         };
     }
 
     /**
-     * A simple implementation of RunestoneDefinition that allows for chance of a runestone to link to a biome
-     * or structure, falling back to player spawn point.
-     * Rarity calculation also adds some chance of more lucrative biomes and locations for the overworld.
+     * A simple implementation of RunestoneDefinition with chance of a runestone to link to a biome or a structure.
      */
-    private abstract static class DefaultRunestoneDefinition implements RunestoneDefinition {
-        private final String material;
-        private final double rareChance;
+    private abstract static class CustomRunestoneDefinition implements RunestoneDefinition {
         private final double biomeChance;
         private final double structureChance;
-        private boolean isRare;
 
-        public DefaultRunestoneDefinition(String material, double rareChance, double biomeChance, double structureChance) {
-            this.material = material;
-            this.rareChance = rareChance;
+        public CustomRunestoneDefinition(double biomeChance, double structureChance) {
             this.biomeChance = biomeChance;
             this.structureChance = structureChance;
         }
 
         @Override
         public Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random) {
-            this.isRare = random.nextDouble() < rareChance;
-            var spawnPoint = Optional.of(Helpers.SPAWN_POINT);
-            Optional<RunestoneLocation> opt;
-
             if (random.nextDouble() < biomeChance) {
-                opt = Helpers.randomBiome(level, makeBiomeTag(), random);
+                return Helpers.randomBiome(level, random, TagKey.create(Registries.BIOME, Strange.id(biomeTagPath())));
             } else if (random.nextDouble() < structureChance) {
-                opt = Helpers.randomStructure(level, makeStructureTag(), random);
-            } else {
-                opt = Optional.empty();
+                return Helpers.randomStructure(level, random, TagKey.create(Registries.STRUCTURE, Strange.id(structureTagPath())));
             }
 
-            // Default to spawnpoint if checks don't pass.
-            if (opt.isEmpty()) {
-                return spawnPoint;
-            }
-
-            return opt;
+            return Optional.empty();
         }
 
         @Override
         public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-            return () -> Helpers.randomItem(level, makeItemTag(), random).orElseThrow(
-                () -> new RuntimeException("Could not find an item to use for the sacrifice"));
+            return () -> Helpers.randomItem(level, random, ItemTagPath());
         }
 
-        private TagKey<Biome> makeBiomeTag() {
-            return TagKey.create(Registries.BIOME,
-                Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_biome_located"));
-        }
+        public abstract String biomeTagPath();
 
-        private TagKey<Structure> makeStructureTag() {
-            return TagKey.create(Registries.STRUCTURE,
-                Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_structure_located"));
-        }
+        public abstract String structureTagPath();
 
-        private TagKey<Item> makeItemTag() {
-            return TagKey.create(Registries.ITEM,
-                Strange.id("runestone/" + material + "_runestone" + (isRare ? "_rare" : "") + "_item_sacrifices"));
-        }
+        public abstract String ItemTagPath();
     }
 }

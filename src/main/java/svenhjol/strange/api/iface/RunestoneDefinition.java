@@ -11,7 +11,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface RunestoneDefinition {
-    Supplier<? extends Block> block();
+    Supplier<? extends Block> runestoneBlock();
+
+    Supplier<? extends Block> baseBlock();
 
     Optional<RunestoneLocation> location(LevelAccessor level, BlockPos pos, RandomSource random);
 

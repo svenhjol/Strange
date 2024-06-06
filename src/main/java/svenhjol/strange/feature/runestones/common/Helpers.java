@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
@@ -44,7 +45,7 @@ public final class Helpers {
     /**
      * Make a random runestone biome location from a given biome tag.
      */
-    public static Optional<RunestoneLocation> randomBiome(LevelAccessor level, TagKey<Biome> tag, RandomSource random) {
+    public static Optional<RunestoneLocation> randomBiome(LevelAccessor level, RandomSource random, TagKey<Biome> tag) {
         var values = getValues(level.registryAccess(), tag);
         if (!values.isEmpty()) {
             var location = new RunestoneLocation(RunestoneLocationType.BIOME, values.get(random.nextInt(values.size())));
@@ -57,7 +58,7 @@ public final class Helpers {
     /**
      * Make a random runestone structure location from a given structure tag.
      */
-    public static Optional<RunestoneLocation> randomStructure(LevelAccessor level, TagKey<Structure> tag, RandomSource random) {
+    public static Optional<RunestoneLocation> randomStructure(LevelAccessor level, RandomSource random, TagKey<Structure> tag) {
         var values = getValues(level.registryAccess(), tag);
         if (!values.isEmpty()) {
             var location = new RunestoneLocation(RunestoneLocationType.STRUCTURE, values.get(random.nextInt(values.size())));
@@ -70,12 +71,16 @@ public final class Helpers {
     /**
      * Get a random runestone sacrifice item from a given item tag.
      */
-    public static Optional<Item> randomItem(LevelAccessor level, TagKey<Item> tag, RandomSource random) {
+    public static Item randomItem(LevelAccessor level, RandomSource random, TagKey<Item> tag) {
         var values = TagHelper.getValues(level.registryAccess().registryOrThrow(Registries.ITEM), tag);
         if (!values.isEmpty()) {
-            return Optional.of(values.get(random.nextInt(values.size())));
+            return values.get(random.nextInt(values.size()));
         }
-        return Optional.empty();
+        return Items.ROTTEN_FLESH;
+    }
+
+    public static Item randomItem(LevelAccessor level, RandomSource random, String res) {
+        return randomItem(level, random, TagKey.create(Registries.ITEM, Strange.id(res)));
     }
 
     public static BlockPos addRandomOffset(Level level, BlockPos pos, RandomSource random, int min, int max) {

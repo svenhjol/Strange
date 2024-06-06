@@ -15,10 +15,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -27,11 +27,9 @@ import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.charm.charmony.helper.PlayerHelper;
 import svenhjol.strange.api.iface.RunestoneDefinition;
-import svenhjol.strange.api.impl.RunestoneLocation;
 import svenhjol.strange.feature.runestones.Runestones;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public final class Handlers extends FeatureHolder<Runestones> {
@@ -50,7 +48,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
     public void serverStart(MinecraftServer server) {
         definitions.clear();
         for (var definition : feature().providers.definitions) {
-            this.definitions.computeIfAbsent(definition.block().get(), a -> new ArrayList<>()).add(definition);
+            this.definitions.computeIfAbsent(definition.runestoneBlock().get(), a -> new ArrayList<>()).add(definition);
         }
     }
 
@@ -166,7 +164,8 @@ public final class Handlers extends FeatureHolder<Runestones> {
         }
 
         if (!definitions.containsKey(block)) {
-            log().error("No definition found for runestone block " + block + " at itemPos " + pos);
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
+            log().error("No definition found for runestone block " + block + " at pos " + pos);
             return;
         }
 
@@ -174,30 +173,25 @@ public final class Handlers extends FeatureHolder<Runestones> {
         var blockDefinitions = definitions.get(block);
         Collections.shuffle(blockDefinitions, new Random(random.nextLong()));
 
-        Optional<RunestoneLocation> foundLocation = Optional.empty();
-        Supplier<ItemLike> foundSacrifice = () -> null;
-
         for (var blockDefinition : blockDefinitions) {
             var location = blockDefinition.location(level, pos, random);
-            var sacrifice = blockDefinition.sacrifice(level, pos, random);
 
             if (location.isPresent()) {
-                foundLocation = location;
-                foundSacrifice = sacrifice;
-                break;
+                var sacrifice = blockDefinition.sacrifice(level, pos, random).get();
+
+                runestone.location = location.get();
+                runestone.sacrifice = new ItemStack(sacrifice);
+
+                log().debug("Set runestone location = " + runestone.location.id() + ", sacrifice = " + runestone.sacrifice.toString() + " at pos " + pos);
+                runestone.setChanged();
+                return;
             }
         }
 
-        if (foundLocation.isEmpty()) {
-            log().error("Failed to get a location from runestone at itemPos " + pos);
-            return;
-        }
-
-        runestone.location = foundLocation.get();
-        runestone.sacrifice = new ItemStack(foundSacrifice.get());
-
-        log().debug("Set runestone location = " + runestone.location.id() + ", sacrifice = " + runestone.sacrifice.toString() + " at itemPos " + pos);
-        runestone.setChanged();
+        // Get a base block from the definitions to replace the runestone with.
+        var baseBlock = !blockDefinitions.isEmpty() ? blockDefinitions.getFirst().baseBlock().get() : Blocks.AIR;
+        level.setBlock(pos, baseBlock.defaultBlockState(), 2);
+        log().debug("Could not resolve a location from runestone at pos " + pos + ", set to base block");
     }
 
     public void doActivationEffects(ServerLevel level, BlockPos pos) {

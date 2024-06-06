@@ -23,7 +23,7 @@ public final class StoneCircles extends CommonFeature {
             Chance (out of 1.0) of a runestone linking to another stone circle.
             This chance is calculated only if the stone circle provider is used for the runestone block position."""
     )
-    private static double stoneCircleRunestoneChance = 0.25d;
+    private static double stoneCircleRunestoneChance = 0.3d;
 
     public StoneCircles(CommonLoader loader) {
         super(loader);
