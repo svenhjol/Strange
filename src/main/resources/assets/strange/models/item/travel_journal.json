@@ -2,5 +2,17 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "strange:item/travel_journal"
+  },
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [ -45, -20, -25 ],
+      "translation": [ 1.0, 1.8, 1.13 ],
+      "scale": [ 0.5, 0.5, 0.5 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ -45, -20, -25 ],
+      "translation": [ 1.0, 1.8, 1.13 ],
+      "scale": [ 0.5, 0.5, 0.5 ]
+    }
   }
 }
