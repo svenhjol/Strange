@@ -21,7 +21,7 @@
   "gui.strange.travel_journals.coordinates": "%s %s %s",
   "gui.strange.travel_journals.created_by": "by %s",
   "gui.strange.travel_journals.delete_bookmark": "Delete bookmark",
-  "gui.strange.travel_journals.edit_bookmark": "Edit bookmark",
+  "gui.strange.travel_journals.details": "Details",
   "gui.strange.travel_journals.home": "Home",
   "gui.strange.travel_journals.new_bookmark": "New bookmark",
   "gui.strange.travel_journals.save_to_bookmark": "Save to Bookmark",

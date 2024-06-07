@@ -33,40 +33,4 @@ public class Buttons {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
-
-    public static class TakePhotoButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = Resources.TAKE_PHOTO_BUTTON_TEXT;
-        public TakePhotoButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class TakeNewPhotoButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = Resources.TAKE_NEW_PHOTO_BUTTON_TEXT;
-        public TakeNewPhotoButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class ChangeNameButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = Resources.EDIT_BOOKMARK_BUTTON;
-        public ChangeNameButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
-
-    public static class ChangeIconButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = Resources.CHANGE_COLOR_BUTTON_TEXT;
-        public ChangeIconButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
 }

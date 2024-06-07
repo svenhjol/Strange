@@ -15,7 +15,7 @@ public final class Resources {
     public static final Component CHANGE_NAME_TITLE = Component.translatable("gui.strange.travel_journals.change_name");
     public static final Component CREATED_BY_TEXT = Component.translatable("gui.strange.travel_journals.created_by");
     public static final Component DELETE_BOOKMARK_BUTTON_TEXT = Component.translatable("gui.strange.travel_journals.delete_bookmark");
-    public static final Component EDIT_BOOKMARK_BUTTON = Component.translatable("gui.strange.travel_journals.edit_bookmark");
+    public static final Component DETAILS_BUTTON = Component.translatable("gui.strange.travel_journals.details");
     public static final Component TRAVEL_JOURNAL_TITLE = Component.translatable("gui.strange.travel_journals.travel_journal");
     public static final Component NEW_BOOKMARK_BUTTON_TEXT = Component.translatable("gui.strange.travel_journals.new_bookmark");
     public static final Component SAVE_TO_BOOKMARK_BUTTON_TEXT = Component.translatable("gui.strange.travel_journals.save_to_bookmark");

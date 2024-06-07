@@ -116,11 +116,11 @@ public class BookmarksScreen extends BaseScreen {
             }
             pose.popPose();
             
-            // Render dimension, position and edit button.
+            // Render dimension, position and details button.
             top = 141;
             if (!renderedBookmarkButtons) {
                 addRenderableWidget(new CoreButtons.EditButton(left, top, 107,
-                    b -> feature().handlers.openBookmark(bookmark), Resources.EDIT_BOOKMARK_BUTTON));
+                    b -> feature().handlers.openBookmark(bookmark), Resources.DETAILS_BUTTON));
             }
 
             pose.pushPose();
