@@ -2,6 +2,7 @@ package svenhjol.strange.feature.travel_journals.common;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,26 +12,31 @@ import svenhjol.strange.feature.travel_journals.TravelJournals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public record JournalData(List<BookmarkData> bookmarks) {
+public record JournalData(UUID id, List<BookmarkData> bookmarks) {
     private static final TravelJournals TRAVEL_JOURNALS = Resolve.feature(TravelJournals.class);
     private static final int MAX_BOOKMARKS = 8; // TODO: configurable!
     
     public static final Codec<JournalData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        UUIDUtil.CODEC.fieldOf("id")
+            .forGetter(JournalData::id),
         BookmarkData.CODEC.listOf().fieldOf("bookmarks")
             .forGetter(JournalData::bookmarks)
     ).apply(instance, JournalData::new));
     
     public static final StreamCodec<RegistryFriendlyByteBuf, JournalData> STREAM_CODEC = StreamCodec.composite(
+        UUIDUtil.STREAM_CODEC,
+            JournalData::id,
         BookmarkData.STREAM_CODEC.apply(ByteBufCodecs.list()),
             JournalData::bookmarks,
         JournalData::new
     );
     
-    public static final JournalData EMPTY = new JournalData(List.of());
+    public static final JournalData EMPTY = new JournalData(UUID.randomUUID(), List.of());
     
     public static Mutable create() {
-        return new Mutable(EMPTY);
+        return new Mutable(UUID.randomUUID(), EMPTY);
     }
     
     public static JournalData get(ItemStack stack) {
@@ -53,9 +59,15 @@ public record JournalData(List<BookmarkData> bookmarks) {
     
     @SuppressWarnings("UnusedReturnValue")
     public static class Mutable {
+        private final UUID id;
         private final List<BookmarkData> bookmarks;
         
         public Mutable(JournalData data) {
+            this(data.id(), data);
+        }
+        
+        public Mutable(UUID id, JournalData data) {
+            this.id = id;
             this.bookmarks = new ArrayList<>(data.bookmarks());
         }
         
@@ -69,7 +81,7 @@ public record JournalData(List<BookmarkData> bookmarks) {
         }
         
         public JournalData toImmutable() {
-            return new JournalData(bookmarks);
+            return new JournalData(id, bookmarks);
         }
     }
 }

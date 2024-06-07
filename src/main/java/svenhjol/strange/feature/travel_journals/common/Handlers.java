@@ -1,8 +1,8 @@
 package svenhjol.strange.feature.travel_journals.common;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,33 +39,21 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             return; // TODO: message back to client.
         }
         
-        // Check if the bookmark already exists at this position.
-        var existing = journal.bookmarks().stream()
-            .filter(b -> b.dimension().equals(dimension) && b.pos().equals(pos))
-            .findFirst();
-        
-        if (existing.isEmpty()) {
-            // Create a new bookmark and attach it to the journal.
-            var bookmark = BookmarkData.create()
-                .name(packet.name())
-                .dimension(dimension)
-                .pos(pos)
-                .timestamp(System.currentTimeMillis() / 1000L)
-                .author(player.getScoreboardName())
-                .toImmutable();
+        // Create a new bookmark and attach it to the journal.
+        var bookmark = BookmarkData.create()
+            .name(packet.name())
+            .dimension(dimension)
+            .pos(pos)
+            .timestamp(System.currentTimeMillis() / 1000L)
+            .author(player.getScoreboardName())
+            .toImmutable();
 
-            bookmarkId = bookmark.id();
-            log().debug("Created a new bookmark entry with UUID " + bookmarkId);
+        bookmarkId = bookmark.id();
+        log().debug("Created a new bookmark entry with UUID " + bookmarkId);
 
-            new JournalData.Mutable(journal)
-                .addBookmark(bookmark)
-                .save(stack);
-        } else {
-            
-            // Get the existing ID from the bookmark.
-            bookmarkId = existing.get().id();
-            log().debug("Found an existing bookmark with UUID " + bookmarkId);
-        }
+        new JournalData.Mutable(journal)
+            .addBookmark(bookmark)
+            .save(stack);
         
         // Instruct the client to take a screenshot.
         Networking.S2CTakePhoto.send((ServerPlayer)player, bookmarkId);
@@ -104,13 +93,17 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
 
     public Optional<ItemStack> tryGetTravelJournal(Player player) {
         var inventory = player.getInventory();
-        var check = List.of(inventory.offhand, inventory.items);
+        List<ItemStack> items = new ArrayList<>();
 
-        for (NonNullList<ItemStack> stacks : check) {
-            for (var stack : stacks) {
-                if (stack.is(feature().registers.item.get())) {
-                    return Optional.of(stack);
-                }
+        for (InteractionHand hand : InteractionHand.values()) {
+            items.add(player.getItemInHand(hand));
+        }
+        
+        items.addAll(inventory.items);
+        
+        for (var stack : items) {
+            if (stack.is(feature().registers.item.get())) {
+                return Optional.of(stack);
             }
         }
 
