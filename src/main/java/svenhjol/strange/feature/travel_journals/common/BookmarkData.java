@@ -56,6 +56,7 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
     
     public static class Mutable {
         private final UUID id;
+        private String description;
         private String name;
         private ResourceKey<Level> dimension;
         private BlockPos pos;
@@ -73,6 +74,7 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
             this.dimension = data.dimension();
             this.pos = data.pos();
             this.author = data.extra().author();
+            this.description = data.extra().description();
             this.timestamp = data.extra().timestamp();
             this.color = data.extra().color();
         }
@@ -97,6 +99,11 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
             return this;
         }
         
+        public Mutable description(String description) {
+            this.description = description;
+            return this;
+        }
+        
         public Mutable timestamp(long timestamp) {
             this.timestamp = timestamp;
             return this;
@@ -108,7 +115,7 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
         }
         
         public BookmarkData toImmutable() {
-            var extra = new BookmarkExtraData(author, timestamp, color);
+            var extra = new BookmarkExtraData(author, description, timestamp, color);
             return new BookmarkData(id, name, dimension, pos, extra);
         }
     }

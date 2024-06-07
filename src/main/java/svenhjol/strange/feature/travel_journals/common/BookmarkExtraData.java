@@ -7,10 +7,12 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 
-public record BookmarkExtraData(String author, long timestamp, DyeColor color) {
+public record BookmarkExtraData(String author, String description, long timestamp, DyeColor color) {
     public static final Codec<BookmarkExtraData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.fieldOf("author")
             .forGetter(BookmarkExtraData::author),
+        Codec.STRING.fieldOf("description")
+            .forGetter(BookmarkExtraData::description),
         Codec.LONG.fieldOf("timestamp")
             .forGetter(BookmarkExtraData::timestamp),
         DyeColor.CODEC.fieldOf("color")
@@ -20,6 +22,8 @@ public record BookmarkExtraData(String author, long timestamp, DyeColor color) {
     public static final StreamCodec<RegistryFriendlyByteBuf, BookmarkExtraData> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.STRING_UTF8,
             BookmarkExtraData::author,
+        ByteBufCodecs.STRING_UTF8,
+            BookmarkExtraData::description,
         ByteBufCodecs.VAR_LONG,
             BookmarkExtraData::timestamp,
         DyeColor.STREAM_CODEC,
@@ -27,5 +31,5 @@ public record BookmarkExtraData(String author, long timestamp, DyeColor color) {
         BookmarkExtraData::new
     );
     
-    public static final BookmarkExtraData EMPTY = new BookmarkExtraData("", -1, DyeColor.WHITE);
+    public static final BookmarkExtraData EMPTY = new BookmarkExtraData("", "", -1, DyeColor.WHITE);
 }
