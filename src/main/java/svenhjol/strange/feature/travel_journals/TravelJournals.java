@@ -9,6 +9,8 @@ import svenhjol.strange.feature.travel_journals.common.Registers;
 
 @Feature
 public final class TravelJournals extends CommonFeature {
+    public static final String PHOTOS_DIR = "strange_travel_journal_photos";
+    
     public final Registers registers;
     public final Networking networking;
     public final Handlers handlers;

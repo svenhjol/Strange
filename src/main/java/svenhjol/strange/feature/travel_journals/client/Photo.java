@@ -47,6 +47,10 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
 
     public void finish() {
         showGui();
+        
+        // Move the screenshot into the custom photos folder.
+        feature().handlers.moveScreenshotIntoPhotosDir(uuid);
+        
         valid = false;
     }
 
@@ -72,7 +76,7 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
             minecraft.getMainRenderTarget(),
             component -> {
                 minecraft.player.playSound(feature().linked().registers.photoSound.get(), 1.0f, 1.0f);
-                feature().log().debug("Photo taken");
+                feature().log().debug("Photo taken for uuid: " + uuid);
                 finish();
             }
         );

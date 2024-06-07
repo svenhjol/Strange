@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class Handlers extends FeatureHolder<TravelJournals> {
-    public static final LevelResource PHOTOS_DIR = new LevelResource("strange_travel_journal_photos");
+    public static final LevelResource PHOTOS_DIR_RESOURCE = new LevelResource(TravelJournals.PHOTOS_DIR);
 
     public Handlers(TravelJournals feature) {
         super(feature);
@@ -59,7 +59,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             .addBookmark(bookmark)
             .save(stack);
         
-        // Instruct the client to take a screenshot.
+        // Instruct the client to take a photo.
         Networking.S2CTakePhoto.send((ServerPlayer)player, bookmarkId);
     }
 
@@ -67,10 +67,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
      * Client has sent a new photo.
      */
     public void photoReceived(Player player, Networking.C2SPhoto packet) {
-        var result = trySavePhoto((ServerLevel) player.level(), packet.uuid(), packet.image());
-        if (!result) {
-           log().error("Photo for " + packet.uuid() + " failed");
-        }
+        trySavePhoto((ServerLevel) player.level(), packet.uuid(), packet.image());
     }
 
     /**
@@ -86,35 +83,50 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         // Send the photo to the client.
         Networking.S2CPhoto.send((ServerPlayer) player, uuid, image);
     }
-
+    
+    /**
+     * Gets or returns the custom photos directory.
+     * Create a subdirectory within the world folder to store all our custom photos in.
+     */
     public File getOrCreatePhotosDir(ServerLevel level) {
         var server = level.getServer();
-        var photosDir = server.getWorldPath(PHOTOS_DIR).toFile();
+        var photosDir = server.getWorldPath(PHOTOS_DIR_RESOURCE).toFile();
+        
         if (!photosDir.exists() && !photosDir.mkdir()) {
-            throw new RuntimeException("Could not create photos directory in the world folder");
+            throw new RuntimeException("Could not create photos directory in the world folder, giving up");
         }
         return photosDir;
     }
 
-    public boolean trySavePhoto(ServerLevel level, UUID uuid, BufferedImage image) {
+    /**
+     * Try and save a given image buffer to a file within the custom photos directory.
+     */
+    public void trySavePhoto(ServerLevel level, UUID uuid, BufferedImage image) {
         var dir = getOrCreatePhotosDir(level);
-        var path = new File(dir + "/" + uuid + ".png");
+        var path = new File(dir, uuid + ".png");
         boolean success;
 
         try {
             success = ImageIO.write(image, "png", path);
         } catch (IOException e) {
             log().error("Could not save photo for uuid: " + uuid + ": " + e.getMessage());
-            return false;
+            return;
         }
 
-        return success;
+        if (success) {
+            log().debug("Saved image to photos for uuid: " + uuid);
+        } else {
+            log().error("ImageIO.write did not save the image successfully for uuid: " + uuid);
+        }
     }
-    
+
+    /**
+     * Try and load an image from the custom photos directory for a given photo UUID.
+     */
     @Nullable
     public BufferedImage tryLoadPhoto(ServerLevel level, UUID uuid) {
         var dir = getOrCreatePhotosDir(level);
-        var path = new File(dir + "/" + uuid + ".png");
+        var path = new File(dir, uuid + ".png");
         BufferedImage image;
         
         try {
@@ -127,6 +139,13 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         return image;
     }
 
+    /**
+     * Fetch the most readily available travel journal held by the player.
+     * The order that is checked is:
+     * - mainhand
+     * - offhand
+     * - inventory slots starting from 0
+     */
     public Optional<ItemStack> tryGetTravelJournal(Player player) {
         var inventory = player.getInventory();
         List<ItemStack> items = new ArrayList<>();
