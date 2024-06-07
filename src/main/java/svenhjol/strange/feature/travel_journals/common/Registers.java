@@ -42,15 +42,18 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         interactSound = registry.soundEvent("travel_journal_interact");
         photoSound = registry.soundEvent("travel_journal_photo");
 
-        // Client-to-server packets
-        registry.clientPacketSender(Networking.C2SMakeBookmark.TYPE, Networking.C2SMakeBookmark.CODEC);
-        registry.clientPacketSender(Networking.C2SSendPhoto.TYPE, Networking.C2SSendPhoto.CODEC);
-
         // Server-to-client packets
         registry.serverPacketSender(Networking.S2CTakePhoto.TYPE, Networking.S2CTakePhoto.CODEC);
+        registry.serverPacketSender(Networking.S2CPhoto.TYPE, Networking.S2CPhoto.CODEC);
+
+        // Client-to-server packets
+        registry.clientPacketSender(Networking.C2SMakeBookmark.TYPE, Networking.C2SMakeBookmark.CODEC);
+        registry.clientPacketSender(Networking.C2SPhoto.TYPE, Networking.C2SPhoto.CODEC);
+        registry.clientPacketSender(Networking.C2SDownloadPhoto.TYPE, Networking.C2SDownloadPhoto.CODEC);
 
         // Server packet receivers
         registry.packetReceiver(Networking.C2SMakeBookmark.TYPE, () -> feature.handlers::makeBookmarkReceived);
-        registry.packetReceiver(Networking.C2SSendPhoto.TYPE, () -> feature.handlers::sendPhotoReceived);
+        registry.packetReceiver(Networking.C2SPhoto.TYPE, () -> feature.handlers::photoReceived);
+        registry.packetReceiver(Networking.C2SDownloadPhoto.TYPE, () -> feature.handlers::downloadPhotoReceived);
     }
 }

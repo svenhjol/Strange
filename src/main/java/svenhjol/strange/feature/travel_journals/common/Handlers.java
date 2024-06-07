@@ -9,6 +9,7 @@ import net.minecraft.world.level.storage.LevelResource;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,6 +26,9 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         super(feature);
     }
 
+    /**
+     * Client wants to make a new bookmark.
+     */
     public void makeBookmarkReceived(Player player, Networking.C2SMakeBookmark packet) {
         var dimension = player.level().dimension();
         var pos = player.blockPosition();
@@ -59,12 +63,28 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         Networking.S2CTakePhoto.send((ServerPlayer)player, bookmarkId);
     }
 
-    public void sendPhotoReceived(Player player, Networking.C2SSendPhoto packet) {
-        log().debug(packet.toString());
+    /**
+     * Client has sent a new photo.
+     */
+    public void photoReceived(Player player, Networking.C2SPhoto packet) {
         var result = trySavePhoto((ServerLevel) player.level(), packet.uuid(), packet.image());
         if (!result) {
-           log().error("Photo for " + packet.uuid() + " failed.");
+           log().error("Photo for " + packet.uuid() + " failed");
         }
+    }
+
+    /**
+     * Client wants to download a photo.
+     */
+    public void downloadPhotoReceived(Player player, Networking.C2SDownloadPhoto packet) {
+        var uuid = packet.uuid();
+        var image = tryLoadPhoto((ServerLevel) player.level(), uuid);
+        if (image == null) {
+            return;
+        }
+        
+        // Send the photo to the client.
+        Networking.S2CPhoto.send((ServerPlayer) player, uuid, image);
     }
 
     public File getOrCreatePhotosDir(ServerLevel level) {
@@ -84,11 +104,27 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         try {
             success = ImageIO.write(image, "png", path);
         } catch (IOException e) {
-            log().error("Error saving photo: " + e.getMessage());
+            log().error("Could not save photo for uuid: " + uuid + ": " + e.getMessage());
             return false;
         }
 
         return success;
+    }
+    
+    @Nullable
+    public BufferedImage tryLoadPhoto(ServerLevel level, UUID uuid) {
+        var dir = getOrCreatePhotosDir(level);
+        var path = new File(dir + "/" + uuid + ".png");
+        BufferedImage image;
+        
+        try {
+            image = ImageIO.read(path);
+        } catch (IOException e) {
+            log().error("Could not load photo for uuid: " + uuid + ": " + e.getMessage());
+            return null;
+        }
+
+        return image;
     }
 
     public Optional<ItemStack> tryGetTravelJournal(Player player) {

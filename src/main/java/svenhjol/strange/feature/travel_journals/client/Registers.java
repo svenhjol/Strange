@@ -27,6 +27,7 @@ public final class Registers extends RegisterHolder<TravelJournalsClient> {
 
         // Client packet receivers
         registry.packetReceiver(Networking.S2CTakePhoto.TYPE, () -> feature.handlers::takePhotoReceived);
+        registry.packetReceiver(Networking.S2CPhoto.TYPE, () -> feature.handlers::photoReceived);
     }
 
     @Override

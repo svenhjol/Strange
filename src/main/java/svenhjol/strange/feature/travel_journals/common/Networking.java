@@ -44,6 +44,47 @@ public final class Networking extends FeatureHolder<TravelJournals> {
             return new S2CTakePhoto(buf.readUUID());
         }
     }
+    
+    public record S2CPhoto(UUID uuid, BufferedImage image) implements CustomPacketPayload {
+        public static final Type<S2CPhoto> TYPE = new Type<>(Strange.id("server_photo"));
+        public static final StreamCodec<FriendlyByteBuf, S2CPhoto> CODEC =
+            StreamCodec.of(S2CPhoto::encode, S2CPhoto::decode);
+
+        public static void send(ServerPlayer player, UUID uuid, BufferedImage image) {
+            ServerPlayNetworking.send(player, new S2CPhoto(uuid, image));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, S2CPhoto self) {
+            var stream = new ByteArrayOutputStream();
+            try {
+                ImageIO.write(self.image(), "png", stream);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to write image to stream: " + e.getMessage());
+            }
+
+            buf.writeUUID(self.uuid());
+            buf.writeByteArray(stream.toByteArray());
+        }
+
+        private static S2CPhoto decode(FriendlyByteBuf buf) {
+            var uuid = buf.readUUID();
+            var bytes = buf.readByteArray();
+
+            BufferedImage image;
+            try {
+                image = ImageIO.read(new ByteArrayInputStream(bytes));
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to read image from stream: " + e.getMessage());
+            }
+
+            return new S2CPhoto(uuid, image);
+        }
+    }
 
     public record C2SMakeBookmark(String name) implements CustomPacketPayload {
         public static final Type<C2SMakeBookmark> TYPE = new Type<>(Strange.id("make_bookmark"));
@@ -68,13 +109,13 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
     }
 
-    public record C2SSendPhoto(UUID uuid, BufferedImage image) implements CustomPacketPayload {
-        public static final Type<C2SSendPhoto> TYPE = new Type<>(Strange.id("send_photo"));
-        public static final StreamCodec<FriendlyByteBuf, C2SSendPhoto> CODEC =
-            StreamCodec.of(C2SSendPhoto::encode, C2SSendPhoto::decode);
+    public record C2SPhoto(UUID uuid, BufferedImage image) implements CustomPacketPayload {
+        public static final Type<C2SPhoto> TYPE = new Type<>(Strange.id("client_photo"));
+        public static final StreamCodec<FriendlyByteBuf, C2SPhoto> CODEC =
+            StreamCodec.of(C2SPhoto::encode, C2SPhoto::decode);
 
         public static void send(UUID uuid, BufferedImage image) {
-            ClientPlayNetworking.send(new C2SSendPhoto(uuid, image));
+            ClientPlayNetworking.send(new C2SPhoto(uuid, image));
         }
 
         @Override
@@ -82,7 +123,7 @@ public final class Networking extends FeatureHolder<TravelJournals> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, C2SSendPhoto self) {
+        private static void encode(FriendlyByteBuf buf, C2SPhoto self) {
             var stream = new ByteArrayOutputStream();
             try {
                 ImageIO.write(self.image(), "png", stream);
@@ -94,7 +135,7 @@ public final class Networking extends FeatureHolder<TravelJournals> {
             buf.writeByteArray(stream.toByteArray());
         }
 
-        private static C2SSendPhoto decode(FriendlyByteBuf buf) {
+        private static C2SPhoto decode(FriendlyByteBuf buf) {
             var uuid = buf.readUUID();
             var bytes = buf.readByteArray();
 
@@ -105,7 +146,31 @@ public final class Networking extends FeatureHolder<TravelJournals> {
                 throw new RuntimeException("Failed to read image from stream: " + e.getMessage());
             }
 
-            return new C2SSendPhoto(uuid, image);
+            return new C2SPhoto(uuid, image);
+        }
+    }
+    
+    // Client-to-server packet to request the server to download the photo that matches the UUID.
+    public record C2SDownloadPhoto(UUID uuid) implements CustomPacketPayload {
+        public static final Type<C2SDownloadPhoto> TYPE = new Type<>(Strange.id("download_photo"));
+        public static final StreamCodec<FriendlyByteBuf, C2SDownloadPhoto> CODEC =
+            StreamCodec.of(C2SDownloadPhoto::encode, C2SDownloadPhoto::decode);
+
+        public static void send(UUID uuid) {
+            ClientPlayNetworking.send(new C2SDownloadPhoto(uuid));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, C2SDownloadPhoto self) {
+            buf.writeUUID(self.uuid());
+        }
+
+        private static C2SDownloadPhoto decode(FriendlyByteBuf buf) {
+            return new C2SDownloadPhoto(buf.readUUID());
         }
     }
 }

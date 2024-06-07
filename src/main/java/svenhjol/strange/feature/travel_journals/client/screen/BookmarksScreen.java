@@ -106,7 +106,7 @@ public class BookmarksScreen extends BaseScreen {
             // Render photo.
             pose.pushPose();
             
-            var resource = feature().handlers.tryFetchPhoto(bookmark.id());
+            var resource = feature().handlers.tryLoadPhoto(bookmark.id());
             if (resource != null) {
                 top = 118; // Translated top!
                 pose.translate(midX - 40f, 20f, 1.0f);
