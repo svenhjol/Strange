@@ -26,7 +26,7 @@ public class TravelJournalItem extends CharmItem<TravelJournals> {
         var held = player.getItemInHand(hand);
         
         if (level.isClientSide()) {
-            Resolve.feature(TravelJournalsClient.class).handlers.openBookmarks(held, 1);
+            Resolve.feature(TravelJournalsClient.class).handlers.openBookmarks(held);
         }
         
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, held);

@@ -14,6 +14,7 @@ import svenhjol.strange.feature.travel_journals.TravelJournals;
 import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
 import svenhjol.strange.feature.travel_journals.client.screen.BookmarksScreen;
 import svenhjol.strange.feature.travel_journals.common.BookmarkData;
+import svenhjol.strange.feature.travel_journals.common.JournalData;
 import svenhjol.strange.feature.travel_journals.common.Networking;
 
 import javax.annotation.Nullable;
@@ -34,6 +35,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     
     private final Map<UUID, ResourceLocation> cachedPhotos = new WeakHashMap<>();
     private final Map<UUID, Integer> fetchFromServer = new WeakHashMap<>();
+    private final Map<UUID, Integer> savedJournalPagination = new WeakHashMap<>();
     private Photo takingPhoto = null;
 
     public Handlers(TravelJournalsClient feature) {
@@ -254,10 +256,17 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     /**
      * Open the bookmarks screen.
      * @param stack The travel journal in which the bookmarks should be loaded from.
-     * @param page Pagination page to open.
      */
+    public void openBookmarks(ItemStack stack) {
+        var uuid = JournalData.get(stack).id();
+        var page = savedJournalPagination.getOrDefault(uuid, 1);
+        openBookmarks(stack, page);
+    }
+    
     public void openBookmarks(ItemStack stack, int page) {
         clearPhotoCache();
+        var uuid = JournalData.get(stack).id();
+        savedJournalPagination.put(uuid, page);
         Minecraft.getInstance().setScreen(new BookmarksScreen(stack, page));
     }
 
