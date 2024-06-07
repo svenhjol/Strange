@@ -51,7 +51,7 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
     );
     
     public static Mutable create() {
-        return new Mutable(EMPTY);
+        return new Mutable(UUID.randomUUID(), EMPTY);
     }
     
     public static class Mutable {
@@ -64,7 +64,11 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
         private DyeColor color;
         
         public Mutable(BookmarkData data) {
-            this.id = data.id();
+            this(data.id(), data);
+        }
+        
+        public Mutable(UUID id, BookmarkData data) {
+            this.id = id;
             this.name = data.name();
             this.dimension = data.dimension();
             this.pos = data.pos();

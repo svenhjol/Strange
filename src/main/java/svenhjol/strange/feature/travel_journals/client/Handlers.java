@@ -1,23 +1,37 @@
 package svenhjol.strange.feature.travel_journals.client;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
+import svenhjol.strange.feature.travel_journals.client.screen.BookmarksScreen;
+import svenhjol.strange.feature.travel_journals.common.BookmarkData;
 import svenhjol.strange.feature.travel_journals.common.Networking;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     private static final Component NEW_BOOKMARK = Component.translatable("gui.strange.travel_journals.new_bookmark");
     
+    private Map<UUID, File> cachedScreenshots = new WeakHashMap<>();
+    private Map<UUID, ResourceLocation> cachedPhotos = new WeakHashMap<>(); 
     private Photo photo = null;
 
     public Handlers(TravelJournalsClient feature) {
@@ -28,7 +42,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         if (Minecraft.getInstance().level == null) return;
 
         if (id.equals(feature().registers.makeBookmarkKey.get())) {
-            Networking.C2SMakeBookmark.send(NEW_BOOKMARK.getString());
+            makeNewBookmark();
         }
     }
 
@@ -90,5 +104,69 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         }
 
         Networking.C2SSendPhoto.send(uuid, scaledImage);
+    }
+
+    public void makeNewBookmark() {
+        Networking.C2SMakeBookmark.send(NEW_BOOKMARK.getString());
+    }
+    
+    @SuppressWarnings("ConstantValue")
+    @Nullable
+    public ResourceLocation tryFetchPhoto(UUID uuid) {
+        if (cachedPhotos.containsKey(uuid)) {
+            var resource = cachedPhotos.get(uuid);
+            if (resource != null) {
+                return resource;
+            }
+        }
+        
+        if (!cachedScreenshots.containsKey(uuid)) {
+            var file = screenshot(uuid);
+            cachedScreenshots.put(uuid, file);
+        }
+        
+        if (cachedScreenshots.containsKey(uuid)) {
+            var file = cachedScreenshots.get(uuid);
+            if (file == null) return null;
+            
+            try {
+                var raf = new RandomAccessFile(file, "r");
+                if (raf != null) {
+                    raf.close();
+                }
+
+                var stream = new FileInputStream(file);
+                var screenshot = NativeImage.read(stream);
+                var dynamicTexture = new DynamicTexture(screenshot);
+                var registeredTexture = Minecraft.getInstance().getTextureManager().register("screenshot", dynamicTexture);
+                stream.close();
+                
+                cachedPhotos.put(uuid, registeredTexture);
+                if (registeredTexture == null) {
+                    throw new Exception("Problem with screenshot texture / registered texture");
+                }
+                
+            } catch (Exception e) {
+                log().error(e.getMessage());
+            }
+        }
+        
+        return null;
+    }
+    
+    public void openBookmarks(ItemStack stack, int page) {
+        Minecraft.getInstance().setScreen(new BookmarksScreen(stack, page));
+    }
+
+    public void openBookmark(BookmarkData bookmark) {
+        // TODO
+    }
+
+    @Nullable
+    private File screenshot(UUID uuid) {
+        var minecraft = Minecraft.getInstance();
+        var screenshotsDirectory = new File(minecraft.gameDirectory, "screenshots");
+        var file = new File(screenshotsDirectory, uuid + ".png");
+        return file.exists() ? file : null;
     }
 }

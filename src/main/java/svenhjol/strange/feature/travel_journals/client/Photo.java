@@ -71,8 +71,7 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
             uuid + ".png",
             minecraft.getMainRenderTarget(),
             component -> {
-                // TODO: sound
-                // minecraft.player.playSound(Bookmarks.photoSound.get(), 1.0f, 1.0f);
+                minecraft.player.playSound(feature().linked().registers.photoSound.get(), 1.0f, 1.0f);
                 feature().log().debug("Photo taken");
                 finish();
             }

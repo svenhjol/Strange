@@ -45,5 +45,31 @@
       }
     ],
     "subtitle": "subtitles.strange.block.runestone.travel"
+  },
+  "travel_journal_interact": {
+    "sounds": [
+      {
+        "name": "strange:travel_journal_interact1",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:travel_journal_interact2",
+        "volume": 1.0
+      },
+      {
+        "name": "strange:travel_journal_interact3",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.travel_journals.interact"
+  },
+  "travel_journal_photo": {
+    "sounds": [
+      {
+        "name": "strange:photo",
+        "volume": 1.0
+      }
+    ],
+    "subtitle": "subtitles.strange.player.travel_journals.photo"
   }
 }

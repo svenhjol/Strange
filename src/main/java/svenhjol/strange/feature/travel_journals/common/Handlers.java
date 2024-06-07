@@ -54,6 +54,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
                 .toImmutable();
 
             bookmarkId = bookmark.id();
+            log().debug("Created a new bookmark entry with UUID " + bookmarkId);
 
             new JournalData.Mutable(journal)
                 .addBookmark(bookmark)
@@ -62,6 +63,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             
             // Get the existing ID from the bookmark.
             bookmarkId = existing.get().id();
+            log().debug("Found an existing bookmark with UUID " + bookmarkId);
         }
         
         // Instruct the client to take a screenshot.
