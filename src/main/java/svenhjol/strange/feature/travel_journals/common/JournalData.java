@@ -12,6 +12,7 @@ import svenhjol.strange.feature.travel_journals.TravelJournals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public record JournalData(UUID id, List<BookmarkData> bookmarks) {
@@ -57,6 +58,10 @@ public record JournalData(UUID id, List<BookmarkData> bookmarks) {
         return bookmarks.size() >= MAX_BOOKMARKS;
     }
     
+    public Optional<BookmarkData> getBookmark(UUID bookmarkId) {
+        return bookmarks.stream().filter(b -> b.id().equals(bookmarkId)).findFirst();
+    }
+    
     @SuppressWarnings("UnusedReturnValue")
     public static class Mutable {
         private final UUID id;
@@ -71,19 +76,23 @@ public record JournalData(UUID id, List<BookmarkData> bookmarks) {
             this.bookmarks = new ArrayList<>(data.bookmarks());
         }
         
+        public Optional<BookmarkData> getBookmark(UUID bookmarkId) {
+            return bookmarks.stream().filter(b -> b.id().equals(bookmarkId)).findFirst();
+        }
+        
         public Mutable addBookmark(BookmarkData bookmark) {
             bookmarks.add(bookmark);
             return this;
         }
         
         public Mutable updateBookmark(BookmarkData bookmark) {
-            var existing = bookmarks.stream().filter(b -> b.id().equals(bookmark.id())).findFirst().orElseThrow();
+            var existing = getBookmark(bookmark.id()).orElseThrow();
             bookmarks.set(bookmarks.indexOf(existing), bookmark);
             return this;
         }
         
         public Mutable deleteBookmark(UUID bookmarkId) {
-            var existing = bookmarks.stream().filter(b -> b.id().equals(bookmarkId)).findFirst().orElseThrow();
+            var existing = getBookmark(bookmarkId).orElseThrow();
             bookmarks.remove(existing);
             return this;
         }

@@ -2,9 +2,7 @@ package svenhjol.strange.feature.travel_journals.common;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
@@ -14,8 +12,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public final class Handlers extends FeatureHolder<TravelJournals> {
@@ -31,9 +27,8 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
     public void makeBookmarkReceived(Player player, Networking.C2SMakeBookmark packet) {
         var dimension = player.level().dimension();
         var pos = player.blockPosition();
-        UUID bookmarkId;
         
-        var stack = tryGetTravelJournal(player);
+        var stack = Helpers.tryGetTravelJournal(player);
         if (stack.isEmpty()) return;
 
         var journal = JournalData.get(stack);
@@ -50,19 +45,18 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             .author(player.getScoreboardName())
             .toImmutable();
 
-        bookmarkId = bookmark.id();
-        log().debug("Created a new bookmark entry with UUID " + bookmarkId);
+        log().debug("Created a new bookmark entry with UUID " + bookmark.id());
 
         new JournalData.Mutable(journal)
             .addBookmark(bookmark)
             .save(stack);
         
         // Instruct the client to take a photo.
-        Networking.S2CTakePhoto.send((ServerPlayer)player, bookmarkId);
+        Networking.S2CTakePhoto.send((ServerPlayer)player, journal.id(), bookmark.id());
     }
     
     public void updateBookmarkReceived(Player player, Networking.C2SUpdateBookmark packet) {
-        var stack = tryGetTravelJournal(player, packet.journalId());
+        var stack = Helpers.tryGetTravelJournal(player, packet.journalId());
         if (stack.isEmpty()) {
             log().error("No such journal?");
             return;
@@ -74,7 +68,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
     }
     
     public void deleteBookmarkReceived(Player player, Networking.C2SDeleteBookmark packet) {
-        var stack = tryGetTravelJournal(player, packet.journalId());
+        var stack = Helpers.tryGetTravelJournal(player, packet.journalId());
         if (stack.isEmpty()) {
             log().error("No such journal?");
             return;
@@ -134,14 +128,14 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         try {
             success = ImageIO.write(image, "png", path);
         } catch (IOException e) {
-            log().error("Could not save photo for uuid: " + uuid + ": " + e.getMessage());
+            log().error("Could not save photo for photoId: " + uuid + ": " + e.getMessage());
             return;
         }
 
         if (success) {
-            log().debug("Saved image to photos for uuid: " + uuid);
+            log().debug("Saved image to photos for photoId: " + uuid);
         } else {
-            log().error("ImageIO.write did not save the image successfully for uuid: " + uuid);
+            log().error("ImageIO.write did not save the image successfully for photoId: " + uuid);
         }
     }
 
@@ -157,7 +151,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         try {
             image = ImageIO.read(path);
         } catch (IOException e) {
-            log().error("Could not load photo for uuid: " + uuid + ": " + e.getMessage());
+            log().error("Could not load photo for photoId: " + uuid + ": " + e.getMessage());
             return null;
         }
 
@@ -173,58 +167,10 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         if (path.exists()) {
             var result = path.delete();
             if (result) {
-                log().debug("Deleted photo with uuid: " + uuid);
+                log().debug("Deleted photo with photoId: " + uuid);
             } else {
-                log().error("Error trying to delete photo with uuid: " + uuid);
+                log().error("Error trying to delete photo with photoId: " + uuid);
             }
         }
-    }
-
-    /**
-     * Fetch the most readily available travel journal held by the player.
-     * The order that is checked is:
-     * - mainhand
-     * - offhand
-     * - inventory slots starting from 0
-     */
-    public ItemStack tryGetTravelJournal(Player player) {
-        var items = collectPotentialItems(player);
-        
-        for (var stack : items) {
-            if (stack.is(feature().registers.item.get())) {
-                return stack;
-            }
-        }
-
-        return ItemStack.EMPTY;
-    }
-
-    /**
-     * Fetch a specific travel journal from the player's inventory.
-     */
-    public ItemStack tryGetTravelJournal(Player player, UUID journalId) {
-        var items = collectPotentialItems(player);
-
-        for (var stack : items) {
-            if (stack.is(feature().registers.item.get())) {
-                if (JournalData.get(stack).id().equals(journalId)) {
-                    return stack;
-                }
-            }
-        }
-
-        return ItemStack.EMPTY;
-    }
-    
-    private List<ItemStack> collectPotentialItems(Player player) {
-        var inventory = player.getInventory();
-        List<ItemStack> items = new ArrayList<>();
-
-        for (InteractionHand hand : InteractionHand.values()) {
-            items.add(player.getItemInHand(hand));
-        }
-
-        items.addAll(inventory.items);
-        return items;
     }
 }

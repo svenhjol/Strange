@@ -9,19 +9,25 @@ import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
 import java.util.UUID;
 
 public class Photo implements FeatureResolver<TravelJournalsClient> {
-    private final UUID uuid;
+    private final UUID journalId; // The journal that this photo belongs to
+    private final UUID photoId; // The bookmark that this photo belongs to
     private int ticks;
     private boolean valid;
     private boolean isTakingPhoto;
 
-    public Photo(UUID uuid) {
-        this.uuid = uuid;
+    public Photo(UUID journalId, UUID photoId) {
+        this.journalId = journalId;
+        this.photoId = photoId;
         this.valid = true;
         this.isTakingPhoto = false;
     }
+    
+    public UUID journalId() {
+        return journalId;
+    }
 
-    public UUID uuid() {
-        return uuid;
+    public UUID photoId() {
+        return photoId;
     }
 
     public void tick() {
@@ -54,7 +60,7 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
         }
         
         // Move the screenshot into the custom photos folder.
-        feature().handlers.moveScreenshotIntoPhotosDir(uuid);
+        feature().handlers.moveScreenshotIntoPhotosDir(photoId);
         
         valid = false;
     }
@@ -77,10 +83,10 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
 
         Screenshot.grab(
             minecraft.gameDirectory,
-            uuid + ".png",
+            photoId + ".png",
             minecraft.getMainRenderTarget(),
             component -> {
-                feature().log().debug("Photo taken for uuid: " + uuid);
+                feature().log().debug("Photo taken for photoId: " + photoId);
                 finish();
             }
         );

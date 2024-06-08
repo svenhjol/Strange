@@ -23,13 +23,13 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         super(feature);
     }
 
-    public record S2CTakePhoto(UUID uuid) implements CustomPacketPayload {
+    public record S2CTakePhoto(UUID journalId, UUID photoId) implements CustomPacketPayload {
         public static final Type<S2CTakePhoto> TYPE = new Type<>(Strange.id("take_photo"));
         public static final StreamCodec<FriendlyByteBuf, S2CTakePhoto> CODEC =
             StreamCodec.of(S2CTakePhoto::encode, S2CTakePhoto::decode);
 
-        public static void send(ServerPlayer player, UUID uuid) {
-            ServerPlayNetworking.send(player, new S2CTakePhoto(uuid));
+        public static void send(ServerPlayer player, UUID journalId, UUID photoId) {
+            ServerPlayNetworking.send(player, new S2CTakePhoto(journalId, photoId));
         }
 
         @Override
@@ -38,11 +38,12 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
 
         private static void encode(FriendlyByteBuf buf, S2CTakePhoto self) {
-            buf.writeUUID(self.uuid());
+            buf.writeUUID(self.journalId());
+            buf.writeUUID(self.photoId());
         }
 
         private static S2CTakePhoto decode(FriendlyByteBuf buf) {
-            return new S2CTakePhoto(buf.readUUID());
+            return new S2CTakePhoto(buf.readUUID(), buf.readUUID());
         }
     }
     

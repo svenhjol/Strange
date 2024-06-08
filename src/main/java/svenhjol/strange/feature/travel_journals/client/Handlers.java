@@ -18,6 +18,7 @@ import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
 import svenhjol.strange.feature.travel_journals.client.screen.BookmarkDetailScreen;
 import svenhjol.strange.feature.travel_journals.client.screen.BookmarksScreen;
 import svenhjol.strange.feature.travel_journals.common.BookmarkData;
+import svenhjol.strange.feature.travel_journals.common.Helpers;
 import svenhjol.strange.feature.travel_journals.common.JournalData;
 import svenhjol.strange.feature.travel_journals.common.Networking;
 
@@ -59,7 +60,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
      * Server wants the client to take a photo.
      */
     public void takePhotoReceived(Player player, Networking.S2CTakePhoto packet) {
-        takingPhoto = new Photo(packet.uuid());
+        takingPhoto = new Photo(packet.journalId(), packet.photoId());
         Minecraft.getInstance().setScreen(null);
     }
 
@@ -76,6 +77,13 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     public void clientTick(Minecraft minecraft) {
         if (takingPhoto != null) {
             if (!takingPhoto.isValid()) {
+                // Get the journal by its ID and open the bookmark page.
+                var stack = Helpers.tryGetTravelJournal(minecraft.player, takingPhoto.journalId());
+                if (!stack.isEmpty()) {
+                    openBookmark(stack, takingPhoto.photoId());
+                }
+                
+                // Downscale and send photo to server asynchronously.
                 scaleAndSendPhoto();
             } else {
                 takingPhoto.tick();
@@ -96,17 +104,17 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
      * Downscale the screenshot/photo PNG and send the image to the server for the new bookmark.
      */
     public void scaleAndSendPhoto() {
-        var uuid = takingPhoto.uuid();
+        var uuid = takingPhoto.photoId();
         takingPhoto = null;
         
-        log().debug("Preparing photo to send to server for uuid: " + uuid);
+        log().debug("Preparing photo to send to server for photoId: " + uuid);
         BufferedImage image;
         var dir = getOrCreatePhotosDir();
         var path = new File(dir, uuid + ".png");
         try {
             image = ImageIO.read(path);
         } catch (IOException e) {
-            log().error("Could not read photo for uuid " + uuid + ": " + e.getMessage());
+            log().error("Could not read photo for photoId " + uuid + ": " + e.getMessage());
             return;
         }
 
@@ -123,12 +131,12 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         try {
             success = ImageIO.write(scaledImage, "png", path);
         } catch (IOException e) {
-            log().error("Could not save resized photo for uuid " + uuid + ": " + e.getMessage());
+            log().error("Could not save resized photo for photoId " + uuid + ": " + e.getMessage());
             return;
         }
 
         if (!success) {
-            log().error("Writing image failed for uuid: " + uuid);
+            log().error("Writing image failed for photoId: " + uuid);
             return;
         }
 
@@ -136,7 +144,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     }
 
     /**
-     * Create of a new bookmark.
+     * Create a new bookmark.
      * Called when the player presses the bookmark key or clicks the "New bookmark" button.
      */
     public void makeNewBookmark() {
@@ -166,7 +174,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             .save(stack);
 
         // Sync the bookmark with the server.
-        log().debug("Sending updated bookmark for uuid: " + bookmark.id());
+        log().debug("Sending updated bookmark for photoId: " + bookmark.id());
         Networking.C2SUpdateBookmark.send(journal.id(), bookmark);
     }
 
@@ -183,7 +191,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             .save(stack);
 
         // Sync the bookmark with the server.
-        log().debug("Sending deleted bookmark for uuid: " + bookmark.id());
+        log().debug("Sending deleted bookmark for photoId: " + bookmark.id());
         Networking.C2SDeleteBookmark.send(journal.id(), bookmark.id());
         
         // Clean up local photos.
@@ -201,14 +209,14 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         try {
             success = ImageIO.write(image, "png", path);
         } catch (IOException e) {
-            log().error("Could not save photo for uuid " + uuid + ": " + e.getMessage());
+            log().error("Could not save photo for photoId " + uuid + ": " + e.getMessage());
             return;
         }
         
         if (success) {
-            log().debug("Saved image to photos for uuid: " + uuid);
+            log().debug("Saved image to photos for photoId: " + uuid);
         } else {
-            log().error("ImageIO.write did not save the image successfully for uuid: " + uuid);
+            log().error("ImageIO.write did not save the image successfully for photoId: " + uuid);
         }
     }
 
@@ -241,7 +249,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             
             if (ticks == 0) {
                 Networking.C2SDownloadPhoto.send(uuid); // Request photo from the server.
-                log().debug("Requesting image from the server for uuid: " + uuid);
+                log().debug("Requesting image from the server for photoId: " + uuid);
             }
             
             if (ticks < 20) {
@@ -258,14 +266,14 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             var ticks = fetchFromServer.getOrDefault(uuid, 0);
             if (ticks > 0) {
                 // If we have previously tried to fetch from the server and it failed, then give up.
-                log().error("Couldn't download image from the server, giving up. uuid: " + uuid);
+                log().error("Couldn't download image from the server, giving up. photoId: " + uuid);
                 fetchFromServer.put(uuid, -1);
                 return null;
             }
             
             // Can't find locally, trigger a download from the server.
             fetchFromServer.put(uuid, 0);
-            log().debug("Couldn't find image locally, scheduling server download. uuid: " + uuid);
+            log().debug("Couldn't find image locally, scheduling server download. photoId: " + uuid);
             return null;
         }
         
@@ -284,7 +292,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             
             cachedPhotos.put(uuid, registeredTexture);
             if (registeredTexture == null) {
-                throw new Exception("Problem with image texture / registered texture for uuid: " + uuid);
+                throw new Exception("Problem with image texture / registered texture for photoId: " + uuid);
             }
             
         } catch (Exception e) {
@@ -304,9 +312,9 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         if (path.exists()) {
             var result = path.delete();
             if (result) {
-                log().debug("Deleted photo with uuid: " + uuid);
+                log().debug("Deleted photo with photoId: " + uuid);
             } else {
-                log().error("Error trying to delete photo with uuid: " + uuid);
+                log().error("Error trying to delete photo with photoId: " + uuid);
             }
         }
     }
@@ -334,6 +342,12 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         var uuid = JournalData.get(stack).id();
         savedJournalPagination.put(uuid, page);
         Minecraft.getInstance().setScreen(new BookmarksScreen(stack, page));
+    }
+    
+    public void openBookmark(ItemStack stack, UUID bookmarkId) {
+        JournalData.get(stack)
+            .getBookmark(bookmarkId)
+            .ifPresent(bookmark -> openBookmark(stack, bookmark));
     }
 
     public void openBookmark(ItemStack stack, BookmarkData bookmark) {
@@ -372,7 +386,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         try {
             Files.move(copyFrom.toPath(), copyTo.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            log().error("Could not move screenshot into photos dir for uuid " + uuid + ": " + e.getMessage());
+            log().error("Could not move screenshot into photos dir for photoId " + uuid + ": " + e.getMessage());
         }
     }
 
