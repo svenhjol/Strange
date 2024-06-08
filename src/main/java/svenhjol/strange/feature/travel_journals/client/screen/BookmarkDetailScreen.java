@@ -1,5 +1,7 @@
 package svenhjol.strange.feature.travel_journals.client.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -31,10 +33,10 @@ public class BookmarkDetailScreen extends BaseScreen {
     protected void init() {
         super.init();
         
-        var inputWidth = 210;
-        var nameHeight = 13;
+        var inputWidth = 220;
+        var nameHeight = 15;
         var descriptionHeight = 46;
-        var top = 46;
+        var top = 110;
         
         name = new EditBox(font, midX - (inputWidth / 2), top, inputWidth, nameHeight, Resources.EDIT_NAME);
         name.setFocused(true);
@@ -51,7 +53,7 @@ public class BookmarkDetailScreen extends BaseScreen {
         setFocused(name);
         
         
-        description = new MultiLineEditBox(font, midX - (inputWidth / 2), top + 28, inputWidth, descriptionHeight,
+        description = new MultiLineEditBox(font, midX - (inputWidth / 2), top + 29, inputWidth, descriptionHeight,
             Resources.EDIT_DESCRIPTION, Component.empty());
 
         description.setFocused(false);
@@ -76,12 +78,55 @@ public class BookmarkDetailScreen extends BaseScreen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
+
+        renderPhoto(guiGraphics);
+        renderDimensionAndPosition(guiGraphics);
         
         name.render(guiGraphics, mouseX, mouseY, delta);
         description.render(guiGraphics, mouseX, mouseY, delta);
         
-        guiGraphics.drawString(font, Resources.NAME_TEXT, midX - 104, 36, 0x444444, false);
-        guiGraphics.drawString(font, Resources.DESCRIPTION, midX - 104, 64, 0x444444, false);
+        var textColor = 0x404040;
+        guiGraphics.drawString(font, Resources.NAME_TEXT, midX - 109, 101, textColor, false);
+        guiGraphics.drawString(font, Resources.DESCRIPTION, midX - 109, 129, textColor, false);
+    }
+    
+    private void renderPhoto(GuiGraphics guiGraphics) {
+        var pose = guiGraphics.pose();
+        var resource = feature().handlers.tryLoadPhoto(bookmark.id());
+        
+        if (resource != null) {
+            pose.pushPose();
+            var top = 24; // This is scaled by pose.scale()
+            var left = -169; // This is scaled by pose.scale()
+            pose.translate(midX - 40f, 34f, 1.0f);
+            pose.scale(0.41f, 0.21f, 1.0f);
+            RenderSystem.setShaderTexture(0, resource);
+            guiGraphics.blit(resource, left, top, 0, 0, 256, 256);
+            pose.popPose();
+        }
+    }
+    
+    private void renderDimensionAndPosition(GuiGraphics guiGraphics) {
+        var pose = guiGraphics.pose();
+        var positionColor = 0xaf9f8f;
+        
+        pose.pushPose();
+        var top = 30; // This is scaled by pose.scale()
+        var left = 43; // This is scaled by pose.scale()
+        pose.translate(midX - 25f, 20f, 1.0f);
+        pose.scale(0.82f, 0.82f, 1.0f);
+
+        var pos = bookmark.pos();
+        var dimension = bookmark.dimension();
+        var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
+        var dimensionText = Component.translatable(feature().handlers.dimensionLocaleKey(dimension));
+        
+        guiGraphics.drawString(font, Component.translatable(Resources.DIMENSION).withStyle(ChatFormatting.BOLD), left, top, positionColor, false);
+        guiGraphics.drawString(font, dimensionText, left, top + 12, positionColor, false);
+
+        guiGraphics.drawString(font, Component.translatable(Resources.POSITION).withStyle(ChatFormatting.BOLD), left, top + 30, positionColor, false);
+        guiGraphics.drawString(font, positionText, left, top + 42, positionColor, false);
+        pose.popPose();
     }
 
     private boolean hasMap() {

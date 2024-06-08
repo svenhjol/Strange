@@ -5,10 +5,13 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
 import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
@@ -32,8 +35,6 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 public final class Handlers extends FeatureHolder<TravelJournalsClient> {
-    private static final Component NEW_BOOKMARK = Component.translatable("gui.strange.travel_journals.new_bookmark");
-    
     private final Map<UUID, ResourceLocation> cachedPhotos = new WeakHashMap<>();
     private final Map<UUID, Integer> fetchFromServer = new WeakHashMap<>();
     private final Map<UUID, Integer> savedJournalPagination = new WeakHashMap<>();
@@ -139,7 +140,17 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
      * Called when the player presses the bookmark key or clicks the "New bookmark" button.
      */
     public void makeNewBookmark() {
-        Networking.C2SMakeBookmark.send(NEW_BOOKMARK.getString());
+        var minecraft = Minecraft.getInstance();
+        Component bookmarkName;
+        
+        if (minecraft.player != null) {
+            var biomeName = Component.translatable(biomeLocaleKey(minecraft.player)).getString();
+            bookmarkName = Component.translatable("gui.strange.travel_journals.default_name", biomeName);
+        } else {
+            bookmarkName = Component.translatable("gui.strange.travel_journals.new_bookmark");
+        }
+
+        Networking.C2SMakeBookmark.send(bookmarkName.getString());
     }
 
     /**
@@ -364,6 +375,34 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             log().error("Could not move screenshot into photos dir for uuid " + uuid + ": " + e.getMessage());
         }
     }
+
+    /**
+     * Get a locale key for a dimension.
+     */
+    public String dimensionLocaleKey(ResourceKey<Level> dimension) {
+        var location = dimension.location();
+        var namespace = location.getNamespace();
+        var path = location.getPath();
+        return "dimension." + namespace + "." + path;
+    }
+
+    /**
+     * Get a locale key for the biome at the player's current position.
+     */
+    public String biomeLocaleKey(Player player) {
+        var registry = player.level().registryAccess();
+        var biome = player.level().getBiome(player.blockPosition());
+        var key = registry.registryOrThrow(Registries.BIOME).getKey(biome.value());
+        
+        if (key == null) {
+            throw new RuntimeException("Can't get player biome");
+        }
+
+        var namespace = key.getNamespace();
+        var path = key.getPath();
+        return "biome." + namespace + "." + path;
+    }
+    
 
     /**
      * Gets a file reference to a photo on the client's device.

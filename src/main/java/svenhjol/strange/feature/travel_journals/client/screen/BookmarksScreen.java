@@ -18,14 +18,15 @@ import java.util.List;
 
 public class BookmarksScreen extends BaseScreen {
     private final int page;
+    private final int columns;
     private final ItemStack stack;
-    private boolean renderedPaginationButtons = false;
-    private boolean renderedBookmarkButtons = false;
+    private boolean renderedButtons = false;
     
     public BookmarksScreen(ItemStack stack, int page) {
         super(Resources.TRAVEL_JOURNAL);
         this.stack = stack;
         this.page = page;
+        this.columns = 2;
     }
 
     @Override
@@ -37,123 +38,150 @@ public class BookmarksScreen extends BaseScreen {
         addRenderableWidget(new Buttons.NewBookmarkButton(midX - (Buttons.NewBookmarkButton.WIDTH + 5), 220,
             b -> feature().handlers.makeNewBookmark()));
 
-        renderedPaginationButtons = false;
-        renderedBookmarkButtons = false;
+        renderedButtons = false;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
         
-        var columns = 2;
-        var bookmarks = getBookmarks();
-        var pages = bookmarks.size() / columns;
+        var bookmarks = bookmarks();
         var index = (page - 1) * columns;
 
-        if (bookmarks.isEmpty() && !renderedBookmarkButtons) {
-            addRenderableWidget(new Buttons.NewWhenEmptyButton(midX - (Buttons.NewWhenEmptyButton.WIDTH / 2), 45, 
-                b -> feature().handlers.makeNewBookmark()));
-        }
-
         for (var x = 0; x < columns; x++) {
-            if (index >= bookmarks.size()) {
-                continue;
-            }
-
-            var pose = guiGraphics.pose();
+            if (index >= bookmarks.size()) continue;;
+            
             var bookmark = bookmarks.get(index);
-            var name = bookmark.name();
-            var pos = bookmark.pos();
-            var extra = bookmark.extra();
-            var author = extra.author();
-            var color = extra.color();
-            var timestamp = extra.timestamp();
             
-            var date = new java.util.Date(timestamp * 1000L);
-            var format = new SimpleDateFormat("dd-MMM-yy");
-
-            var titleColor = 0x444444;
-            var authorColor = color.getMapColor().calculateRGBColor(MapColor.Brightness.LOW);
-            var positionColor = 0xaf9f8f;
-            var left = midX - 110 + (x * 114); // For normal text and buttons
-            var scaledTextLeft = -100 + (x * 169); // For scaled text at the top
-            var scaledPhotoLeft = -168 + (x * 272); // For scaled photo
-            var top = 30;
-            var maxTitleLength = 25;
-            
-            // Render top text.
-            pose.pushPose();
-            pose.translate(midX - 40f, 20f, 1.0f);
-            pose.scale(0.7f, 0.7f, 1.0f);
-            
-            if (name.length() > maxTitleLength) {
-                name = name.substring(0, maxTitleLength - 1);
-            }
-            
-            guiGraphics.drawString(font, Component.literal(name).withStyle(ChatFormatting.BOLD), scaledTextLeft, top, titleColor, false);
-            
-            if (!author.isEmpty()) {
-                top += 12;
-                guiGraphics.drawString(font, Component.translatable(Resources.CREATED_BY_KEY, author), scaledTextLeft, top, authorColor, false);
-            }
-            
-            if (timestamp >= 0) {
-                top += 12;
-                guiGraphics.drawString(font, Component.literal(format.format(date)), scaledTextLeft, top, authorColor, false);
-            }
-            pose.popPose();
-
-            // Render photo.
-            pose.pushPose();
-            
-            var resource = feature().handlers.tryLoadPhoto(bookmark.id());
-            if (resource != null) {
-                top = 118; // Translated top!
-                pose.translate(midX - 40f, 20f, 1.0f);
-                pose.scale(0.42f, 0.42f, 1.0f);
-                RenderSystem.setShaderTexture(0, resource);
-                guiGraphics.blit(resource, scaledPhotoLeft, top, 0, 30, 256, 160);
-            }
-            pose.popPose();
-            
-            // Render dimension, position and details button.
-            top = 141;
-            if (!renderedBookmarkButtons) {
-                addRenderableWidget(new CoreButtons.EditButton(left, top, 107,
-                    b -> feature().handlers.openBookmark(stack, bookmark), Resources.DETAILS));
-            }
-
-            pose.pushPose();
-            top = 208; // Translated top!
-            
-            pose.translate(midX - 25f, 20f, 1.0f);
-            pose.scale(0.7f, 0.7f, 1.0f);
-            var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
-            ClientHelpers.drawCenteredString(guiGraphics, font, positionText, scaledTextLeft + 50, top, positionColor, false);
-            pose.popPose();
+            renderTitleDetails(guiGraphics, bookmark, x);
+            renderPhoto(guiGraphics, bookmark, x);
+            renderPosition(guiGraphics, bookmark, x);
+            renderDetailsButton(bookmark, x);
             
             index++;
         }
-        renderedBookmarkButtons = true;
 
-        if (!renderedPaginationButtons) {
-            if (page > 1) {
-                addRenderableWidget(new CoreButtons.PreviousPageButton(midX - 110, 180, 
-                    b -> feature().handlers.openBookmarks(stack, page - 1)));
-            }
-            if (page < pages || index < bookmarks.size()) {
-                addRenderableWidget(new CoreButtons.NextPageButton(midX + 80, 180,
-                    b -> feature().handlers.openBookmarks(stack, page + 1)));
-            }
-            renderedPaginationButtons = true;
+        if (bookmarks.isEmpty()) {
+            renderWhenNoBookmarks();
+        } else {
+            renderPaginationButtons(index);
+        }
+        
+        renderedButtons = true;
+    }
+    
+    private void renderTitleDetails(GuiGraphics guiGraphics, BookmarkData bookmark, int x) {
+        var pose = guiGraphics.pose();
+        var name = bookmark.name();
+        var extra = bookmark.extra();
+        var author = extra.author();
+        var color = extra.color();
+        var timestamp = extra.timestamp();
+        var date = new java.util.Date(timestamp * 1000L);
+        var format = new SimpleDateFormat("dd-MMM-yy");
+        var titleColor = 0x444444;
+        var authorColor = color.getMapColor().calculateRGBColor(MapColor.Brightness.LOW);
+        var maxTitleLength = 25;
+        var left = -100 + (x * 169);
+        var top = 33;
+        
+        // Render top text.
+        pose.pushPose();
+        pose.translate(midX - 40f, 20f, 1.0f);
+        pose.scale(0.7f, 0.7f, 1.0f);
+
+        if (name.length() > maxTitleLength) {
+            name = name.substring(0, maxTitleLength - 1);
+        }
+
+        guiGraphics.drawString(font, Component.literal(name).withStyle(ChatFormatting.BOLD), left, top, titleColor, false);
+
+        if (!author.isEmpty()) {
+            top += 12;
+            guiGraphics.drawString(font, Component.translatable(Resources.CREATED_BY_KEY, author), left, top, authorColor, false);
+        }
+
+        if (timestamp >= 0) {
+            top += 12;
+            guiGraphics.drawString(font, Component.literal(format.format(date)), left, top, authorColor, false);
+        }
+        pose.popPose();
+    }
+    
+    private void renderPhoto(GuiGraphics guiGraphics, BookmarkData bookmark, int x) {
+        var pose = guiGraphics.pose();
+        
+        var resource = feature().handlers.tryLoadPhoto(bookmark.id());
+        if (resource != null) {
+            var top = 127;
+            var left = -168 + (x * 272);
+            pose.pushPose();
+            pose.translate(midX - 40f, 40f, 1.0f);
+            pose.scale(0.42f, 0.24f, 1.0f);
+            RenderSystem.setShaderTexture(0, resource);
+            guiGraphics.blit(resource, left, top, 0, 0, 256, 256);
+            pose.popPose();
         }
     }
     
-    protected JournalData getJournal() {
+    private void renderPosition(GuiGraphics guiGraphics, BookmarkData bookmark, int x) {
+        var pose = guiGraphics.pose();
+        var pos = bookmark.pos();
+        var dimension = bookmark.dimension();
+        var top = 202;
+        var left = -95 + (x * 163);
+        var positionColor = 0xaf9f8f;
+        
+        pose.pushPose();
+        pose.translate(midX - 25f, 20f, 1.0f);
+        pose.scale(0.7f, 0.7f, 1.0f);
+        
+        var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
+        var dimensionText = Component.translatable(feature().handlers.dimensionLocaleKey(dimension));
+
+        ClientHelpers.drawCenteredString(guiGraphics, font, dimensionText, left + 50, top, positionColor, false);
+        ClientHelpers.drawCenteredString(guiGraphics, font, positionText, left + 50, top + 13, positionColor, false);
+        pose.popPose();
+    }
+    
+    private void renderDetailsButton(BookmarkData bookmark, int x) {
+        var left = midX - 110 + (x * 114);
+        var top = 135;
+
+        if (!renderedButtons) {
+            addRenderableWidget(new CoreButtons.EditButton(left, top, 107,
+                b -> feature().handlers.openBookmark(stack, bookmark), Resources.DETAILS));
+        }
+    }
+    
+    private void renderWhenNoBookmarks() {
+        if (!renderedButtons) {
+            addRenderableWidget(new Buttons.NewWhenEmptyButton(midX - (Buttons.NewWhenEmptyButton.WIDTH / 2), 45,
+                b -> feature().handlers.makeNewBookmark()));
+        }
+    }
+    
+    private void renderPaginationButtons(int index) {
+        var size = bookmarks().size();
+        var pages = size / columns;
+        
+        if (!renderedButtons) {
+            if (page > 1) {
+                addRenderableWidget(new CoreButtons.PreviousPageButton(midX - 110, 180,
+                    b -> feature().handlers.openBookmarks(stack, page - 1)));
+            }
+            if (page < pages || index < size) {
+                addRenderableWidget(new CoreButtons.NextPageButton(midX + 80, 180,
+                    b -> feature().handlers.openBookmarks(stack, page + 1)));
+            }
+        }
+    }
+    
+    private JournalData journal() {
         return JournalData.get(stack);
     }
 
-    protected List<BookmarkData> getBookmarks() {
-        return getJournal().bookmarks();
+    private List<BookmarkData> bookmarks() {
+        return journal().bookmarks();
     }
 }
