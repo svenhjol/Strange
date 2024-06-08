@@ -49,10 +49,10 @@ public class BookmarksScreen extends BaseScreen {
         
         var bookmarks = bookmarks();
         var index = (page - 1) * columns;
-        
-        if (index >= bookmarks.size()) {
-            log().debug("Index out of bounds, resetting to page 1");
-            page = 1;
+            
+        while (page > 1 && index >= bookmarks.size()) {
+            --page;
+            index = (page - 1) * columns;
         }
 
         for (var x = 0; x < columns; x++) {
