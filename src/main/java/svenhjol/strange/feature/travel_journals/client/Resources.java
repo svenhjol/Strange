@@ -8,6 +8,7 @@ import svenhjol.strange.Strange;
 public final class Resources {
     public static final Pair<Integer, Integer> BACKGROUND_DIMENSIONS = Pair.of(256, 208);
     public static final ResourceLocation BACKGROUND = Strange.id("textures/gui/travel_journal.png");
+    public static final ResourceLocation PHOTO_BACKGROUND = Strange.id("textures/gui/photo_background.png");
     public static final Component BOOKMARKS = Component.translatable("gui.strange.travel_journals.bookmarks");
     public static final Component DESCRIPTION = Component.translatable("gui.strange.travel_journals.description");
     public static final Component DETAILS = Component.translatable("gui.strange.travel_journals.details");

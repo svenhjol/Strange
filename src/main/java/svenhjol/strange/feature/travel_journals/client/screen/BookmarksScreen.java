@@ -121,16 +121,14 @@ public class BookmarksScreen extends BaseScreen {
         var pose = guiGraphics.pose();
         
         var resource = feature().handlers.tryLoadPhoto(bookmark.id());
-        if (resource != null) {
-            var top = 127;
-            var left = -168 + (x * 272);
-            pose.pushPose();
-            pose.translate(midX - 40f, 40f, 1.0f);
-            pose.scale(0.42f, 0.24f, 1.0f);
-            RenderSystem.setShaderTexture(0, resource);
-            guiGraphics.blit(resource, left, top, 0, 0, 256, 256);
-            pose.popPose();
-        }
+        var top = 127;
+        var left = -168 + (x * 272);
+        pose.pushPose();
+        pose.translate(midX - 40f, 40f, 1.0f);
+        pose.scale(0.42f, 0.24f, 1.0f);
+        RenderSystem.setShaderTexture(0, resource);
+        guiGraphics.blit(resource, left, top, 0, 0, 256, 256);
+        pose.popPose();
     }
     
     @SuppressWarnings("deprecation")

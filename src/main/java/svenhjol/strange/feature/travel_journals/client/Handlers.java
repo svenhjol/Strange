@@ -226,10 +226,12 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
      * to download the photo if available. After a certain number of ticks we check to
      * see if the photo is now downloaded to the client. This process will only attempt
      * a single server call. To try again, call clearPhotoCache().
+     * While a photo isn't available, a placeholder is used.
      */
     @SuppressWarnings("ConstantValue")
-    @Nullable
     public ResourceLocation tryLoadPhoto(UUID uuid) {
+        var def = Resources.PHOTO_BACKGROUND;
+        
         // Check for cached photo data, use if present.
         if (cachedPhotos.containsKey(uuid)) {
             var resource = cachedPhotos.get(uuid);
@@ -244,7 +246,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             
             if (ticks == -1) {
                 // Failed permanently.
-                return null;
+                return def;
             }
             
             if (ticks == 0) {
@@ -256,7 +258,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
                 // Continue to wait.
                 ++ticks;
                 fetchFromServer.put(uuid, ticks);
-                return null;
+                return def;
             }
         }
         
@@ -268,13 +270,13 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
                 // If we have previously tried to fetch from the server and it failed, then give up.
                 log().error("Couldn't download image from the server, giving up. photoId: " + uuid);
                 fetchFromServer.put(uuid, -1);
-                return null;
+                return def;
             }
             
             // Can't find locally, trigger a download from the server.
             fetchFromServer.put(uuid, 0);
             log().debug("Couldn't find image locally, scheduling server download. photoId: " + uuid);
-            return null;
+            return def;
         }
         
         // Open local photo file, load dynamic texture into cache.
@@ -299,7 +301,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             log().error(e.getMessage());
         }
         
-        return null;
+        return def;
     }
 
     /**
