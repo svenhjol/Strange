@@ -29,6 +29,8 @@
   "gui.strange.travel_journals.dimension": "Dimension",
   "gui.strange.travel_journals.edit_description": "Edit description",
   "gui.strange.travel_journals.edit_name": "Edit name",
+  "gui.strange.travel_journals.export_bookmark": "Export bookmark",
+  "gui.strange.travel_journals.export_map": "Export map",
   "gui.strange.travel_journals.home": "Home",
   "gui.strange.travel_journals.name": "Name",
   "gui.strange.travel_journals.new_bookmark": "New bookmark",

@@ -48,7 +48,7 @@ public final class Helpers {
         return ItemStack.EMPTY;
     }
 
-    private static List<ItemStack> collectPotentialItems(Player player) {
+    public static List<ItemStack> collectPotentialItems(Player player) {
         var inventory = player.getInventory();
         List<ItemStack> items = new ArrayList<>();
 

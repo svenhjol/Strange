@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
@@ -40,6 +41,9 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     private final Map<UUID, Integer> fetchFromServer = new WeakHashMap<>();
     private final Map<UUID, Integer> savedJournalPagination = new WeakHashMap<>();
     private Photo takingPhoto = null;
+    private boolean hasMap;
+    private boolean hasPaper;
+    private long lastExportOperation = 0;
 
     public Handlers(TravelJournalsClient feature) {
         super(feature);
@@ -87,6 +91,14 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
                 scaleAndSendPhoto();
             } else {
                 takingPhoto.tick();
+            }
+        }
+        
+        if (minecraft.level != null && minecraft.player != null) {
+            // Poll inventory for paper and map when on the bookmark page.
+            if (minecraft.level.getGameTime() % 20 == 0 && minecraft.screen instanceof BookmarkDetailScreen) {
+                hasMap = minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
+                hasPaper = minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
             }
         }
     }
@@ -418,13 +430,42 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         var path = key.getPath();
         return "biome." + namespace + "." + path;
     }
-    
 
+    public boolean hasMap() {
+        return hasMap;
+    }
+
+    public boolean hasPaper() {
+        return hasPaper;
+    }
+
+    public void exportBookmark(BookmarkData bookmark) {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            var time = minecraft.level.getGameTime();
+            if (lastExportOperation == 0 || time - lastExportOperation > 10) {
+                Networking.C2SExportBookmark.send(bookmark);
+                lastExportOperation = time;
+            }
+        }
+    }
+
+    public void exportMap(BookmarkData bookmark) {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            var time = minecraft.level.getGameTime();
+            if (lastExportOperation == 0 || time - lastExportOperation > 10) {
+                Networking.C2SExportMap.send(bookmark);
+                lastExportOperation = time;
+            }
+        }
+    }
+    
     /**
      * Gets a file reference to a photo on the client's device.
      */
     @Nullable
-    private File localPhoto(UUID uuid) {
+    public File localPhoto(UUID uuid) {
         var file = new File(getOrCreatePhotosDir(), uuid + ".png");
         return file.exists() ? file : null;
     }

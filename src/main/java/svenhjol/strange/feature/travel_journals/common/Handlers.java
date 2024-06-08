@@ -1,8 +1,17 @@
 package svenhjol.strange.feature.travel_journals.common;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.LevelResource;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
@@ -101,6 +110,35 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         
         // Send the photo to the client.
         Networking.S2CPhoto.send((ServerPlayer) player, uuid, image);
+    }
+
+    public void exportBookmarkReceived(Player player, Networking.C2SExportBookmark packet) {
+        // TODO
+    }
+
+    public void exportMapReceived(Player player, Networking.C2SExportMap packet) {
+        var level = (ServerLevel)player.level();
+        var bookmark = packet.bookmark();
+        var dimension = bookmark.dimension();
+        var pos = bookmark.pos();
+        var name = bookmark.name();
+        
+        if (level.dimension() != dimension) {
+            return;
+        }
+        
+        for (ItemStack stack : Helpers.collectPotentialItems(player)) {
+            if (stack.is(Items.MAP)) {
+                var map = MapItem.create(level, pos.getX(), pos.getZ(), (byte)2, true, true);
+                MapItem.renderBiomePreviewMap(level, map);
+                MapItemSavedData.addTargetDecoration(map, pos, name, MapDecorationTypes.GRAY_BANNER);
+                map.set(DataComponents.ITEM_NAME, Component.literal(name));
+                stack.shrink(1);
+                player.addItem(map);
+                level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS);
+                return;
+            }
+        }
     }
     
     /**

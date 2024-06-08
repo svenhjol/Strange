@@ -52,6 +52,8 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         registry.clientPacketSender(Networking.C2SDownloadPhoto.TYPE, Networking.C2SDownloadPhoto.CODEC);
         registry.clientPacketSender(Networking.C2SUpdateBookmark.TYPE, Networking.C2SUpdateBookmark.CODEC);
         registry.clientPacketSender(Networking.C2SDeleteBookmark.TYPE, Networking.C2SDeleteBookmark.CODEC);
+        registry.clientPacketSender(Networking.C2SExportBookmark.TYPE, Networking.C2SExportBookmark.CODEC);
+        registry.clientPacketSender(Networking.C2SExportMap.TYPE, Networking.C2SExportMap.CODEC);
 
         // Server packet receivers
         registry.packetReceiver(Networking.C2SMakeBookmark.TYPE, () -> feature.handlers::makeBookmarkReceived);
@@ -59,5 +61,7 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         registry.packetReceiver(Networking.C2SDownloadPhoto.TYPE, () -> feature.handlers::downloadPhotoReceived);
         registry.packetReceiver(Networking.C2SUpdateBookmark.TYPE, () -> feature.handlers::updateBookmarkReceived);
         registry.packetReceiver(Networking.C2SDeleteBookmark.TYPE, () -> feature.handlers::deleteBookmarkReceived);
+        registry.packetReceiver(Networking.C2SExportBookmark.TYPE, () -> feature.handlers::exportBookmarkReceived);
+        registry.packetReceiver(Networking.C2SExportMap.TYPE, () -> feature.handlers::exportMapReceived);
     }
 }

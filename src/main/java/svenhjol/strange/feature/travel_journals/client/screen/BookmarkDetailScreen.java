@@ -2,14 +2,13 @@ package svenhjol.strange.feature.travel_journals.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import svenhjol.strange.feature.core.client.CoreButtons;
+import svenhjol.strange.feature.travel_journals.client.Buttons;
 import svenhjol.strange.feature.travel_journals.client.Resources;
 import svenhjol.strange.feature.travel_journals.common.BookmarkData;
 
@@ -18,9 +17,6 @@ public class BookmarkDetailScreen extends BaseScreen {
     private final BookmarkData.Mutable bookmark;
     private EditBox name;
     private MultiLineEditBox description;
-
-    private boolean hasMap;
-    private boolean hasPaper;
     
     public BookmarkDetailScreen(ItemStack stack, BookmarkData bookmark) {
         super(Component.literal(bookmark.name()));
@@ -52,7 +48,6 @@ public class BookmarkDetailScreen extends BaseScreen {
         addRenderableWidget(name);
         setFocused(name);
         
-        
         description = new MultiLineEditBox(font, midX - (inputWidth / 2), top + 29, inputWidth, descriptionHeight,
             Resources.EDIT_DESCRIPTION, Component.empty());
 
@@ -70,9 +65,11 @@ public class BookmarkDetailScreen extends BaseScreen {
             b -> onClose()));
         addRenderableWidget(new CoreButtons.SaveButton(midX + (CoreButtons.SaveButton.WIDTH / 2) + 5, top,
             b -> saveAndClose()));
+    }
 
-        hasMap = hasMap();
-        hasPaper = hasPaper();
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 
     @Override
@@ -81,6 +78,7 @@ public class BookmarkDetailScreen extends BaseScreen {
 
         renderPhoto(guiGraphics);
         renderDimensionAndPosition(guiGraphics);
+        renderUtilityButtons();
         
         name.render(guiGraphics, mouseX, mouseY, delta);
         description.render(guiGraphics, mouseX, mouseY, delta);
@@ -89,7 +87,25 @@ public class BookmarkDetailScreen extends BaseScreen {
         guiGraphics.drawString(font, Resources.NAME_TEXT, midX - 109, 101, textColor, false);
         guiGraphics.drawString(font, Resources.DESCRIPTION, midX - 109, 129, textColor, false);
     }
-    
+
+    private void renderUtilityButtons() {
+        var handlers = feature().handlers;
+        var x = midX + 120;
+        var y = 13;
+        var lineHeight = 17;
+        
+        if (handlers.hasPaper()) {
+            y += lineHeight;
+            addRenderableWidget(new Buttons.ExportBookmarkButton(x, y,
+                b -> handlers.exportBookmark(bookmark.toImmutable())));
+        }
+        if (handlers.hasMap()) {
+            y += lineHeight;
+            addRenderableWidget(new Buttons.ExportMapButton(x, y,
+                b -> handlers.exportMap(bookmark.toImmutable())));
+        }
+    }
+
     private void renderPhoto(GuiGraphics guiGraphics) {
         var pose = guiGraphics.pose();
         var resource = feature().handlers.tryLoadPhoto(bookmark.id());
@@ -127,24 +143,6 @@ public class BookmarkDetailScreen extends BaseScreen {
         guiGraphics.drawString(font, Component.translatable(Resources.POSITION).withStyle(ChatFormatting.BOLD), left, top + 30, color, false);
         guiGraphics.drawString(font, positionText, left, top + 42, color, false);
         pose.popPose();
-    }
-
-    private boolean hasMap() {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.player == null) {
-            return false;
-        }
-
-        return minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
-    }
-
-    private boolean hasPaper() {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.player == null) {
-            return false;
-        }
-
-        return minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
     }
     
     private void saveAndClose() {
