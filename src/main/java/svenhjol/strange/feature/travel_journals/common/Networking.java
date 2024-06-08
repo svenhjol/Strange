@@ -3,6 +3,7 @@ package svenhjol.strange.feature.travel_journals.common;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -106,6 +107,58 @@ public final class Networking extends FeatureHolder<TravelJournals> {
 
         private static C2SMakeBookmark decode(FriendlyByteBuf buf) {
             return new C2SMakeBookmark(buf.readUtf());
+        }
+    }
+
+    public record C2SUpdateBookmark(UUID journalId, BookmarkData bookmark) implements CustomPacketPayload {
+        public static final Type<C2SUpdateBookmark> TYPE = new Type<>(Strange.id("update_bookmark"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, C2SUpdateBookmark> CODEC =
+            StreamCodec.of(C2SUpdateBookmark::encode, C2SUpdateBookmark::decode);
+
+        public static void send(UUID journalId, BookmarkData bookmark) {
+            ClientPlayNetworking.send(new C2SUpdateBookmark(journalId, bookmark));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(RegistryFriendlyByteBuf buf, C2SUpdateBookmark self) {
+            buf.writeUUID(self.journalId());
+            BookmarkData.STREAM_CODEC.encode(buf, self.bookmark());
+        }
+
+        private static C2SUpdateBookmark decode(RegistryFriendlyByteBuf buf) {
+            var journalId = buf.readUUID();
+            var bookmark = BookmarkData.STREAM_CODEC.decode(buf);
+            return new C2SUpdateBookmark(journalId, bookmark);
+        }
+    }
+    
+    public record C2SDeleteBookmark(UUID journalId, UUID bookmarkId) implements CustomPacketPayload {
+        public static final Type<C2SDeleteBookmark> TYPE = new Type<>(Strange.id("delete_bookmark"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, C2SDeleteBookmark> CODEC =
+            StreamCodec.of(C2SDeleteBookmark::encode, C2SDeleteBookmark::decode);
+
+        public static void send(UUID journalId, UUID bookmarkId) {
+            ClientPlayNetworking.send(new C2SDeleteBookmark(journalId, bookmarkId));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(RegistryFriendlyByteBuf buf, C2SDeleteBookmark self) {
+            buf.writeUUID(self.journalId());
+            buf.writeUUID(self.bookmarkId());
+        }
+
+        private static C2SDeleteBookmark decode(RegistryFriendlyByteBuf buf) {
+            var journalId = buf.readUUID();
+            var bookmarkId = buf.readUUID();
+            return new C2SDeleteBookmark(journalId, bookmarkId);
         }
     }
 

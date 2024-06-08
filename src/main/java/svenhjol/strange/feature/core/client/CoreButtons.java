@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import svenhjol.strange.Strange;
 
 public final class CoreButtons {
-    public static final WidgetSprites TRASH_BUTTON = makeButton("trash");
     public static final WidgetSprites NEXT_PAGE_BUTTON = makeButton("next_page");
     public static final WidgetSprites PREVIOUS_PAGE_BUTTON = makeButton("previous_page");
 
@@ -16,7 +15,7 @@ public final class CoreButtons {
     public static class CloseButton extends Button {
         public static int WIDTH = 110;
         public static int HEIGHT = 20;
-        static Component TEXT = CoreResources.CLOSE_BUTTON_TEXT;
+        static Component TEXT = CoreResources.CLOSE;
 
         public CloseButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
@@ -24,9 +23,9 @@ public final class CoreButtons {
     }
 
     public static class BackButton extends Button {
-        public static int WIDTH = 110;
+        public static int WIDTH = 100;
         public static int HEIGHT = 20;
-        static Component TEXT = CoreResources.BACK_BUTTON_TEXT;
+        static Component TEXT = CoreResources.BACK;
 
         public BackButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
@@ -34,9 +33,9 @@ public final class CoreButtons {
     }
 
     public static class SaveButton extends Button {
-        public static int WIDTH = 110;
+        public static int WIDTH = 100;
         public static int HEIGHT = 20;
-        static Component TEXT = CoreResources.SAVE_BUTTON_TEXT;
+        static Component TEXT = CoreResources.SAVE;
 
         public SaveButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
@@ -44,11 +43,21 @@ public final class CoreButtons {
     }
 
     public static class CancelButton extends Button {
-        public static int WIDTH = 110;
+        public static int WIDTH = 100;
         public static int HEIGHT = 20;
-        static Component TEXT = CoreResources.CANCEL_BUTTON_TEXT;
+        static Component TEXT = CoreResources.CANCEL;
 
         public CancelButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
+        }
+    }
+
+    public static class DeleteButton extends Button {
+        public static int WIDTH = 100;
+        public static int HEIGHT = 20;
+        static Component TEXT = CoreResources.DELETE;
+
+        public DeleteButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
@@ -65,7 +74,7 @@ public final class CoreButtons {
         public static int WIDTH = 20;
         public static int HEIGHT = 19;
         static WidgetSprites SPRITES = NEXT_PAGE_BUTTON;
-        static Component TEXT = CoreResources.NEXT_PAGE_BUTTON_TEXT;
+        static Component TEXT = CoreResources.NEXT_PAGE;
 
         public NextPageButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
@@ -77,21 +86,9 @@ public final class CoreButtons {
         public static int WIDTH = 20;
         public static int HEIGHT = 19;
         static WidgetSprites SPRITES = PREVIOUS_PAGE_BUTTON;
-        static Component TEXT = CoreResources.PREVIOUS_PAGE_BUTTON_TEXT;
+        static Component TEXT = CoreResources.PREVIOUS_PAGE;
 
         public PreviousPageButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
-
-    public static class DeleteShortcutButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = TRASH_BUTTON;
-        static Component TEXT = CoreResources.DELETE_BUTTON_TEXT;
-
-        public DeleteShortcutButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }

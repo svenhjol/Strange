@@ -50,10 +50,14 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         registry.clientPacketSender(Networking.C2SMakeBookmark.TYPE, Networking.C2SMakeBookmark.CODEC);
         registry.clientPacketSender(Networking.C2SPhoto.TYPE, Networking.C2SPhoto.CODEC);
         registry.clientPacketSender(Networking.C2SDownloadPhoto.TYPE, Networking.C2SDownloadPhoto.CODEC);
+        registry.clientPacketSender(Networking.C2SUpdateBookmark.TYPE, Networking.C2SUpdateBookmark.CODEC);
+        registry.clientPacketSender(Networking.C2SDeleteBookmark.TYPE, Networking.C2SDeleteBookmark.CODEC);
 
         // Server packet receivers
         registry.packetReceiver(Networking.C2SMakeBookmark.TYPE, () -> feature.handlers::makeBookmarkReceived);
         registry.packetReceiver(Networking.C2SPhoto.TYPE, () -> feature.handlers::photoReceived);
         registry.packetReceiver(Networking.C2SDownloadPhoto.TYPE, () -> feature.handlers::downloadPhotoReceived);
+        registry.packetReceiver(Networking.C2SUpdateBookmark.TYPE, () -> feature.handlers::updateBookmarkReceived);
+        registry.packetReceiver(Networking.C2SDeleteBookmark.TYPE, () -> feature.handlers::deleteBookmarkReceived);
     }
 }

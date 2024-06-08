@@ -72,7 +72,19 @@ public record JournalData(UUID id, List<BookmarkData> bookmarks) {
         }
         
         public Mutable addBookmark(BookmarkData bookmark) {
-            this.bookmarks.add(bookmark);
+            bookmarks.add(bookmark);
+            return this;
+        }
+        
+        public Mutable updateBookmark(BookmarkData bookmark) {
+            var existing = bookmarks.stream().filter(b -> b.id().equals(bookmark.id())).findFirst().orElseThrow();
+            bookmarks.set(bookmarks.indexOf(existing), bookmark);
+            return this;
+        }
+        
+        public Mutable deleteBookmark(UUID bookmarkId) {
+            var existing = bookmarks.stream().filter(b -> b.id().equals(bookmarkId)).findFirst().orElseThrow();
+            bookmarks.remove(existing);
             return this;
         }
         

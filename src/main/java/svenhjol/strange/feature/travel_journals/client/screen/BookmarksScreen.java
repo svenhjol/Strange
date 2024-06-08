@@ -23,7 +23,7 @@ public class BookmarksScreen extends BaseScreen {
     private boolean renderedBookmarkButtons = false;
     
     public BookmarksScreen(ItemStack stack, int page) {
-        super(Resources.TRAVEL_JOURNAL_TITLE);
+        super(Resources.TRAVEL_JOURNAL);
         this.stack = stack;
         this.page = page;
     }
@@ -120,7 +120,7 @@ public class BookmarksScreen extends BaseScreen {
             top = 141;
             if (!renderedBookmarkButtons) {
                 addRenderableWidget(new CoreButtons.EditButton(left, top, 107,
-                    b -> feature().handlers.openBookmark(bookmark), Resources.DETAILS_BUTTON));
+                    b -> feature().handlers.openBookmark(stack, bookmark), Resources.DETAILS));
             }
 
             pose.pushPose();

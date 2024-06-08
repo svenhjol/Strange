@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public final class Handlers extends FeatureHolder<TravelJournals> {
@@ -34,10 +33,9 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         var pos = player.blockPosition();
         UUID bookmarkId;
         
-        var opt = tryGetTravelJournal(player);
-        if (opt.isEmpty()) return;
-        var stack = opt.get();
-        
+        var stack = tryGetTravelJournal(player);
+        if (stack.isEmpty()) return;
+
         var journal = JournalData.get(stack);
         if (journal.isFull()) {
             return; // TODO: message back to client.
@@ -61,6 +59,33 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         
         // Instruct the client to take a photo.
         Networking.S2CTakePhoto.send((ServerPlayer)player, bookmarkId);
+    }
+    
+    public void updateBookmarkReceived(Player player, Networking.C2SUpdateBookmark packet) {
+        var stack = tryGetTravelJournal(player, packet.journalId());
+        if (stack.isEmpty()) {
+            log().error("No such journal?");
+            return;
+        }
+
+        new JournalData.Mutable(JournalData.get(stack))
+            .updateBookmark(packet.bookmark())
+            .save(stack);
+    }
+    
+    public void deleteBookmarkReceived(Player player, Networking.C2SDeleteBookmark packet) {
+        var stack = tryGetTravelJournal(player, packet.journalId());
+        if (stack.isEmpty()) {
+            log().error("No such journal?");
+            return;
+        }
+        
+        new JournalData.Mutable(JournalData.get(stack))
+            .deleteBookmark(packet.bookmarkId())
+            .save(stack);
+        
+        // Clean up photo on server.
+        tryDeletePhoto((ServerLevel) player.level(), packet.bookmarkId());
     }
 
     /**
@@ -140,28 +165,66 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
     }
 
     /**
+     * Try and delete an image from the custom photos directory for given photo UUID.
+     */
+    public void tryDeletePhoto(ServerLevel level, UUID uuid) {
+        var dir = getOrCreatePhotosDir(level);
+        var path = new File(dir, uuid + ".png");
+        if (path.exists()) {
+            var result = path.delete();
+            if (result) {
+                log().debug("Deleted photo with uuid: " + uuid);
+            } else {
+                log().error("Error trying to delete photo with uuid: " + uuid);
+            }
+        }
+    }
+
+    /**
      * Fetch the most readily available travel journal held by the player.
      * The order that is checked is:
      * - mainhand
      * - offhand
      * - inventory slots starting from 0
      */
-    public Optional<ItemStack> tryGetTravelJournal(Player player) {
+    public ItemStack tryGetTravelJournal(Player player) {
+        var items = collectPotentialItems(player);
+        
+        for (var stack : items) {
+            if (stack.is(feature().registers.item.get())) {
+                return stack;
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * Fetch a specific travel journal from the player's inventory.
+     */
+    public ItemStack tryGetTravelJournal(Player player, UUID journalId) {
+        var items = collectPotentialItems(player);
+
+        for (var stack : items) {
+            if (stack.is(feature().registers.item.get())) {
+                if (JournalData.get(stack).id().equals(journalId)) {
+                    return stack;
+                }
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+    
+    private List<ItemStack> collectPotentialItems(Player player) {
         var inventory = player.getInventory();
         List<ItemStack> items = new ArrayList<>();
 
         for (InteractionHand hand : InteractionHand.values()) {
             items.add(player.getItemInHand(hand));
         }
-        
-        items.addAll(inventory.items);
-        
-        for (var stack : items) {
-            if (stack.is(feature().registers.item.get())) {
-                return Optional.of(stack);
-            }
-        }
 
-        return Optional.empty();
+        items.addAll(inventory.items);
+        return items;
     }
 }

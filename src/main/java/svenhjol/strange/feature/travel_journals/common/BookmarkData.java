@@ -79,6 +79,14 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
             this.color = data.extra().color();
         }
         
+        public String name() {
+            return this.name;
+        }
+
+        public String description() {
+            return this.description;
+        }
+        
         public Mutable name(String name) {
             this.name = name;
             return this;

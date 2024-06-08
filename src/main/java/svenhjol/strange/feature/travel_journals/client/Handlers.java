@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
 import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
+import svenhjol.strange.feature.travel_journals.client.screen.BookmarkDetailScreen;
 import svenhjol.strange.feature.travel_journals.client.screen.BookmarksScreen;
 import svenhjol.strange.feature.travel_journals.common.BookmarkData;
 import svenhjol.strange.feature.travel_journals.common.JournalData;
@@ -134,11 +135,48 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     }
 
     /**
-     * Helper method to initiate the creation of a new bookmark.
+     * Create of a new bookmark.
      * Called when the player presses the bookmark key or clicks the "New bookmark" button.
      */
     public void makeNewBookmark() {
         Networking.C2SMakeBookmark.send(NEW_BOOKMARK.getString());
+    }
+
+    /**
+     * Update a bookmark.
+     * Pass the journal stack that this bookmark belongs to.
+     */
+    public void updateBookmark(ItemStack stack, BookmarkData bookmark) {
+        var journal = JournalData.get(stack);
+
+        // Update stack's local state.
+        new JournalData.Mutable(journal)
+            .updateBookmark(bookmark)
+            .save(stack);
+
+        // Sync the bookmark with the server.
+        log().debug("Sending updated bookmark for uuid: " + bookmark.id());
+        Networking.C2SUpdateBookmark.send(journal.id(), bookmark);
+    }
+
+    /**
+     * Delete a bookmark.
+     * Pass the journal stack that this bookmark belongs to.
+     */
+    public void deleteBookmark(ItemStack stack, BookmarkData bookmark) {
+        var journal = JournalData.get(stack);
+
+        // Update stack's local state.
+        new JournalData.Mutable(journal)
+            .deleteBookmark(bookmark.id())
+            .save(stack);
+
+        // Sync the bookmark with the server.
+        log().debug("Sending deleted bookmark for uuid: " + bookmark.id());
+        Networking.C2SDeleteBookmark.send(journal.id(), bookmark.id());
+        
+        // Clean up local photos.
+        tryDeletePhoto(bookmark.id());
     }
 
     /**
@@ -246,6 +284,23 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     }
 
     /**
+     * Try and delete an image from the custom photos directory for given photo UUID.
+     */
+    public void tryDeletePhoto(UUID uuid) {
+        var dir = getOrCreatePhotosDir();
+        var path = new File(dir, uuid + ".png");
+        
+        if (path.exists()) {
+            var result = path.delete();
+            if (result) {
+                log().debug("Deleted photo with uuid: " + uuid);
+            } else {
+                log().error("Error trying to delete photo with uuid: " + uuid);
+            }
+        }
+    }
+
+    /**
      * Clear cached photo image textures and server download attempts.
      */
     public void clearPhotoCache() {
@@ -270,8 +325,8 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         Minecraft.getInstance().setScreen(new BookmarksScreen(stack, page));
     }
 
-    public void openBookmark(BookmarkData bookmark) {
-        // TODO
+    public void openBookmark(ItemStack stack, BookmarkData bookmark) {
+        Minecraft.getInstance().setScreen(new BookmarkDetailScreen(stack, bookmark));
     }
 
     /**
