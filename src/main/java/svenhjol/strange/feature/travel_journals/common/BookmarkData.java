@@ -99,6 +99,10 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
             return this.dimension;
         }
         
+        public DyeColor color() {
+            return this.color;
+        }
+        
         public Mutable name(String name) {
             this.name = name;
             return this;

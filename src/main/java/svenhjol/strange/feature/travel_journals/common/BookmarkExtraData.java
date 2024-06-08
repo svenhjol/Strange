@@ -31,5 +31,5 @@ public record BookmarkExtraData(String author, String description, long timestam
         BookmarkExtraData::new
     );
     
-    public static final BookmarkExtraData EMPTY = new BookmarkExtraData("", "", -1, DyeColor.WHITE);
+    public static final BookmarkExtraData EMPTY = new BookmarkExtraData("", "", -1, DyeColor.GRAY);
 }

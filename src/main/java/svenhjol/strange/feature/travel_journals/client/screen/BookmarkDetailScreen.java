@@ -108,7 +108,7 @@ public class BookmarkDetailScreen extends BaseScreen {
     
     private void renderDimensionAndPosition(GuiGraphics guiGraphics) {
         var pose = guiGraphics.pose();
-        var positionColor = 0xaf9f8f;
+        var color = 0xb8907a;
         
         pose.pushPose();
         var top = 30; // This is scaled by pose.scale()
@@ -121,11 +121,11 @@ public class BookmarkDetailScreen extends BaseScreen {
         var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
         var dimensionText = Component.translatable(feature().handlers.dimensionLocaleKey(dimension));
         
-        guiGraphics.drawString(font, Component.translatable(Resources.DIMENSION).withStyle(ChatFormatting.BOLD), left, top, positionColor, false);
-        guiGraphics.drawString(font, dimensionText, left, top + 12, positionColor, false);
+        guiGraphics.drawString(font, Component.translatable(Resources.DIMENSION).withStyle(ChatFormatting.BOLD), left, top, color, false);
+        guiGraphics.drawString(font, dimensionText, left, top + 12, color, false);
 
-        guiGraphics.drawString(font, Component.translatable(Resources.POSITION).withStyle(ChatFormatting.BOLD), left, top + 30, positionColor, false);
-        guiGraphics.drawString(font, positionText, left, top + 42, positionColor, false);
+        guiGraphics.drawString(font, Component.translatable(Resources.POSITION).withStyle(ChatFormatting.BOLD), left, top + 30, color, false);
+        guiGraphics.drawString(font, positionText, left, top + 42, color, false);
         pose.popPose();
     }
 

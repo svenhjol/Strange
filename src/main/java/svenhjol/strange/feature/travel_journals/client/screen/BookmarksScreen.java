@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.MapColor;
 import svenhjol.strange.feature.core.client.CoreButtons;
 import svenhjol.strange.feature.travel_journals.client.Buttons;
 import svenhjol.strange.feature.travel_journals.client.ClientHelpers;
@@ -82,12 +81,11 @@ public class BookmarksScreen extends BaseScreen {
         var name = bookmark.name();
         var extra = bookmark.extra();
         var author = extra.author();
-        var color = extra.color();
         var timestamp = extra.timestamp();
         var date = new Date(timestamp * 1000L);
         var format = new SimpleDateFormat("dd-MMM-yy");
         var titleColor = 0x444444;
-        var authorColor = color.getMapColor().calculateRGBColor(MapColor.Brightness.LOW);
+        var extraColor = 0xa7a7a7;
         var maxTitleLength = 25;
         var left = -100 + (x * 169);
         var top = 33;
@@ -105,12 +103,12 @@ public class BookmarksScreen extends BaseScreen {
 
         if (!author.isEmpty()) {
             top += 12;
-            guiGraphics.drawString(font, Component.translatable(Resources.CREATED_BY_KEY, author), left, top, authorColor, false);
+            guiGraphics.drawString(font, Component.translatable(Resources.CREATED_BY_KEY, author), left, top, extraColor, false);
         }
 
         if (timestamp >= 0) {
             top += 12;
-            guiGraphics.drawString(font, Component.literal(format.format(date)), left, top, authorColor, false);
+            guiGraphics.drawString(font, Component.literal(format.format(date)), left, top, extraColor, false);
         }
         pose.popPose();
     }
@@ -137,7 +135,7 @@ public class BookmarksScreen extends BaseScreen {
         var dimension = bookmark.dimension();
         var top = 202;
         var left = -95 + (x * 163);
-        var positionColor = 0xaf9f8f;
+        var color = 0xb8907a;
         
         pose.pushPose();
         pose.translate(midX - 25f, 20f, 1.0f);
@@ -146,8 +144,8 @@ public class BookmarksScreen extends BaseScreen {
         var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
         var dimensionText = Component.translatable(feature().handlers.dimensionLocaleKey(dimension));
 
-        ClientHelpers.drawCenteredString(guiGraphics, font, dimensionText, left + 50, top, positionColor, false);
-        ClientHelpers.drawCenteredString(guiGraphics, font, positionText, left + 50, top + 13, positionColor, false);
+        ClientHelpers.drawCenteredString(guiGraphics, font, dimensionText, left + 50, top, color, false);
+        ClientHelpers.drawCenteredString(guiGraphics, font, positionText, left + 50, top + 13, color, false);
         pose.popPose();
     }
     
