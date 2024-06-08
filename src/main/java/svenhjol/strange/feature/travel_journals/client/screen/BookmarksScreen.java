@@ -3,6 +3,7 @@ package svenhjol.strange.feature.travel_journals.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.MapColor;
@@ -14,6 +15,7 @@ import svenhjol.strange.feature.travel_journals.common.BookmarkData;
 import svenhjol.strange.feature.travel_journals.common.JournalData;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class BookmarksScreen extends BaseScreen {
@@ -23,7 +25,7 @@ public class BookmarksScreen extends BaseScreen {
     private boolean renderedButtons = false;
     
     public BookmarksScreen(ItemStack stack, int page) {
-        super(Resources.TRAVEL_JOURNAL);
+        super(stack.getOrDefault(DataComponents.CUSTOM_NAME, Resources.TRAVEL_JOURNAL));
         this.stack = stack;
         this.page = page;
         this.columns = 2;
@@ -77,7 +79,7 @@ public class BookmarksScreen extends BaseScreen {
         var author = extra.author();
         var color = extra.color();
         var timestamp = extra.timestamp();
-        var date = new java.util.Date(timestamp * 1000L);
+        var date = new Date(timestamp * 1000L);
         var format = new SimpleDateFormat("dd-MMM-yy");
         var titleColor = 0x444444;
         var authorColor = color.getMapColor().calculateRGBColor(MapColor.Brightness.LOW);
