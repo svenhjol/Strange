@@ -19,9 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 public class BookmarksScreen extends BaseScreen {
-    private final int page;
     private final int columns;
     private final ItemStack stack;
+    private int page;
     private boolean renderedButtons = false;
     
     public BookmarksScreen(ItemStack stack, int page) {
@@ -49,9 +49,14 @@ public class BookmarksScreen extends BaseScreen {
         
         var bookmarks = bookmarks();
         var index = (page - 1) * columns;
+        
+        if (index >= bookmarks.size()) {
+            log().debug("Index out of bounds, resetting to page 1");
+            page = 1;
+        }
 
         for (var x = 0; x < columns; x++) {
-            if (index >= bookmarks.size()) continue;;
+            if (index >= bookmarks.size()) continue;
             
             var bookmark = bookmarks.get(index);
             
