@@ -98,8 +98,8 @@ public class BookmarkDetailScreen extends BaseScreen {
             pose.pushPose();
             var top = 24; // This is scaled by pose.scale()
             var left = -169; // This is scaled by pose.scale()
-            pose.translate(midX - 40f, 34f, 1.0f);
-            pose.scale(0.41f, 0.21f, 1.0f);
+            pose.translate(midX - 40f, 33f, 1.0f);
+            pose.scale(0.41f, 0.22f, 1.0f);
             RenderSystem.setShaderTexture(0, resource);
             guiGraphics.blit(resource, left, top, 0, 0, 256, 256);
             pose.popPose();
