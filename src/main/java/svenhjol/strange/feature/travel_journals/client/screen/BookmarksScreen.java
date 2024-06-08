@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.text.WordUtils;
 import svenhjol.strange.feature.core.client.CoreButtons;
 import svenhjol.strange.feature.travel_journals.client.Buttons;
 import svenhjol.strange.feature.travel_journals.client.ClientHelpers;
@@ -14,8 +15,10 @@ import svenhjol.strange.feature.travel_journals.common.BookmarkData;
 import svenhjol.strange.feature.travel_journals.common.JournalData;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class BookmarksScreen extends BaseScreen {
     private final int columns;
@@ -61,6 +64,7 @@ public class BookmarksScreen extends BaseScreen {
             
             renderTitleDetails(guiGraphics, bookmark, x);
             renderPhoto(guiGraphics, bookmark, x);
+            renderPhotoDescriptionHover(guiGraphics, bookmark, mouseX, mouseY, x);
             renderPosition(guiGraphics, bookmark, x);
             renderDetailsButton(bookmark, x);
             
@@ -126,6 +130,26 @@ public class BookmarksScreen extends BaseScreen {
             RenderSystem.setShaderTexture(0, resource);
             guiGraphics.blit(resource, left, top, 0, 0, 256, 256);
             pose.popPose();
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    private void renderPhotoDescriptionHover(GuiGraphics guiGraphics, BookmarkData bookmark, int mouseX, int mouseY, int x) {
+        var description = bookmark.extra().description();
+        if (description.isEmpty()) return;
+
+        var x1 = midX - 110 + (x * 114);
+        var y1 = 71;
+        var x2 = midX - 110 + (x * 114) + 106;
+        var y2 = 131;
+        
+        // Version of WordUtils available in minecraft environment is deprecated.
+        var wrapped = WordUtils.wrap(description, 30);
+        var lines = Arrays.stream(wrapped.split("\n")).map(s -> (Component)Component.literal(s)).toList();
+
+        if (mouseX >= x1 && mouseX <= x2
+            && mouseY >= y1 && mouseY <= y2) {
+            guiGraphics.renderTooltip(font, lines, Optional.empty(), mouseX, mouseY);
         }
     }
     
