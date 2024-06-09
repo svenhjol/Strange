@@ -5,10 +5,7 @@ import svenhjol.charm.charmony.annotation.Configurable;
 import svenhjol.charm.charmony.annotation.Feature;
 import svenhjol.charm.charmony.common.CommonFeature;
 import svenhjol.charm.charmony.common.CommonLoader;
-import svenhjol.strange.feature.runestones.common.Handlers;
-import svenhjol.strange.feature.runestones.common.Networking;
-import svenhjol.strange.feature.runestones.common.Providers;
-import svenhjol.strange.feature.runestones.common.Registers;
+import svenhjol.strange.feature.runestones.common.*;
 
 @Feature(description = """
     Runestones are blocks that teleport players to interesting structures and biomes.
@@ -19,6 +16,7 @@ public final class Runestones extends CommonFeature {
     public final Handlers handlers;
     public final Networking networking;
     public final Providers providers;
+    public final Advancements advancements;
 
     @Configurable(
         name = "Dizziness effect",
@@ -39,6 +37,7 @@ public final class Runestones extends CommonFeature {
         handlers = new Handlers(this);
         networking = new Networking(this);
         providers = new Providers(this);
+        advancements = new Advancements(this);
     }
 
     public boolean dizzyEffect() {

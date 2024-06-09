@@ -230,4 +230,8 @@ public final class Helpers {
 
         throw new RuntimeException("Maximum loops reached when checking string length");
     }
+    
+    public static boolean runestoneLinksToSpawnPoint(RunestoneBlockEntity runestone) {
+        return runestone.location != null && runestone.location.id().equals(SPAWN_POINT_ID);
+    }
 }

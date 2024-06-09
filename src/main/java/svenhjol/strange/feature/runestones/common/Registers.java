@@ -48,6 +48,14 @@ public final class Registers extends RegisterHolder<Runestones> {
             Networking.S2CSacrificeInProgress.CODEC);
         registry.serverPacketSender(Networking.S2CActivateRunestone.TYPE,
             Networking.S2CActivateRunestone.CODEC);
+        
+        // Client packet senders
+        registry.clientPacketSender(Networking.C2SLookingAtRunestone.TYPE,
+            Networking.C2SLookingAtRunestone.CODEC);
+        
+        // Client packet receivers
+        registry.packetReceiver(Networking.C2SLookingAtRunestone.TYPE,
+            () -> feature.handlers::lookingAtRunestoneReceived);
 
         // Sound effects
         activateSound = registry.soundEvent("runestone_activate");

@@ -112,6 +112,9 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
      */
     public void photoReceived(Player player, Networking.C2SPhoto packet) {
         trySavePhoto((ServerLevel) player.level(), packet.bookmarkId(), packet.image());
+        
+        // This is the appropriate place to do the advancement, not when the bookmark is actually created.
+        feature().advancements.madeTravelBookmark(player);
     }
 
     /**

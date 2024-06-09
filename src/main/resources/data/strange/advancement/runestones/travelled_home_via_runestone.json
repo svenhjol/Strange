@@ -1,0 +1,31 @@
+{
+  "parent": "strange:runestones/travelled_via_runestone",
+  "display": {
+    "icon": {
+      "id": "minecraft:compass"
+    },
+    "title": {
+      "translate": "advancements.strange.travelled_home_via_runestone.title"
+    },
+    "description": {
+      "translate": "advancements.strange.travelled_home_via_runestone.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "travelled_home_via_runestone": {
+      "trigger": "charmony_action_performed",
+      "conditions": {
+        "action": "strange:travelled_home_via_runestone"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "travelled_home_via_runestone"
+    ]
+  ]
+}

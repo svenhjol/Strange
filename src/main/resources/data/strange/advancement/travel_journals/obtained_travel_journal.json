@@ -1,0 +1,35 @@
+{
+  "parent": "charm:core/tools",
+  "display": {
+    "icon": {
+      "id": "strange:travel_journal"
+    },
+    "title": {
+      "translate": "advancements.strange.obtained_travel_journal.title"
+    },
+    "description": {
+      "translate": "advancements.strange.obtained_travel_journal.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "obtained_travel_journal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["strange:travel_journal"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "obtained_travel_journal"
+    ]
+  ]
+}

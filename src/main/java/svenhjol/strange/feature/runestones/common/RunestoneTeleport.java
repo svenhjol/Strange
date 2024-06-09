@@ -28,6 +28,7 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
 
     private final ServerPlayer player;
     private final ServerLevel level;
+    private final RunestoneBlockEntity runestone;
     private Vec3 target;
     private ResourceKey<Level> dimension;
     private boolean useExactPosition = false;
@@ -37,8 +38,9 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
     public RunestoneTeleport(ServerPlayer player, RunestoneBlockEntity runestone) {
         this.player = player;
         this.level = (ServerLevel)player.level();
+        this.runestone = runestone;
 
-        this.setTargetAndDimension(runestone);
+        this.setTargetAndDimension();
         this.valid = true;
     }
 
@@ -115,6 +117,12 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
 
         player.teleportTo(target.x, target.y, target.z);
         valid = true;
+
+        if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
+            feature().advancements.travelledHomeViaRunestone(player);   
+        } else {
+            feature().advancements.travelledViaRunestone(player);
+        }
     }
 
     private void reposition() {
@@ -254,8 +262,8 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         return state;
     }
 
-    private void setTargetAndDimension(RunestoneBlockEntity runestone) {
-        if (runestone.location.id().equals(Helpers.SPAWN_POINT_ID)) {
+    private void setTargetAndDimension() {
+        if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
             // Handle player spawn point runestone.
             this.dimension = player.getRespawnDimension();
 

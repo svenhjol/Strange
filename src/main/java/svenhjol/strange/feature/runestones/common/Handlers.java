@@ -42,6 +42,17 @@ public final class Handlers extends FeatureHolder<Runestones> {
         super(feature);
     }
 
+    public void lookingAtRunestoneReceived(Player player, Networking.C2SLookingAtRunestone packet) {
+        var level = player.level();
+        var pos = packet.pos();
+        
+        // If it's a valid runestone that the player is looking at, do the advancement.
+        if (level.getBlockEntity(pos) instanceof RunestoneBlockEntity runestone
+            && runestone.isValid()) {
+            feature().advancements.lookedAtRunestone(player);
+        }
+    }
+    
     /**
      * Reload all the provider definitions into a map of runestone block -> runestone definition.
      */
@@ -204,9 +215,12 @@ public final class Handlers extends FeatureHolder<Runestones> {
             level.addFreshEntity(bolt);
         }
 
-        // Activation effect for all nearby players.
+        // Activation effect and advancement for all nearby players.
         PlayerHelper.getPlayersInRange(level, pos, 8.0d)
-            .forEach(player -> Networking.S2CActivateRunestone.send((ServerPlayer)player, pos));
+            .forEach(player -> {
+                Networking.S2CActivateRunestone.send((ServerPlayer)player, pos);
+                feature().advancements.activatedRunestone(player);
+            });
 
         level.playSound(null, pos, feature().registers.activateSound.get(), SoundSource.BLOCKS, 1.15f, 1.0f);
     }
@@ -248,7 +262,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
                 runestone.target = result.getFirst();
             }
             case PLAYER -> {
-                if (runestone.location.id().equals(Helpers.SPAWN_POINT_ID)) {
+                if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
                     runestone.target = null; // Player targets are dynamic.
                 }
             }

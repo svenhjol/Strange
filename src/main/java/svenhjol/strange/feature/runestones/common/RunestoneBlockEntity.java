@@ -81,7 +81,6 @@ public class RunestoneBlockEntity extends CharmSyncedBlockEntity<Runestones> {
 
         state = state.setValue(RunestoneBlock.ACTIVATED, true);
         level.setBlock(pos, state, 3);
-        // level.playSound(null, itemPos, Runestones.activateSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
         sacrificeChecks = 0;
         setChanged();
 

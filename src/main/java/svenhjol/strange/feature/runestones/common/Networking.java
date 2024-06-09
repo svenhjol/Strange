@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.runestones.common;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,9 +17,32 @@ public final class Networking extends FeatureHolder<Runestones> {
         super(feature);
     }
 
+    public record C2SLookingAtRunestone(BlockPos pos) implements CustomPacketPayload {
+        public static Type<C2SLookingAtRunestone> TYPE = new Type<>(Strange.id("looking_at_runestone"));
+        public static StreamCodec<FriendlyByteBuf, C2SLookingAtRunestone> CODEC =
+            StreamCodec.of(C2SLookingAtRunestone::encode, C2SLookingAtRunestone::decode);
+
+        public static void send(BlockPos pos) {
+            ClientPlayNetworking.send(new C2SLookingAtRunestone(pos));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, C2SLookingAtRunestone self) {
+            buf.writeBlockPos(self.pos());
+        }
+
+        private static C2SLookingAtRunestone decode(FriendlyByteBuf buf) {
+            return new C2SLookingAtRunestone(buf.readBlockPos());
+        }
+    }
+
     // Server-to-client packet that contains the current world seed.
     public record S2CWorldSeed(long seed) implements CustomPacketPayload {
-        public static Type<S2CWorldSeed> TYPE = new Type<>(Strange.id("world_seed"));
+        public static Type<S2CWorldSeed> TYPE = new Type<>(Strange.id("world_seed_for_runestones"));
         public static StreamCodec<FriendlyByteBuf, S2CWorldSeed> CODEC =
             StreamCodec.of(S2CWorldSeed::encode, S2CWorldSeed::decode);
 

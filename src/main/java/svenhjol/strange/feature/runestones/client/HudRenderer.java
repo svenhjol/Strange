@@ -3,12 +3,14 @@ package svenhjol.strange.feature.runestones.client;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.runestones.RunestonesClient;
+import svenhjol.strange.feature.runestones.common.Networking;
 import svenhjol.strange.feature.runestones.common.RunestoneBlockEntity;
 
 import javax.annotation.Nullable;
@@ -23,6 +25,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
     private final int discoveredColor;
     private final int fadeInSpeed;
     private final int fadeOutSpeed;
+    private BlockPos lastLookedAt = null;
     private boolean isValid = false;
 
     @Nullable
@@ -143,6 +146,11 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
 
             if (runestone.location == null) {
                 return false;
+            }
+            
+            if (lastLookedAt == null || lastLookedAt != lookedAt) {
+                Networking.C2SLookingAtRunestone.send(lookedAt);
+                lastLookedAt = lookedAt;
             }
 
             if (runestone.isActivated()) {
