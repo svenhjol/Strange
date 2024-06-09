@@ -31,9 +31,12 @@ public class TravelJournalItem extends CharmItem<TravelJournals> {
         // Check if holding a page in another hand.
         for (var interactionHand : InteractionHand.values()) {
             var held = player.getItemInHand(interactionHand);
+            
+            // If holding a valid page, check the journal to see if it can be added.
             if (held.is(registers.travelJournalPageItem.get()) && BookmarkData.has(held)) {
                 var bookmark = BookmarkData.get(held);
                 if (!journal.isFull() && !journal.hasBookmark(bookmark.id())) {
+                    
                     // Add the page to the journal.
                     new JournalData.Mutable(journal)
                         .addBookmark(bookmark)

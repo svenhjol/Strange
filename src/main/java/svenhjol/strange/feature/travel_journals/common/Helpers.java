@@ -1,7 +1,6 @@
 package svenhjol.strange.feature.travel_journals.common;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
@@ -14,8 +13,8 @@ import svenhjol.charm.charmony.Resolve;
 import svenhjol.strange.feature.travel_journals.TravelJournals;
 import svenhjol.strange.feature.travel_journals.client.Resources;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,9 +55,12 @@ public final class Helpers {
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Gets an ordered list of items from the player, starting with hands and then inventory.
+     */
     public static List<ItemStack> collectPotentialItems(Player player) {
         var inventory = player.getInventory();
-        List<ItemStack> items = new ArrayList<>();
+        List<ItemStack> items = new LinkedList<>();
 
         for (InteractionHand hand : InteractionHand.values()) {
             items.add(player.getItemInHand(hand));
@@ -68,24 +70,26 @@ public final class Helpers {
         return items;
     }
 
+    /**
+     * Wrap string at a sensible line length and converts into a list of components.
+     * This uses an old version of WordUtils which may be problematic?
+     */
     @SuppressWarnings("deprecation")
     public static List<Component> wrap(String str) {
         var wrapped = WordUtils.wrap(str, 30);
-        return Arrays.stream(wrapped.split("\n")).map(s -> (Component)Component.literal(s)).toList();
+        return Arrays.stream(wrapped.split("\n")).map(s -> (Component) Component.literal(s)).toList();
     }
-    
-    public static String biomeName(Player player) {
-        return Component.translatable(biomeLocaleKey(player)).getString();
-    }
-    
+
+    /**
+     * Get formatted text component of the given blockpos.
+     */
     public static Component positionAsText(BlockPos pos) {
         return Component.translatable(Resources.XYZ_KEY, pos.getX(), pos.getY(), pos.getZ());
     }
-    
-    public static Component coordinatesAsText(BlockPos pos) {
-        return Component.translatable(Resources.COORDINATES, pos.getX(), pos.getY(), pos.getZ());
-    }
-    
+
+    /**
+     * Get formatted text component of the given dimension.
+     */
     public static Component dimensionAsText(ResourceKey<Level> dimension) {
         return Component.translatable(dimensionLocaleKey(dimension));
     }
@@ -101,22 +105,8 @@ public final class Helpers {
     }
 
     /**
-     * Get a locale key for the biome at the player's current position.
+     * Internal helper to get the registered travel journal item.
      */
-    public static String biomeLocaleKey(Player player) {
-        var registry = player.level().registryAccess();
-        var biome = player.level().getBiome(player.blockPosition());
-        var key = registry.registryOrThrow(Registries.BIOME).getKey(biome.value());
-
-        if (key == null) {
-            throw new RuntimeException("Cannot get player biome");
-        }
-
-        var namespace = key.getNamespace();
-        var path = key.getPath();
-        return "biome." + namespace + "." + path;
-    }
-    
     private static Item journalItem() {
         return Resolve.feature(TravelJournals.class).registers.travelJournalItem.get();
     }

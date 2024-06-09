@@ -3,29 +3,17 @@ package svenhjol.strange.feature.travel_journals.client.screen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import svenhjol.charm.charmony.Log;
-import svenhjol.charm.charmony.Resolve;
 import svenhjol.charm.charmony.feature.FeatureResolver;
-import svenhjol.strange.feature.travel_journals.TravelJournals;
 import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
 import svenhjol.strange.feature.travel_journals.client.ClientHelpers;
 import svenhjol.strange.feature.travel_journals.client.Resources;
-import svenhjol.strange.feature.travel_journals.common.BookmarkData;
-import svenhjol.strange.feature.travel_journals.common.JournalData;
 
 public abstract class BaseScreen extends Screen implements FeatureResolver<TravelJournalsClient> {    
     protected int midX;
     protected int backgroundWidth;
     protected int backgroundHeight;
-    
-    protected static final DataComponentType<JournalData> JOURNAL_DATA = 
-        Resolve.feature(TravelJournals.class).registers.journalData.get();
-
-    protected static final DataComponentType<BookmarkData> BOOKMARK_DATA =
-        Resolve.feature(TravelJournals.class).registers.bookmarkData.get();
     
     public BaseScreen(Component component) {
         super(component);
@@ -71,10 +59,6 @@ public abstract class BaseScreen extends Screen implements FeatureResolver<Trave
         return TravelJournalsClient.class;
     }
     
-    protected Log log() {
-        return feature().log();
-    }
-
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
         ClientHelpers.drawCenteredString(guiGraphics, font, getTitle(), x, y, 0x702f20, false);
     }

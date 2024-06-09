@@ -69,7 +69,11 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         // Instruct the client to take a photo.
         Networking.S2CTakePhoto.send((ServerPlayer)player, journal.id(), bookmark.id());
     }
-    
+
+    /**
+     * Client wants to update the given bookmark.
+     * Check that the given journal is present in the player's inventory.
+     */
     public void updateBookmarkReceived(Player player, Networking.C2SUpdateBookmark packet) {
         var stack = Helpers.tryGetTravelJournal(player, packet.journalId());
         if (stack.isEmpty()) {
@@ -81,7 +85,11 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             .updateBookmark(packet.bookmark())
             .save(stack);
     }
-    
+
+    /**
+     * Client wants to delete the given bookmark.
+     * Check that the given journal is present in the player's inventory.
+     */
     public void deleteBookmarkReceived(Player player, Networking.C2SDeleteBookmark packet) {
         var stack = Helpers.tryGetTravelJournal(player, packet.journalId());
         if (stack.isEmpty()) {
@@ -103,7 +111,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
      * Client has sent a new photo.
      */
     public void photoReceived(Player player, Networking.C2SPhoto packet) {
-        trySavePhoto((ServerLevel) player.level(), packet.uuid(), packet.image());
+        trySavePhoto((ServerLevel) player.level(), packet.bookmarkId(), packet.image());
     }
 
     /**
@@ -120,6 +128,9 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         Networking.S2CPhoto.send((ServerPlayer) player, uuid, image);
     }
 
+    /**
+     * Clients wants to export a map using the given bookmark.
+     */
     public void exportMapReceived(Player player, Networking.C2SExportMap packet) {
         var level = (ServerLevel)player.level();
         var bookmark = packet.bookmark();
@@ -141,7 +152,10 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             }
         }
     }
-
+    
+    /**
+     * Clients wants to export a page using the given bookmark.
+     */
     public void exportPageReceived(Player player, Networking.C2SExportPage packet) {
         var bookmark = packet.bookmark();
 
@@ -155,7 +169,10 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             }
         }
     }
-    
+
+    /**
+     * Shared method to add the bookmark name as the item name and extra details as the item lore.
+     */
     private void setCommonDataAndGiveToPlayer(Player player, ItemStack stack, BookmarkData bookmark) {
         var name = bookmark.name();
         var description = bookmark.extra().description();
@@ -204,14 +221,14 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         try {
             success = ImageIO.write(image, "png", path);
         } catch (IOException e) {
-            log().error("Could not save photo for photoId: " + uuid + ": " + e.getMessage());
+            log().error("Could not save photo for bookmarkId: " + uuid + ": " + e.getMessage());
             return;
         }
 
         if (success) {
-            log().debug("Saved image to photos for photoId: " + uuid);
+            log().debug("Saved image to photos for bookmarkId: " + uuid);
         } else {
-            log().error("ImageIO.write did not save the image successfully for photoId: " + uuid);
+            log().error("ImageIO.write did not save the image successfully for bookmarkId: " + uuid);
         }
     }
 
@@ -227,7 +244,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         try {
             image = ImageIO.read(path);
         } catch (IOException e) {
-            log().warnIfDebug("Could not load photo for photoId: " + uuid + ": " + e.getMessage());
+            log().warnIfDebug("Could not load photo for bookmarkId: " + uuid + ": " + e.getMessage());
             return null;
         }
 
@@ -243,9 +260,9 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         if (path.exists()) {
             var result = path.delete();
             if (result) {
-                log().debug("Deleted photo with photoId: " + uuid);
+                log().debug("Deleted photo with bookmarkId: " + uuid);
             } else {
-                log().error("Error trying to delete photo with photoId: " + uuid);
+                log().error("Error trying to delete photo with bookmarkId: " + uuid);
             }
         }
     }

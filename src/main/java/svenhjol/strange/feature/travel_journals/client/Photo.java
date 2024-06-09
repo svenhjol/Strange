@@ -8,6 +8,9 @@ import svenhjol.strange.feature.travel_journals.TravelJournalsClient;
 
 import java.util.UUID;
 
+/**
+ * Handles the countdown while taking a photo and the screenshot function when countdown is done.
+ */
 public class Photo implements FeatureResolver<TravelJournalsClient> {
     private final UUID journalId; // The journal that this photo belongs to
     private final UUID photoId; // The bookmark that this photo belongs to
@@ -86,7 +89,7 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
             photoId + ".png",
             minecraft.getMainRenderTarget(),
             component -> {
-                feature().log().debug("Photo taken for photoId: " + photoId);
+                feature().log().debug("Photo taken for bookmarkId: " + photoId);
                 finish();
             }
         );

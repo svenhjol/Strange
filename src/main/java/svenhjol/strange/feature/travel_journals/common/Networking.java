@@ -22,14 +22,17 @@ public final class Networking extends FeatureHolder<TravelJournals> {
     public Networking(TravelJournals feature) {
         super(feature);
     }
-
-    public record S2CTakePhoto(UUID journalId, UUID photoId) implements CustomPacketPayload {
+    
+    /**
+     * Server-to-client packet to tell the client to prepare a photo for the given journal ID and bookmark ID.
+     */
+    public record S2CTakePhoto(UUID journalId, UUID bookmarkId) implements CustomPacketPayload {
         public static final Type<S2CTakePhoto> TYPE = new Type<>(Strange.id("take_photo"));
         public static final StreamCodec<FriendlyByteBuf, S2CTakePhoto> CODEC =
             StreamCodec.of(S2CTakePhoto::encode, S2CTakePhoto::decode);
 
-        public static void send(ServerPlayer player, UUID journalId, UUID photoId) {
-            ServerPlayNetworking.send(player, new S2CTakePhoto(journalId, photoId));
+        public static void send(ServerPlayer player, UUID journalId, UUID bookmarkId) {
+            ServerPlayNetworking.send(player, new S2CTakePhoto(journalId, bookmarkId));
         }
 
         @Override
@@ -39,21 +42,24 @@ public final class Networking extends FeatureHolder<TravelJournals> {
 
         private static void encode(FriendlyByteBuf buf, S2CTakePhoto self) {
             buf.writeUUID(self.journalId());
-            buf.writeUUID(self.photoId());
+            buf.writeUUID(self.bookmarkId());
         }
 
         private static S2CTakePhoto decode(FriendlyByteBuf buf) {
             return new S2CTakePhoto(buf.readUUID(), buf.readUUID());
         }
     }
-    
-    public record S2CPhoto(UUID uuid, BufferedImage image) implements CustomPacketPayload {
+
+    /**
+     * Server-to-client packet to send image data for the given bookmark ID.
+     */
+    public record S2CPhoto(UUID bookmarkId, BufferedImage image) implements CustomPacketPayload {
         public static final Type<S2CPhoto> TYPE = new Type<>(Strange.id("server_photo"));
         public static final StreamCodec<FriendlyByteBuf, S2CPhoto> CODEC =
             StreamCodec.of(S2CPhoto::encode, S2CPhoto::decode);
 
-        public static void send(ServerPlayer player, UUID uuid, BufferedImage image) {
-            ServerPlayNetworking.send(player, new S2CPhoto(uuid, image));
+        public static void send(ServerPlayer player, UUID bookmarkId, BufferedImage image) {
+            ServerPlayNetworking.send(player, new S2CPhoto(bookmarkId, image));
         }
 
         @Override
@@ -69,7 +75,7 @@ public final class Networking extends FeatureHolder<TravelJournals> {
                 throw new RuntimeException("Failed to write image to stream: " + e.getMessage());
             }
 
-            buf.writeUUID(self.uuid());
+            buf.writeUUID(self.bookmarkId());
             buf.writeByteArray(stream.toByteArray());
         }
 
@@ -88,6 +94,9 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
     }
 
+    /**
+     * Client-to-server packet to request the server create a bookmark in the closest available journal using the given name.
+     */
     public record C2SMakeBookmark(String name) implements CustomPacketPayload {
         public static final Type<C2SMakeBookmark> TYPE = new Type<>(Strange.id("make_bookmark"));
         public static final StreamCodec<FriendlyByteBuf, C2SMakeBookmark> CODEC =
@@ -111,6 +120,9 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
     }
 
+    /**
+     * Client-to-server packet to request the server updates a bookmark using the given journal and bookmark data.
+     */
     public record C2SUpdateBookmark(UUID journalId, BookmarkData bookmark) implements CustomPacketPayload {
         public static final Type<C2SUpdateBookmark> TYPE = new Type<>(Strange.id("update_bookmark"));
         public static final StreamCodec<RegistryFriendlyByteBuf, C2SUpdateBookmark> CODEC =
@@ -136,7 +148,10 @@ public final class Networking extends FeatureHolder<TravelJournals> {
             return new C2SUpdateBookmark(journalId, bookmark);
         }
     }
-    
+
+    /**
+     * Client-to-server packet to request the server deletes a bookmark using the given journal and bookmark IDs.
+     */
     public record C2SDeleteBookmark(UUID journalId, UUID bookmarkId) implements CustomPacketPayload {
         public static final Type<C2SDeleteBookmark> TYPE = new Type<>(Strange.id("delete_bookmark"));
         public static final StreamCodec<RegistryFriendlyByteBuf, C2SDeleteBookmark> CODEC =
@@ -163,6 +178,9 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
     }
 
+    /**
+     * Client-to-server packet to request the server exports a map using the given bookmark.
+     */
     public record C2SExportMap(BookmarkData bookmark) implements CustomPacketPayload {
         public static final Type<C2SExportMap> TYPE = new Type<>(Strange.id("export_map"));
         public static final StreamCodec<RegistryFriendlyByteBuf, C2SExportMap> CODEC =
@@ -186,7 +204,10 @@ public final class Networking extends FeatureHolder<TravelJournals> {
             return new C2SExportMap(bookmark);
         }
     }
-
+    
+    /**
+     * Client-to-server packet to request the server exports a page using the given bookmark.
+     */
     public record C2SExportPage(BookmarkData bookmark) implements CustomPacketPayload {
         public static final Type<C2SExportPage> TYPE = new Type<>(Strange.id("export_page"));
         public static final StreamCodec<RegistryFriendlyByteBuf, C2SExportPage> CODEC =
@@ -211,13 +232,16 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
     }
 
-    public record C2SPhoto(UUID uuid, BufferedImage image) implements CustomPacketPayload {
+    /**
+     * Client-to-server packet to send image data for the given bookmark ID.
+     */
+    public record C2SPhoto(UUID bookmarkId, BufferedImage image) implements CustomPacketPayload {
         public static final Type<C2SPhoto> TYPE = new Type<>(Strange.id("client_photo"));
         public static final StreamCodec<FriendlyByteBuf, C2SPhoto> CODEC =
             StreamCodec.of(C2SPhoto::encode, C2SPhoto::decode);
 
-        public static void send(UUID uuid, BufferedImage image) {
-            ClientPlayNetworking.send(new C2SPhoto(uuid, image));
+        public static void send(UUID bookmarkId, BufferedImage image) {
+            ClientPlayNetworking.send(new C2SPhoto(bookmarkId, image));
         }
 
         @Override
@@ -233,7 +257,7 @@ public final class Networking extends FeatureHolder<TravelJournals> {
                 throw new RuntimeException("Failed to write image to stream: " + e.getMessage());
             }
 
-            buf.writeUUID(self.uuid());
+            buf.writeUUID(self.bookmarkId());
             buf.writeByteArray(stream.toByteArray());
         }
 
@@ -251,8 +275,10 @@ public final class Networking extends FeatureHolder<TravelJournals> {
             return new C2SPhoto(uuid, image);
         }
     }
-    
-    // Client-to-server packet to request the server to download the photo that matches the UUID.
+
+    /**
+     * Client-to-server packet to request download of the photo that matches the UUID.
+     */
     public record C2SDownloadPhoto(UUID uuid) implements CustomPacketPayload {
         public static final Type<C2SDownloadPhoto> TYPE = new Type<>(Strange.id("download_photo"));
         public static final StreamCodec<FriendlyByteBuf, C2SDownloadPhoto> CODEC =

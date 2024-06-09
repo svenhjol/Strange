@@ -10,16 +10,6 @@ import svenhjol.strange.Strange;
 public class Buttons {
     public static final WidgetSprites EXPORT_MAP_BUTTON = makeButton("map");
     public static final WidgetSprites EXPORT_PAGE_BUTTON = makeButton("page");
-    
-    public static class BookmarksButton extends Button {
-        public static int WIDTH = 100;
-        public static int HEIGHT = 20;
-        static Component TEXT = Resources.BOOKMARKS;
-
-        public BookmarksButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
-        }
-    }
 
     public static class NewWhenEmptyButton extends Button {
         public static int WIDTH = 100;

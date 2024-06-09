@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BookmarksScreen extends BaseScreen {
+    private static final String DATE_FORMAT = "dd-MMM-yy";
+    
     private final int columns;
     private final ItemStack stack;
     private int page;
@@ -91,7 +93,7 @@ public class BookmarksScreen extends BaseScreen {
         var author = extra.author();
         var timestamp = extra.timestamp();
         var date = new Date(timestamp * 1000L);
-        var format = new SimpleDateFormat("dd-MMM-yy");
+        var format = new SimpleDateFormat(DATE_FORMAT);
         var titleColor = 0x444444;
         var extraColor = 0xa7a7a7;
         var maxTitleLength = 25;
