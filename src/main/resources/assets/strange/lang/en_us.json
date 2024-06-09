@@ -5,6 +5,7 @@
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
   "dimension.minecraft.the_end": "The End",
+  "filled_map.strange.stone_circle": "Stone Circle Map",
   "gui.strange.runestone.activate_with": "Activate with:",
   "gui.strange.runestone.discovered_by": "Discovered by %s",
   "gui.strange.runestone.unsure": "%s...?",
