@@ -169,8 +169,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
             } else {
                 // If the player has learned the runes for this destination, show the name with a "?" at the end.
                 // TODO: learning rune locations.
-//                var hasLearned = LearnedRunes.getLearned(player).hasLearned(runestone.location);
-//
+//                var hasLearned = false
 //                if (hasLearned) {
 //                    this.name = Component.translatable("gui.strange.runestone.unsure", Component.translatable(RunestoneHelper.getLocaleKey(runestone.location)));
 //                } else {

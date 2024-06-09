@@ -272,7 +272,6 @@ public final class Handlers extends FeatureHolder<Runestones> {
         runestone.setChanged();
 
         // TODO: add player knowledge attribute
-//        LearnedRunes.learn(player, runestone.location);
 
         var teleport = new RunestoneTeleport(player, runestone);
         teleports.put(player.getUUID(), teleport);
