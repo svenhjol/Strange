@@ -14,8 +14,8 @@ public final class Resources {
     public static final Component DETAILS = Component.translatable("gui.strange.travel_journals.details");
     public static final Component EDIT_DESCRIPTION = Component.translatable("gui.strange.travel_journals.edit_description");
     public static final Component EDIT_NAME = Component.translatable("gui.strange.travel_journals.edit_name");
-    public static final Component EXPORT_BOOKMARK = Component.translatable("gui.strange.travel_journals.export_bookmark");
-    public static final Component EXPORT_MAP = Component.translatable("gui.strange.travel_journals.export_map");
+    public static final Component EXPORT_PAGE = Component.translatable("gui.strange.travel_journals.save_to_page");
+    public static final Component EXPORT_MAP = Component.translatable("gui.strange.travel_journals.save_to_map");
     public static final Component NAME_TEXT = Component.translatable("gui.strange.travel_journals.name");
     public static final Component NEW_BOOKMARK = Component.translatable("gui.strange.travel_journals.new_bookmark");
     public static final Component TRAVEL_JOURNAL = Component.translatable("gui.strange.travel_journals.travel_journal");

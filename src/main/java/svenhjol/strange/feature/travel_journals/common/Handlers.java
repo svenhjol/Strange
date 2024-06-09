@@ -112,10 +112,6 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
         Networking.S2CPhoto.send((ServerPlayer) player, uuid, image);
     }
 
-    public void exportBookmarkReceived(Player player, Networking.C2SExportBookmark packet) {
-        // TODO
-    }
-
     public void exportMapReceived(Player player, Networking.C2SExportMap packet) {
         var level = (ServerLevel)player.level();
         var bookmark = packet.bookmark();
@@ -127,7 +123,7 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
             return;
         }
         
-        for (ItemStack stack : Helpers.collectPotentialItems(player)) {
+        for (var stack : Helpers.collectPotentialItems(player)) {
             if (stack.is(Items.MAP)) {
                 var map = MapItem.create(level, pos.getX(), pos.getZ(), (byte)2, true, true);
                 MapItem.renderBiomePreviewMap(level, map);
@@ -135,7 +131,25 @@ public final class Handlers extends FeatureHolder<TravelJournals> {
                 map.set(DataComponents.ITEM_NAME, Component.literal(name));
                 stack.shrink(1);
                 player.addItem(map);
-                level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS);
+                level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0f, 0.6f);
+                return;
+            }
+        }
+    }
+
+    public void exportPageReceived(Player player, Networking.C2SExportPage packet) {
+        var level = (ServerLevel)player.level();
+        var bookmark = packet.bookmark();
+        var name = bookmark.name();
+
+        for (var stack : Helpers.collectPotentialItems(player)) {
+            if (stack.is(Items.PAPER)) {
+                var page = new ItemStack(feature().registers.travelJournalPageItem.get());
+                page.set(feature().registers.bookmarkData.get(), bookmark);
+                page.set(DataComponents.ITEM_NAME, Component.literal(name));
+                stack.shrink(1);
+                player.addItem(page);
+                level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0f, 0.6f);
                 return;
             }
         }

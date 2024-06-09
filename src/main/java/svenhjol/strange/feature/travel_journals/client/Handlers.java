@@ -35,6 +35,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 public final class Handlers extends FeatureHolder<TravelJournalsClient> {
     private final Map<UUID, ResourceLocation> cachedPhotos = new WeakHashMap<>();
@@ -96,7 +97,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         
         if (minecraft.level != null && minecraft.player != null) {
             // Poll inventory for paper and map when on the bookmark page.
-            if (minecraft.level.getGameTime() % 20 == 0 && minecraft.screen instanceof BookmarkDetailScreen) {
+            if (minecraft.level.getGameTime() % 10 == 0 && minecraft.screen instanceof BookmarkDetailScreen) {
                 hasMap = minecraft.player.getInventory().contains(new ItemStack(Items.MAP));
                 hasPaper = minecraft.player.getInventory().contains(new ItemStack(Items.PAPER));
             }
@@ -439,23 +440,27 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         return hasPaper;
     }
 
-    public void exportBookmark(BookmarkData bookmark) {
-        var minecraft = Minecraft.getInstance();
-        if (minecraft.level != null) {
-            var time = minecraft.level.getGameTime();
-            if (lastExportOperation == 0 || time - lastExportOperation > 10) {
-                Networking.C2SExportBookmark.send(bookmark);
-                lastExportOperation = time;
+    public void exportMap(BookmarkData bookmark) {
+        doExport(level -> {
+            if (level.dimension().equals(bookmark.dimension())) {
+                Networking.C2SExportMap.send(bookmark);
             }
-        }
+        });
     }
 
-    public void exportMap(BookmarkData bookmark) {
+    public void exportPage(BookmarkData bookmark) {
+        doExport(level -> Networking.C2SExportPage.send(bookmark));
+    }
+
+    /**
+     * Perform an export operation with safety against extra clicks.
+     */
+    private void doExport(Consumer<Level> operation) {
         var minecraft = Minecraft.getInstance();
         if (minecraft.level != null) {
             var time = minecraft.level.getGameTime();
             if (lastExportOperation == 0 || time - lastExportOperation > 10) {
-                Networking.C2SExportMap.send(bookmark);
+                operation.accept(minecraft.level);
                 lastExportOperation = time;
             }
         }

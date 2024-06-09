@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +18,8 @@ public class BookmarkDetailScreen extends BaseScreen {
     private final BookmarkData.Mutable bookmark;
     private EditBox name;
     private MultiLineEditBox description;
+    private ImageButton exportPageButton;
+    private ImageButton exportMapButton;
     
     public BookmarkDetailScreen(ItemStack stack, BookmarkData bookmark) {
         super(Component.literal(bookmark.name()));
@@ -28,7 +31,8 @@ public class BookmarkDetailScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-        
+
+        var handlers = feature().handlers;
         var inputWidth = 220;
         var nameHeight = 15;
         var descriptionHeight = 46;
@@ -65,6 +69,18 @@ public class BookmarkDetailScreen extends BaseScreen {
             b -> onClose()));
         addRenderableWidget(new CoreButtons.SaveButton(midX + (CoreButtons.SaveButton.WIDTH / 2) + 5, top,
             b -> saveAndClose()));
+
+        exportPageButton = new Buttons.ExportPageButton(midX + 120, 30,
+            b -> handlers.exportPage(bookmark.toImmutable()));
+        
+        exportMapButton = new Buttons.ExportMapButton(midX + 120, 47,
+            b -> handlers.exportMap(bookmark.toImmutable()));
+
+        addRenderableWidget(exportPageButton);
+        addRenderableWidget(exportMapButton);
+        
+        exportPageButton.visible = false;
+        exportMapButton.visible = false;
     }
 
     @Override
@@ -90,19 +106,24 @@ public class BookmarkDetailScreen extends BaseScreen {
 
     private void renderUtilityButtons() {
         var handlers = feature().handlers;
-        var x = midX + 120;
+        
         var y = 13;
         var lineHeight = 17;
         
         if (handlers.hasPaper()) {
             y += lineHeight;
-            addRenderableWidget(new Buttons.ExportBookmarkButton(x, y,
-                b -> handlers.exportBookmark(bookmark.toImmutable())));
+            exportPageButton.visible = true;
+            exportPageButton.setY(y);
+        } else {
+            exportPageButton.visible = false;
         }
+        
         if (handlers.hasMap()) {
             y += lineHeight;
-            addRenderableWidget(new Buttons.ExportMapButton(x, y,
-                b -> handlers.exportMap(bookmark.toImmutable())));
+            exportMapButton.visible = true;
+            exportMapButton.setY(y);
+        } else {
+            exportMapButton.visible = false;
         }
     }
 

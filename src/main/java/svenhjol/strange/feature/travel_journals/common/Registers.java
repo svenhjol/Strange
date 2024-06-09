@@ -9,7 +9,8 @@ import svenhjol.strange.feature.travel_journals.TravelJournals;
 import java.util.function.Supplier;
 
 public final class Registers extends RegisterHolder<TravelJournals> {
-    public final Supplier<Item> item;
+    public final Supplier<Item> travelJournalItem;
+    public final Supplier<Item> travelJournalPageItem;
     public final Supplier<DataComponentType<JournalData>> journalData;
     public final Supplier<DataComponentType<BookmarkData>> bookmarkData;
     public final Supplier<DataComponentType<BookmarkExtraData>> bookmarkExtraData;
@@ -20,7 +21,8 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         super(feature);
         var registry = feature.registry();
 
-        item = registry.item("travel_journal", TravelJournalItem::new);
+        travelJournalItem = registry.item("travel_journal", TravelJournalItem::new);
+        travelJournalPageItem = registry.item("travel_journal_page", TravelJournalPageItem::new);
         
         // Data components
         journalData = registry.dataComponent("travel_journal",
@@ -52,7 +54,7 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         registry.clientPacketSender(Networking.C2SDownloadPhoto.TYPE, Networking.C2SDownloadPhoto.CODEC);
         registry.clientPacketSender(Networking.C2SUpdateBookmark.TYPE, Networking.C2SUpdateBookmark.CODEC);
         registry.clientPacketSender(Networking.C2SDeleteBookmark.TYPE, Networking.C2SDeleteBookmark.CODEC);
-        registry.clientPacketSender(Networking.C2SExportBookmark.TYPE, Networking.C2SExportBookmark.CODEC);
+        registry.clientPacketSender(Networking.C2SExportPage.TYPE, Networking.C2SExportPage.CODEC);
         registry.clientPacketSender(Networking.C2SExportMap.TYPE, Networking.C2SExportMap.CODEC);
 
         // Server packet receivers
@@ -61,7 +63,7 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         registry.packetReceiver(Networking.C2SDownloadPhoto.TYPE, () -> feature.handlers::downloadPhotoReceived);
         registry.packetReceiver(Networking.C2SUpdateBookmark.TYPE, () -> feature.handlers::updateBookmarkReceived);
         registry.packetReceiver(Networking.C2SDeleteBookmark.TYPE, () -> feature.handlers::deleteBookmarkReceived);
-        registry.packetReceiver(Networking.C2SExportBookmark.TYPE, () -> feature.handlers::exportBookmarkReceived);
+        registry.packetReceiver(Networking.C2SExportPage.TYPE, () -> feature.handlers::exportPageReceived);
         registry.packetReceiver(Networking.C2SExportMap.TYPE, () -> feature.handlers::exportMapReceived);
     }
 }

@@ -163,30 +163,6 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         }
     }
 
-    public record C2SExportBookmark(BookmarkData bookmark) implements CustomPacketPayload {
-        public static final Type<C2SExportBookmark> TYPE = new Type<>(Strange.id("export_bookmark"));
-        public static final StreamCodec<RegistryFriendlyByteBuf, C2SExportBookmark> CODEC =
-            StreamCodec.of(C2SExportBookmark::encode, C2SExportBookmark::decode);
-
-        public static void send(BookmarkData bookmark) {
-            ClientPlayNetworking.send(new C2SExportBookmark(bookmark));
-        }
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-
-        private static void encode(RegistryFriendlyByteBuf buf, C2SExportBookmark self) {
-            BookmarkData.STREAM_CODEC.encode(buf, self.bookmark());
-        }
-
-        private static C2SExportBookmark decode(RegistryFriendlyByteBuf buf) {
-            var bookmark = BookmarkData.STREAM_CODEC.decode(buf);
-            return new C2SExportBookmark(bookmark);
-        }
-    }
-
     public record C2SExportMap(BookmarkData bookmark) implements CustomPacketPayload {
         public static final Type<C2SExportMap> TYPE = new Type<>(Strange.id("export_map"));
         public static final StreamCodec<RegistryFriendlyByteBuf, C2SExportMap> CODEC =
@@ -208,6 +184,30 @@ public final class Networking extends FeatureHolder<TravelJournals> {
         private static C2SExportMap decode(RegistryFriendlyByteBuf buf) {
             var bookmark = BookmarkData.STREAM_CODEC.decode(buf);
             return new C2SExportMap(bookmark);
+        }
+    }
+
+    public record C2SExportPage(BookmarkData bookmark) implements CustomPacketPayload {
+        public static final Type<C2SExportPage> TYPE = new Type<>(Strange.id("export_page"));
+        public static final StreamCodec<RegistryFriendlyByteBuf, C2SExportPage> CODEC =
+            StreamCodec.of(C2SExportPage::encode, C2SExportPage::decode);
+
+        public static void send(BookmarkData bookmark) {
+            ClientPlayNetworking.send(new C2SExportPage(bookmark));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(RegistryFriendlyByteBuf buf, C2SExportPage self) {
+            BookmarkData.STREAM_CODEC.encode(buf, self.bookmark());
+        }
+
+        private static C2SExportPage decode(RegistryFriendlyByteBuf buf) {
+            var bookmark = BookmarkData.STREAM_CODEC.decode(buf);
+            return new C2SExportPage(bookmark);
         }
     }
 

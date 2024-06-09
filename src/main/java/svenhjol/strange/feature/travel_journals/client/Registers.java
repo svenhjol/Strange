@@ -1,6 +1,8 @@
 package svenhjol.strange.feature.travel_journals.client;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 import svenhjol.charm.charmony.event.ClientTickEvent;
 import svenhjol.charm.charmony.event.HudRenderEvent;
@@ -32,8 +34,22 @@ public final class Registers extends RegisterHolder<TravelJournalsClient> {
 
     @Override
     public void onEnabled() {
+        var registry = feature().registry();
+        
         KeyPressEvent.INSTANCE.handle(feature().handlers::keyPress);
         ClientTickEvent.INSTANCE.handle(feature().handlers::clientTick);
         HudRenderEvent.INSTANCE.handle(feature().handlers::hudRender);
+        
+        registry.itemTab(
+            feature().linked().registers.travelJournalPageItem,
+            CreativeModeTabs.TOOLS_AND_UTILITIES,
+            Items.WRITABLE_BOOK
+        );
+        
+        registry.itemTab(
+            feature().linked().registers.travelJournalItem,
+            CreativeModeTabs.TOOLS_AND_UTILITIES,
+            Items.WRITABLE_BOOK
+        );
     }
 }

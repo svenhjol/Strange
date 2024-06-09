@@ -61,6 +61,6 @@ public final class Helpers {
     }
     
     private static Item journalItem() {
-        return Resolve.feature(TravelJournals.class).registers.item.get();
+        return Resolve.feature(TravelJournals.class).registers.travelJournalItem.get();
     }
 }

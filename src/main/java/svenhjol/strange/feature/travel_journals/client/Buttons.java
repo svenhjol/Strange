@@ -8,8 +8,8 @@ import net.minecraft.network.chat.Component;
 import svenhjol.strange.Strange;
 
 public class Buttons {
-    public static final WidgetSprites EXPORT_BOOKMARK_BUTTON = makeButton("bookmark");
     public static final WidgetSprites EXPORT_MAP_BUTTON = makeButton("map");
+    public static final WidgetSprites EXPORT_PAGE_BUTTON = makeButton("page");
     
     public static class BookmarksButton extends Button {
         public static int WIDTH = 100;
@@ -40,18 +40,6 @@ public class Buttons {
             super(x, y, WIDTH, HEIGHT, TEXT, onPress, DEFAULT_NARRATION);
         }
     }
-    
-    public static class ExportBookmarkButton extends ImageButton {
-        public static int WIDTH = 20;
-        public static int HEIGHT = 18;
-        static WidgetSprites SPRITES = EXPORT_BOOKMARK_BUTTON;
-        static Component TEXT = Resources.EXPORT_BOOKMARK;
-
-        public ExportBookmarkButton(int x, int y, OnPress onPress) {
-            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
-            setTooltip(Tooltip.create(TEXT));
-        }
-    }
 
     public static class ExportMapButton extends ImageButton {
         public static int WIDTH = 20;
@@ -60,6 +48,18 @@ public class Buttons {
         static Component TEXT = Resources.EXPORT_MAP;
 
         public ExportMapButton(int x, int y, OnPress onPress) {
+            super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
+            setTooltip(Tooltip.create(TEXT));
+        }
+    }
+
+    public static class ExportPageButton extends ImageButton {
+        public static int WIDTH = 20;
+        public static int HEIGHT = 18;
+        static WidgetSprites SPRITES = EXPORT_PAGE_BUTTON;
+        static Component TEXT = Resources.EXPORT_PAGE;
+
+        public ExportPageButton(int x, int y, OnPress onPress) {
             super(x, y, WIDTH, HEIGHT, SPRITES, onPress);
             setTooltip(Tooltip.create(TEXT));
         }
