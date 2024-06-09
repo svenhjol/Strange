@@ -17,7 +17,6 @@ import java.util.UUID;
 
 public record JournalData(UUID id, List<BookmarkData> bookmarks) {
     private static final TravelJournals TRAVEL_JOURNALS = Resolve.feature(TravelJournals.class);
-    private static final int MAX_BOOKMARKS = 8; // TODO: configurable!
     
     public static final Codec<JournalData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("id")
@@ -55,7 +54,7 @@ public record JournalData(UUID id, List<BookmarkData> bookmarks) {
     }
     
     public boolean isFull() {
-        return bookmarks.size() >= MAX_BOOKMARKS;
+        return bookmarks.size() >= TRAVEL_JOURNALS.numberOfBookmarksPerJournal();
     }
     
     public Optional<BookmarkData> getBookmark(UUID bookmarkId) {

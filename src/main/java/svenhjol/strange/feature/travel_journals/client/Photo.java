@@ -77,6 +77,12 @@ public class Photo implements FeatureResolver<TravelJournalsClient> {
         if (minecraft.player == null) {
             return;
         }
+        
+        // Give up if there's a screen in the way. We don't want a photo of that!
+        if (minecraft.screen != null) {
+            showGui();
+            return;
+        }
 
         if (isTakingPhoto) {
             return;

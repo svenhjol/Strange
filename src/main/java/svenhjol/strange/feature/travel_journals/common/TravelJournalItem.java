@@ -42,7 +42,7 @@ public class TravelJournalItem extends CharmItem<TravelJournals> {
                         .addBookmark(bookmark)
                         .save(stack);
                     
-                    level.playSound(null, player.blockPosition(), registers.interactSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+                    level.playSound(null, player.blockPosition(), registers.interactSound.get(), SoundSource.PLAYERS, 0.7f, 1.0f);
                     held.shrink(1);
                     return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
                 }
@@ -53,6 +53,7 @@ public class TravelJournalItem extends CharmItem<TravelJournals> {
             Resolve.feature(TravelJournalsClient.class).handlers.openBookmarks(stack);
         }
         
+        level.playSound(null, player.blockPosition(), registers.interactSound.get(), SoundSource.PLAYERS, 0.7f, 1.0f);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 }

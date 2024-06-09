@@ -127,13 +127,12 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         try {
             image = ImageIO.read(path);
         } catch (IOException e) {
-            log().error("Could not read photo for bookmarkId " + uuid + ": " + e.getMessage());
+            log().warnIfDebug("Could not read photo for bookmarkId " + uuid + ": " + e.getMessage());
             return;
         }
 
-        // TODO: configurable scaling
-        var scaledWidth = 192;
-        var scaledHeight = 96;
+        var scaledWidth = feature().linked().scaledPhotoWidth();
+        var scaledHeight = feature().linked().scaledPhotoHeight();
 
         var scaledImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_RGB);
         var graphics2D = scaledImage.createGraphics();
