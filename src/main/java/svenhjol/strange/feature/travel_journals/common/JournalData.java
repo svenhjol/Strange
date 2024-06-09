@@ -62,6 +62,10 @@ public record JournalData(UUID id, List<BookmarkData> bookmarks) {
         return bookmarks.stream().filter(b -> b.id().equals(bookmarkId)).findFirst();
     }
     
+    public boolean hasBookmark(UUID bookmarkId) {
+        return getBookmark(bookmarkId).isPresent();
+    }
+    
     @SuppressWarnings("UnusedReturnValue")
     public static class Mutable {
         private final UUID id;

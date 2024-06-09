@@ -10,11 +10,16 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import svenhjol.charm.charmony.Resolve;
+import svenhjol.strange.feature.travel_journals.TravelJournals;
 
 import java.util.UUID;
 
 public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, BlockPos pos, BookmarkExtraData extra) {
+    private static final TravelJournals TRAVEL_JOURNALS = Resolve.feature(TravelJournals.class);
+    
     public static final Codec<BookmarkData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         UUIDUtil.CODEC.fieldOf("id")
             .forGetter(BookmarkData::id),
@@ -52,6 +57,14 @@ public record BookmarkData(UUID id, String name, ResourceKey<Level> dimension, B
     
     public static Mutable create() {
         return new Mutable(UUID.randomUUID(), EMPTY);
+    }
+    
+    public static BookmarkData get(ItemStack stack) {
+        return stack.getOrDefault(TRAVEL_JOURNALS.registers.bookmarkData.get(), EMPTY);
+    }
+    
+    public static boolean has(ItemStack stack) {
+        return stack.has(TRAVEL_JOURNALS.registers.bookmarkData.get());
     }
     
     public static class Mutable {

@@ -76,7 +76,7 @@ public abstract class BaseScreen extends Screen implements FeatureResolver<Trave
     }
 
     protected void renderTitle(GuiGraphics guiGraphics, int x, int y) {
-        ClientHelpers.drawCenteredString(guiGraphics, font, getTitle(), x, y, 0xa05f50, false);
+        ClientHelpers.drawCenteredString(guiGraphics, font, getTitle(), x, y, 0x702f20, false);
     }
     
     protected ResourceLocation getBackgroundTexture() {

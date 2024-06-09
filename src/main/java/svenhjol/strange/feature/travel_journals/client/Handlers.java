@@ -5,9 +5,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -165,7 +163,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         Component bookmarkName;
         
         if (minecraft.player != null) {
-            var biomeName = Component.translatable(biomeLocaleKey(minecraft.player)).getString();
+            var biomeName = Helpers.biomeName(minecraft.player);
             bookmarkName = Component.translatable("gui.strange.travel_journals.default_name", biomeName);
         } else {
             bookmarkName = Component.translatable("gui.strange.travel_journals.new_bookmark");
@@ -281,14 +279,14 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             var ticks = fetchFromServer.getOrDefault(uuid, 0);
             if (ticks > 0) {
                 // If we have previously tried to fetch from the server and it failed, then give up.
-                log().error("Couldn't download image from the server, giving up. photoId: " + uuid);
+                log().warnIfDebug("Could not download image from the server, giving up. photoId: " + uuid);
                 fetchFromServer.put(uuid, -1);
                 return def;
             }
             
             // Can't find locally, trigger a download from the server.
             fetchFromServer.put(uuid, 0);
-            log().debug("Couldn't find image locally, scheduling server download. photoId: " + uuid);
+            log().debug("Could not find image locally, scheduling server download. photoId: " + uuid);
             return def;
         }
         
@@ -403,33 +401,6 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
         } catch (IOException e) {
             log().error("Could not move screenshot into photos dir for photoId " + uuid + ": " + e.getMessage());
         }
-    }
-
-    /**
-     * Get a locale key for a dimension.
-     */
-    public String dimensionLocaleKey(ResourceKey<Level> dimension) {
-        var location = dimension.location();
-        var namespace = location.getNamespace();
-        var path = location.getPath();
-        return "dimension." + namespace + "." + path;
-    }
-
-    /**
-     * Get a locale key for the biome at the player's current position.
-     */
-    public String biomeLocaleKey(Player player) {
-        var registry = player.level().registryAccess();
-        var biome = player.level().getBiome(player.blockPosition());
-        var key = registry.registryOrThrow(Registries.BIOME).getKey(biome.value());
-        
-        if (key == null) {
-            throw new RuntimeException("Can't get player biome");
-        }
-
-        var namespace = key.getNamespace();
-        var path = key.getPath();
-        return "biome." + namespace + "." + path;
     }
 
     public boolean hasMap() {

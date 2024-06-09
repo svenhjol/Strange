@@ -6,16 +6,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.text.WordUtils;
 import svenhjol.strange.feature.core.client.CoreButtons;
 import svenhjol.strange.feature.travel_journals.client.Buttons;
 import svenhjol.strange.feature.travel_journals.client.ClientHelpers;
 import svenhjol.strange.feature.travel_journals.client.Resources;
 import svenhjol.strange.feature.travel_journals.common.BookmarkData;
+import svenhjol.strange.feature.travel_journals.common.Helpers;
 import svenhjol.strange.feature.travel_journals.common.JournalData;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -136,7 +135,6 @@ public class BookmarksScreen extends BaseScreen {
         pose.popPose();
     }
     
-    @SuppressWarnings("deprecation")
     private void renderPhotoDescriptionHover(GuiGraphics guiGraphics, BookmarkData bookmark, int mouseX, int mouseY, int x) {
         var description = bookmark.extra().description();
         if (description.isEmpty()) return;
@@ -146,20 +144,14 @@ public class BookmarksScreen extends BaseScreen {
         var x2 = midX - 110 + (x * 114) + 106;
         var y2 = 131;
         
-        // Version of WordUtils available in minecraft environment is deprecated.
-        var wrapped = WordUtils.wrap(description, 30);
-        var lines = Arrays.stream(wrapped.split("\n")).map(s -> (Component)Component.literal(s)).toList();
-
         if (mouseX >= x1 && mouseX <= x2
             && mouseY >= y1 && mouseY <= y2) {
-            guiGraphics.renderTooltip(font, lines, Optional.empty(), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, Helpers.wrap(description), Optional.empty(), mouseX, mouseY);
         }
     }
     
     private void renderPosition(GuiGraphics guiGraphics, BookmarkData bookmark, int x) {
         var pose = guiGraphics.pose();
-        var pos = bookmark.pos();
-        var dimension = bookmark.dimension();
         var top = 202;
         var left = -95 + (x * 163);
         var color = 0xb8907a;
@@ -168,8 +160,8 @@ public class BookmarksScreen extends BaseScreen {
         pose.translate(midX - 25f, 20f, 1.0f);
         pose.scale(0.7f, 0.7f, 1.0f);
         
-        var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
-        var dimensionText = Component.translatable(feature().handlers.dimensionLocaleKey(dimension));
+        var positionText = Helpers.positionAsText(bookmark.pos());
+        var dimensionText = Helpers.dimensionAsText(bookmark.dimension());
 
         ClientHelpers.drawCenteredString(guiGraphics, font, dimensionText, left + 50, top, color, false);
         ClientHelpers.drawCenteredString(guiGraphics, font, positionText, left + 50, top + 13, color, false);

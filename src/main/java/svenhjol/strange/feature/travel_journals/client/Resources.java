@@ -21,6 +21,7 @@ public final class Resources {
     public static final Component TRAVEL_JOURNAL = Component.translatable("gui.strange.travel_journals.travel_journal");
     public static final String DIMENSION = "gui.strange.travel_journals.dimension";
     public static final String POSITION = "gui.strange.travel_journals.position";
-    public static final String COORDINATES_KEY = "gui.strange.travel_journals.coordinates";
+    public static final String COORDINATES = "gui.strange.travel_journals.coordinates";
+    public static final String XYZ_KEY = "gui.strange.travel_journals.xyz";
     public static final String CREATED_BY_KEY = "gui.strange.travel_journals.created_by";
 }

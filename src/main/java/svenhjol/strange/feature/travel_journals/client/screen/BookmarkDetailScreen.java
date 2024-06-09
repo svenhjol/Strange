@@ -12,6 +12,7 @@ import svenhjol.strange.feature.core.client.CoreButtons;
 import svenhjol.strange.feature.travel_journals.client.Buttons;
 import svenhjol.strange.feature.travel_journals.client.Resources;
 import svenhjol.strange.feature.travel_journals.common.BookmarkData;
+import svenhjol.strange.feature.travel_journals.common.Helpers;
 
 public class BookmarkDetailScreen extends BaseScreen {
     private final ItemStack stack;
@@ -153,10 +154,8 @@ public class BookmarkDetailScreen extends BaseScreen {
         pose.translate(midX - 25f, 20f, 1.0f);
         pose.scale(0.82f, 0.82f, 1.0f);
 
-        var pos = bookmark.pos();
-        var dimension = bookmark.dimension();
-        var positionText = Component.translatable(Resources.COORDINATES_KEY, pos.getX(), pos.getY(), pos.getZ());
-        var dimensionText = Component.translatable(feature().handlers.dimensionLocaleKey(dimension));
+        var positionText = Helpers.positionAsText(bookmark.pos());
+        var dimensionText = Helpers.dimensionAsText(bookmark.dimension());
         
         guiGraphics.drawString(font, Component.translatable(Resources.DIMENSION).withStyle(ChatFormatting.BOLD), left, top, color, false);
         guiGraphics.drawString(font, dimensionText, left, top + 12, color, false);

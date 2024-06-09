@@ -1,5 +1,6 @@
 package svenhjol.strange.feature.travel_journals.common;
 
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -23,12 +24,32 @@ public class TravelJournalItem extends CharmItem<TravelJournals> {
     
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        var held = player.getItemInHand(hand);
+        var stack = player.getItemInHand(hand);
+        var journal = JournalData.get(stack);
+        var registers = feature().registers;
         
-        if (level.isClientSide()) {
-            Resolve.feature(TravelJournalsClient.class).handlers.openBookmarks(held);
+        // Check if holding a page in another hand.
+        for (var interactionHand : InteractionHand.values()) {
+            var held = player.getItemInHand(interactionHand);
+            if (held.is(registers.travelJournalPageItem.get()) && BookmarkData.has(held)) {
+                var bookmark = BookmarkData.get(held);
+                if (!journal.isFull() && !journal.hasBookmark(bookmark.id())) {
+                    // Add the page to the journal.
+                    new JournalData.Mutable(journal)
+                        .addBookmark(bookmark)
+                        .save(stack);
+                    
+                    level.playSound(null, player.blockPosition(), registers.interactSound.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+                    held.shrink(1);
+                    return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                }
+            }
         }
         
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, held);
+        if (level.isClientSide()) {
+            Resolve.feature(TravelJournalsClient.class).handlers.openBookmarks(stack);
+        }
+        
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 }
