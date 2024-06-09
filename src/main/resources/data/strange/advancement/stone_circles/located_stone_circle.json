@@ -1,0 +1,37 @@
+{
+  "parent": "charm:core/world",
+  "display": {
+    "title": {
+      "translate": "advancements.strange.located_stone_circle.title"
+    },
+    "description": {
+      "translate": "advancements.strange.located_stone_circle.description"
+    },
+    "icon": {
+      "id": "minecraft:cracked_stone_bricks"
+    }
+  },
+  "criteria": {
+    "at_stone_circle": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "#strange:stone_circle"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "requirements": [
+    [
+      "at_stone_circle"
+    ]
+  ]
+}
