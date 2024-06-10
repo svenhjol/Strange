@@ -241,6 +241,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
      * While a photo isn't available, a placeholder is used.
      */
     @SuppressWarnings("ConstantValue")
+    @Nullable
     public ResourceLocation tryLoadPhoto(UUID uuid) {
         var def = Resources.PHOTO_BACKGROUND;
         
@@ -270,7 +271,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
                 // Continue to wait.
                 ++ticks;
                 fetchFromServer.put(uuid, ticks);
-                return def;
+                return null;
             }
         }
         
@@ -288,7 +289,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             // Can't find locally, trigger a download from the server.
             fetchFromServer.put(uuid, 0);
             log().debug("Could not find image locally, scheduling server download. bookmarkId: " + uuid);
-            return def;
+            return null;
         }
         
         // Open local photo file, load dynamic texture into cache.
@@ -313,7 +314,7 @@ public final class Handlers extends FeatureHolder<TravelJournalsClient> {
             log().error(e.getMessage());
         }
         
-        return def;
+        return null;
     }
 
     /**
