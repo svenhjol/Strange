@@ -118,10 +118,10 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         player.teleportTo(target.x, target.y, target.z);
         valid = true;
 
+        feature().advancements.travelledViaRunestone(player);
+        
         if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
             feature().advancements.travelledHomeViaRunestone(player);   
-        } else {
-            feature().advancements.travelledViaRunestone(player);
         }
     }
 
