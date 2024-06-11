@@ -3,12 +3,15 @@
     "minecraft:savanna",
     "minecraft:plains",
     "minecraft:snowy_plains",
+    "minecraft:sunflower_plains",
+    "minecraft:flower_forest",
     "minecraft:badlands",
     "minecraft:desert",
     "minecraft:beach",
     "minecraft:snowy_beach",
     "minecraft:river",
     "minecraft:meadow",
-    "minecraft:swamp"
+    "minecraft:swamp",
+    "minecraft:mushroom_fields"
   ]
 }
