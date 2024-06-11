@@ -182,12 +182,23 @@ public final class Helpers {
 
         return new BlockPos(pos.getX(), surface, pos.getZ());
     }
+    
+    public static String generateRunes(RunestoneLocation location, long seed, int length) {
+        var input = location.id().toString().replaceAll("[^a-zA-Z0-9]", "");
+        var mutable = seed;
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            mutable = seed < 0 ? mutable + c : mutable - c;
+        }
+        var random = RandomSource.create(mutable);
+        return generateRunes(input, random, length);
+    }
 
     /**
      * Generate runes for a given input string. The string is filtered to make it alphanumeric.
      * Each character of the string is shifted through the alphabet randomly.
      */
-    public static String generateRunes(String input, int length, RandomSource random) {
+    public static String generateRunes(String input, RandomSource random, int length) {
         int alphaStart = FIRST_RUNE;
         int alphaEnd = LAST_RUNE;
 

@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.RandomSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -26,7 +26,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
     private float scaleX = 1.0f;
     private float scaleY = 1.0f;
 
-    public final Map<String, String> cachedRuneNames = new WeakHashMap<>();
+    public final Map<ResourceLocation, String> cachedRunicNames = new WeakHashMap<>();
 
     public Handlers(RunestonesClient feature) {
         super(feature);
@@ -45,7 +45,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
     public void worldSeedReceived(Player player, Networking.S2CWorldSeed packet) {
         this.seed = packet.seed();
         this.hasReceivedSeed = true;
-        feature().handlers.cachedRuneNames.clear();
+        feature().handlers.cachedRunicNames.clear();
     }
 
     public void sacrificePositionReceived(Player player, Networking.S2CSacrificeInProgress packet) {
@@ -99,14 +99,12 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
             throw new RuntimeException("Client has not received the level seed");
         }
 
-        var combined = location.type().name().substring(0, 2) + location.id().getPath();
-
-        if (!cachedRuneNames.containsKey(combined)) {
-            var random = RandomSource.create(seed);
-            cachedRuneNames.put(combined, Helpers.generateRunes(combined, 10, random));
+        var id = location.id();
+        if (!cachedRunicNames.containsKey(id)) {
+            cachedRunicNames.put(id, Helpers.generateRunes(location, seed, 12));
         }
 
-        return cachedRuneNames.get(combined);
+        return cachedRunicNames.get(id);
     }
 
     public BlockPos lookingAtBlock(Player player) {

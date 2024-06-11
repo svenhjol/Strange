@@ -181,7 +181,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         }
 
         var random = RandomSource.create(pos.asLong());
-        var blockDefinitions = definitions.get(block);
+        var blockDefinitions = new ArrayList<>(definitions.get(block));
         Collections.shuffle(blockDefinitions, new Random(random.nextLong()));
 
         for (var blockDefinition : blockDefinitions) {
