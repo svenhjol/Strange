@@ -89,6 +89,10 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
                 pos.getZ() + 0.5d + ((random.nextDouble() * range) - (random.nextDouble() * range)), 0, 0, 0);
         }
     }
+    
+    public void teleportedLocationReceived(Player player, Networking.S2CTeleportedLocation packet) {
+        Minecraft.getInstance().getToasts().addToast(new TeleportedLocationToast(packet.location()));
+    }
 
     public String runicName(RunestoneLocation location) {
         if (!hasReceivedSeed) {
@@ -111,17 +115,6 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         var vec3d = cameraPosVec.add(rotationVec.x * 6, rotationVec.y * 6, rotationVec.z * 6);
         var raycast = player.level().clip(new ClipContext(cameraPosVec, vec3d, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         return raycast.getBlockPos();
-    }
-
-    public String localeKey(RunestoneLocation location) {
-        var namespace = location.id().getNamespace();
-        var path = location.id().getPath();
-
-        return switch (location.type()) {
-            case BIOME -> "biome." + namespace + "." + path;
-            case STRUCTURE -> "structure." + namespace + "." + path;
-            case PLAYER -> "player." + namespace + "." + path;
-        };
     }
 
     public void renderScaledGuiItem(ItemStack stack, GuiGraphics guiGraphics, int x, int y, float scaleX, float scaleY) {

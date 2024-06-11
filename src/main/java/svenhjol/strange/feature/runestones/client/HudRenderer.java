@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.feature.runestones.RunestonesClient;
+import svenhjol.strange.feature.runestones.common.Helpers;
 import svenhjol.strange.feature.runestones.common.Networking;
 import svenhjol.strange.feature.runestones.common.RunestoneBlockEntity;
 
@@ -77,7 +78,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
     }
 
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        int y = 50;
+        int y = 60;
         int lineHeight = 14;
         var minecraft = Minecraft.getInstance();
         var window = minecraft.getWindow();
@@ -165,14 +166,14 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
                 .withStyle(feature().registers.runeFont);
 
             if (runestone.discovered == null && isCreative) {
-                this.name = Component.translatable(handlers.localeKey(runestone.location));
+                this.name = Component.translatable(Helpers.localeKey(runestone.location));
                 this.discovered = Component.translatable("gui.strange.runestone.discovered_by", "Creative mode");
                 return true;
             }
 
             if (runestone.discovered != null) {
                 // Show the "Discovered by" message.
-                this.name = Component.translatable(handlers.localeKey(runestone.location));
+                this.name = Component.translatable(Helpers.localeKey(runestone.location));
                 this.discovered = Component.translatable("gui.strange.runestone.discovered_by", runestone.discovered);
             } else {
                 // If the player has learned the runes for this destination, show the name with a "?" at the end.

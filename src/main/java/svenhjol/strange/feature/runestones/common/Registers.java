@@ -48,12 +48,14 @@ public final class Registers extends RegisterHolder<Runestones> {
             Networking.S2CSacrificeInProgress.CODEC);
         registry.serverPacketSender(Networking.S2CActivateRunestone.TYPE,
             Networking.S2CActivateRunestone.CODEC);
+        registry.serverPacketSender(Networking.S2CTeleportedLocation.TYPE,
+            Networking.S2CTeleportedLocation.CODEC);
         
         // Client packet senders
         registry.clientPacketSender(Networking.C2SLookingAtRunestone.TYPE,
             Networking.C2SLookingAtRunestone.CODEC);
         
-        // Client packet receivers
+        // Receivers of packets sent from client
         registry.packetReceiver(Networking.C2SLookingAtRunestone.TYPE,
             () -> feature.handlers::lookingAtRunestoneReceived);
 

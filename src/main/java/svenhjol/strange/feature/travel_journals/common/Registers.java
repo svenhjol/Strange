@@ -57,7 +57,7 @@ public final class Registers extends RegisterHolder<TravelJournals> {
         registry.clientPacketSender(Networking.C2SExportPage.TYPE, Networking.C2SExportPage.CODEC);
         registry.clientPacketSender(Networking.C2SExportMap.TYPE, Networking.C2SExportMap.CODEC);
 
-        // Server packet receivers
+        // Receivers of packets sent from client
         registry.packetReceiver(Networking.C2SMakeBookmark.TYPE, () -> feature.handlers::makeBookmarkReceived);
         registry.packetReceiver(Networking.C2SPhoto.TYPE, () -> feature.handlers::photoReceived);
         registry.packetReceiver(Networking.C2SDownloadPhoto.TYPE, () -> feature.handlers::downloadPhotoReceived);

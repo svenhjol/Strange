@@ -56,6 +56,8 @@
   "key.strange.make_bookmark": "Make bookmark",
   "key.strange.open_travel_journal": "Open travel journal",
   "player.strange.spawn_point": "Spawn Point",
+  "toast.strange.runestones.teleported_location.title": "Runestone travel",
+  "toast.strange.runestones.teleported_location.description": "Arrived at %s",
   "structure.minecraft.pillager_outpost": "Pillager Outpost",
   "structure.minecraft.mineshaft": "Mineshaft",
   "structure.minecraft.mineshaft_mesa": "Badlands Mineshaft",

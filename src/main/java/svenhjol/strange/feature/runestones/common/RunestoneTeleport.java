@@ -123,6 +123,9 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
             feature().advancements.travelledHomeViaRunestone(player);   
         }
+        
+        // Tell the client the location of where the player travelled to.
+        Networking.S2CTeleportedLocation.send(player, runestone.location);
     }
 
     private void reposition() {

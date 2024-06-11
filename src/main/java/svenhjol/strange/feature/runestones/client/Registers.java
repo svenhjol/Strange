@@ -32,13 +32,15 @@ public final class Registers extends RegisterHolder<RunestonesClient> {
         // Attach the block entity renderer to the runestone block entity.
         registry.blockEntityRenderer(linked.registers.blockEntity, () -> RunestoneRenderer::new);
 
-        // Client packet receivers.
+        // Receivers of packets sent by the server
         registry.packetReceiver(Networking.S2CWorldSeed.TYPE,
             () -> feature.handlers::worldSeedReceived);
         registry.packetReceiver(Networking.S2CSacrificeInProgress.TYPE,
             () -> feature.handlers::sacrificePositionReceived);
         registry.packetReceiver(Networking.S2CActivateRunestone.TYPE,
             () -> feature.handlers::activateRunestoneReceived);
+        registry.packetReceiver(Networking.S2CTeleportedLocation.TYPE,
+            () -> feature.handlers::teleportedLocationReceived);
 
         runeFont = Style.EMPTY.withFont(ILLAGER_GLYPHS);
         hudRenderer = new HudRenderer(feature);

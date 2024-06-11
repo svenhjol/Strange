@@ -230,6 +230,17 @@ public final class Helpers {
 
         throw new RuntimeException("Maximum loops reached when checking string length");
     }
+
+    public static String localeKey(RunestoneLocation location) {
+        var namespace = location.id().getNamespace();
+        var path = location.id().getPath();
+
+        return switch (location.type()) {
+            case BIOME -> "biome." + namespace + "." + path;
+            case STRUCTURE -> "structure." + namespace + "." + path;
+            case PLAYER -> "player." + namespace + "." + path;
+        };
+    }
     
     public static boolean runestoneLinksToSpawnPoint(RunestoneBlockEntity runestone) {
         return runestone.location != null && runestone.location.id().equals(SPAWN_POINT_ID);

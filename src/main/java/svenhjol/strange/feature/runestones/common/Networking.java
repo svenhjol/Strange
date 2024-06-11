@@ -10,13 +10,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import svenhjol.charm.charmony.feature.FeatureHolder;
 import svenhjol.strange.Strange;
+import svenhjol.strange.api.impl.RunestoneLocation;
 import svenhjol.strange.feature.runestones.Runestones;
+
+import java.util.Objects;
 
 public final class Networking extends FeatureHolder<Runestones> {
     public Networking(Runestones feature) {
         super(feature);
     }
 
+    // Client-to-server packet that tells the server what runestone blockpos the player is looking at.
     public record C2SLookingAtRunestone(BlockPos pos) implements CustomPacketPayload {
         public static Type<C2SLookingAtRunestone> TYPE = new Type<>(Strange.id("looking_at_runestone"));
         public static StreamCodec<FriendlyByteBuf, C2SLookingAtRunestone> CODEC =
@@ -89,6 +93,7 @@ public final class Networking extends FeatureHolder<Runestones> {
         }
     }
 
+    // Server-to-client packet that tells the client the position of the runestone that has just been activated.
     public record S2CActivateRunestone(BlockPos pos) implements CustomPacketPayload{
         public static Type<S2CActivateRunestone> TYPE = new Type<>(Strange.id("activate_runestone"));
         public static StreamCodec<FriendlyByteBuf, S2CActivateRunestone> CODEC =
@@ -109,6 +114,30 @@ public final class Networking extends FeatureHolder<Runestones> {
 
         private static S2CActivateRunestone decode(FriendlyByteBuf buf) {
             return new S2CActivateRunestone(buf.readBlockPos());
+        }
+    }
+
+    // Server-to-client packet that tells the client the location that the player has just teleported to.
+    public record S2CTeleportedLocation(RunestoneLocation location) implements CustomPacketPayload{
+        public static Type<S2CTeleportedLocation> TYPE = new Type<>(Strange.id("teleported_location"));
+        public static StreamCodec<FriendlyByteBuf, S2CTeleportedLocation> CODEC =
+            StreamCodec.of(S2CTeleportedLocation::encode, S2CTeleportedLocation::decode);
+
+        public static void send(ServerPlayer player, RunestoneLocation location) {
+            ServerPlayNetworking.send(player, new S2CTeleportedLocation(location));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, S2CTeleportedLocation self) {
+            buf.writeNbt(self.location.save());
+        }
+
+        private static S2CTeleportedLocation decode(FriendlyByteBuf buf) {
+            return new S2CTeleportedLocation(RunestoneLocation.load(Objects.requireNonNull(buf.readNbt())));
         }
     }
 }
