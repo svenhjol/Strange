@@ -78,7 +78,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
     }
 
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        int y = 60;
+        int y = 64;
         int lineHeight = 14;
         var minecraft = Minecraft.getInstance();
         var window = minecraft.getWindow();
