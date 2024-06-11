@@ -32,6 +32,8 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
     private Vec3 target;
     private ResourceKey<Level> dimension;
     private boolean useExactPosition = false;
+    private boolean teleportingInSameDimension = true;
+    private boolean doneAdvancementsAndEffects = false;
     private boolean valid = false;
     private int ticks = 0;
 
@@ -66,9 +68,8 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
             }
         }
 
-        if (ticks == PLAY_SOUND_TICKS) {
-            log().debug("Playing teleport sound for player " + player);
-            level.playSound(null, player.blockPosition(), feature().registers.travelSound.get(), SoundSource.BLOCKS);
+        if (ticks == PLAY_SOUND_TICKS && teleportingInSameDimension) {
+            playTeleportSound();
         }
 
         if (ticks < TELEPORT_TICKS) return;
@@ -105,7 +106,7 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
             player.setInvulnerable(true);
         }
 
-        if (level.dimension() != dimension) {
+        if (!teleportingInSameDimension) {
             var server = level.getServer();
             var newDimension = server.getLevel(dimension);
             if (newDimension != null) {
@@ -117,15 +118,6 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
 
         player.teleportTo(target.x, target.y, target.z);
         valid = true;
-
-        feature().advancements.travelledViaRunestone(player);
-        
-        if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
-            feature().advancements.travelledHomeViaRunestone(player);   
-        }
-        
-        // Tell the client the location of where the player travelled to.
-        Networking.S2CTeleportedLocation.send(player, runestone.location);
     }
 
     private void reposition() {
@@ -221,6 +213,9 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         move(mutable);
     }
 
+    /**
+     * Move the player into position after making the location safe.
+     */
     private void move(BlockPos pos) {
         player.moveTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
         player.teleportTo(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
@@ -228,6 +223,8 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
         if (!player.getAbilities().instabuild) {
             player.setInvulnerable(false);
         }
+        
+        doAdvancementsAndEffects();
 
         valid = false;
     }
@@ -282,6 +279,33 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
             this.dimension = level.dimension();
             this.target = runestone.target.getCenter();
         }
+        
+        this.teleportingInSameDimension = level.dimension() == dimension;
+    }
+    
+    private void doAdvancementsAndEffects() {
+        if (doneAdvancementsAndEffects) return; // Don't do this twice. Sometimes repositioning can call this a couple of times?
+        
+        // If it was dimensional travel, play the sound now.
+        if (!teleportingInSameDimension) {
+            playTeleportSound();
+        }
+
+        // Do advancements.
+        feature().advancements.travelledViaRunestone(player);
+        if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
+            feature().advancements.travelledHomeViaRunestone(player);
+        }
+
+        // Tell the client the location of where the player travelled to.
+        Networking.S2CTeleportedLocation.send(player, runestone.location);
+        
+        doneAdvancementsAndEffects = true;
+    }
+    
+    private void playTeleportSound() {
+        log().debug("Playing teleport sound for player " + player);
+        player.level().playSound(null, player.blockPosition(), feature().registers.travelSound.get(), SoundSource.BLOCKS);
     }
 
     @Override
