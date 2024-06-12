@@ -36,7 +36,7 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
 
     public RunestoneBlock() {
         this(Properties.ofFullCopy(Blocks.STONE)
-            .pushReaction(PushReaction.DESTROY)
+            .pushReaction(PushReaction.IGNORE)
             .lightLevel(state -> state.getValue(ACTIVATED) ? 12 : 0));
     }
 
