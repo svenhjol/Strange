@@ -29,7 +29,7 @@ public final class TravelJournals extends CommonFeature {
             Setting too high a number could impact network performance.
             """
     )
-    private static final int numberOfBookmarksPerJournal = 50;
+    private static int numberOfBookmarksPerJournal = 50;
     
     @Configurable(
         name = "Scaled photo width",
@@ -39,7 +39,7 @@ public final class TravelJournals extends CommonFeature {
             to download a copy of the photo. Smaller sizes optimize space and speed but reduce quality.
             The scaled width should be double the scaled height."""
     )
-    private static final int scaledPhotoWidth = 192;
+    private static int scaledPhotoWidth = 192;
     
     @Configurable(
         name = "Scaled photo height",
@@ -49,7 +49,7 @@ public final class TravelJournals extends CommonFeature {
             to download a copy of the photo. Smaller sizes optimize space and speed but reduce quality.
             The scaled height should be half the scaled width."""
     )
-    private static final int scaledPhotoHeight = 96;
+    private static int scaledPhotoHeight = 96;
 
     public TravelJournals(CommonLoader loader) {
         super(loader);
