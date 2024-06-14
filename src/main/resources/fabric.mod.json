@@ -4,7 +4,7 @@
   "version": "${mod_version}",
 
   "name": "Strange",
-  "description": "Charm, but stranger.",
+  "description": "Adds some travel and exploration features to Charm.",
   "authors": [
     "svenhjol",
     "Coranthes"
@@ -23,6 +23,9 @@
     ],
     "client": [
       "svenhjol.strange.fabric.ClientInitializer"
+    ],
+    "modmenu": [
+      "svenhjol.strange.integration.modmenu.StrangeModMenuPlugin"
     ]
   },
 
@@ -31,7 +34,21 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": "*",
-    "charm": "${charm_version}",
+    "charm": ">=${charm_version}",
     "java": ">=21"
+  },
+
+  "contact": {
+    "homepage": "https://charmony.work",
+    "sources": "https://github.com/svenhjol/Charm"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "${discord_link}"
+      },
+      "update_checker": true
+    }
   }
 }
