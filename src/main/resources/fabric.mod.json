@@ -23,9 +23,6 @@
     ],
     "client": [
       "svenhjol.strange.fabric.ClientInitializer"
-    ],
-    "modmenu": [
-      "svenhjol.strange.integration.modmenu.StrangeModMenuPlugin"
     ]
   },
 
