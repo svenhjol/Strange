@@ -20,9 +20,9 @@ public class MixinConfig extends MixinConfigPlugin {
 
     @Override
     public boolean baseNameCheck(String baseName, String mixinClassName) {
-        // With compat enabled we don't load ANY mixins EXCEPT accessors.
-        if (DebugHelper.isCompatEnabled() && !baseName.equals("accessor")) {
-            LOGGER.warn("Compat mode skipping mixin {}", mixinClassName);
+        // With mixin disable mode enabled we don't load ANY mixins EXCEPT accessors.
+        if (DebugHelper.isMixinDisableModeEnabled() && !baseName.equals("accessor")) {
+            LOGGER.warn("Mixin disable mode skipping mixin {}", mixinClassName);
             return false;
         }
         return true;
