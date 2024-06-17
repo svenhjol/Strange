@@ -176,14 +176,11 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
                 this.name = Component.translatable(Helpers.localeKey(runestone.location));
                 this.discovered = Component.translatable("gui.strange.runestone.discovered_by", runestone.discovered);
             } else {
-                // If the player has learned the runes for this destination, show the name with a "?" at the end.
-                // TODO: learning rune locations.
-//                var hasLearned = false
-//                if (hasLearned) {
-//                    this.name = Component.translatable("gui.strange.runestone.unsure", Component.translatable(RunestoneHelper.getLocaleKey(runestone.location)));
-//                } else {
+                if (runestone.isActivated() && feature().linked().showDestinationWhenActivated()) {
+                    this.name = Component.translatable("gui.strange.runestone.unsure", Component.translatable(Helpers.localeKey(runestone.location)));
+                } else {
                     this.name = Component.translatable("gui.strange.runestone.unknown");
-//                }
+                }
             }
 
             return true;

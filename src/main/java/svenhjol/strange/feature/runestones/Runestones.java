@@ -29,6 +29,14 @@ public final class Runestones extends CommonFeature {
         description = "Duration (in seconds) of protection given to the player while they teleport via a runestone."
     )
     private static int protectionDuration = 3;
+    
+    @Configurable(
+        name = "Show destination when activated",
+        description = """
+            If true, activated runestones always show their destination.
+            If false, a player must travel through a runestone to unlock its destination."""
+    )
+    private static boolean showDestinationWhenActivated = false;
 
     public Runestones(CommonLoader loader) {
         super(loader);
@@ -46,5 +54,9 @@ public final class Runestones extends CommonFeature {
 
     public int protectionDuration() {
         return Mth.clamp(protectionDuration, 0, 60) * 20;
+    }
+    
+    public boolean showDestinationWhenActivated() {
+        return showDestinationWhenActivated;
     }
 }
