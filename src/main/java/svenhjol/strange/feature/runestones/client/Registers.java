@@ -60,7 +60,7 @@ public final class Registers extends RegisterHolder<RunestonesClient> {
 
         for (var blockItem : blockItems) {
             registry.itemTab(
-                blockItem,
+                blockItem.get(),
                 CreativeModeTabs.FUNCTIONAL_BLOCKS,
                 Items.LODESTONE
             );

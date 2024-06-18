@@ -41,13 +41,13 @@ public final class Registers extends RegisterHolder<TravelJournalsClient> {
         HudRenderEvent.INSTANCE.handle(feature().handlers::hudRender);
         
         registry.itemTab(
-            feature().linked().registers.travelJournalPageItem,
+            feature().linked().registers.travelJournalPageItem.get(),
             CreativeModeTabs.TOOLS_AND_UTILITIES,
             Items.WRITABLE_BOOK
         );
         
         registry.itemTab(
-            feature().linked().registers.travelJournalItem,
+            feature().linked().registers.travelJournalItem.get(),
             CreativeModeTabs.TOOLS_AND_UTILITIES,
             Items.WRITABLE_BOOK
         );
