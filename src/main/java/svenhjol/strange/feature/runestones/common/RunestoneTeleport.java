@@ -264,16 +264,9 @@ public class RunestoneTeleport implements FeatureResolver<Runestones> {
 
     private void setTargetAndDimension() {
         if (Helpers.runestoneLinksToSpawnPoint(runestone)) {
-            // Handle player spawn point runestone.
-            this.dimension = player.getRespawnDimension();
-
-            var respawnPosition = player.getRespawnPosition();
-            if (respawnPosition != null) {
-                this.useExactPosition = true;
-                this.target = respawnPosition.getCenter();
-            } else {
-                this.target = level.getSharedSpawnPos().getCenter();
-            }
+            // Handle world spawn point runestone.
+            this.dimension = Level.OVERWORLD;
+            this.target = level.getSharedSpawnPos().getCenter();
         } else {
             // All standard runestones just use the same dimension and fixed target pos.
             this.dimension = level.dimension();
