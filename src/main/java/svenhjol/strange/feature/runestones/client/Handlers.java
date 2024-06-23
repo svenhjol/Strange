@@ -23,6 +23,7 @@ import java.util.WeakHashMap;
 public final class Handlers extends FeatureHolder<RunestonesClient> {
     private long seed;
     private boolean hasReceivedSeed = false;
+    private boolean showDestinationWhenActivated = false;
     private float scaleX = 1.0f;
     private float scaleY = 1.0f;
 
@@ -41,6 +42,11 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
             feature().registers.hudRenderer.tick(player);
         }
     }
+    
+    public void configurationReceived(Player player, Networking.S2CConfiguration packet) {
+        log().debug("Received configuration from server: " + packet);
+        this.showDestinationWhenActivated = packet.showDestinationWhenActivated();
+    }
 
     public void worldSeedReceived(Player player, Networking.S2CWorldSeed packet) {
         this.seed = packet.seed();
@@ -48,7 +54,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         feature().handlers.cachedRunicNames.clear();
     }
 
-    public void sacrificePositionReceived(Player player, Networking.S2CActivationWarmup packet) {
+    public void activationWarmupReceived(Player player, Networking.S2CActivationWarmup packet) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
 
@@ -68,7 +74,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         }
     }
 
-    public void activateRunestoneReceived(Player player, Networking.S2CActivation packet) {
+    public void activationReceived(Player player, Networking.S2CActivation packet) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
 
@@ -108,6 +114,10 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         var vec3d = cameraPosVec.add(rotationVec.x * 6, rotationVec.y * 6, rotationVec.z * 6);
         var raycast = player.level().clip(new ClipContext(cameraPosVec, vec3d, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
         return raycast.getBlockPos();
+    }
+    
+    public boolean showDestinationWhenActivated() {
+        return showDestinationWhenActivated;
     }
 
     public void renderScaledGuiItem(ItemStack stack, GuiGraphics guiGraphics, int x, int y, float scaleX, float scaleY) {

@@ -69,13 +69,13 @@ public final class Networking extends FeatureHolder<Runestones> {
     }
 
     // Server-to-client packet that contains the server-side configuration.
-    public record S2CRunestoneConfiguration(long seed) implements CustomPacketPayload {
-        public static Type<S2CRunestoneConfiguration> TYPE = new Type<>(Strange.id("runestones_configuration"));
-        public static StreamCodec<FriendlyByteBuf, S2CRunestoneConfiguration> CODEC =
-            StreamCodec.of(S2CRunestoneConfiguration::encode, S2CRunestoneConfiguration::decode);
+    public record S2CConfiguration(boolean showDestinationWhenActivated) implements CustomPacketPayload {
+        public static Type<S2CConfiguration> TYPE = new Type<>(Strange.id("runestones_configuration"));
+        public static StreamCodec<FriendlyByteBuf, S2CConfiguration> CODEC =
+            StreamCodec.of(S2CConfiguration::encode, S2CConfiguration::decode);
 
-        public static void send(ServerPlayer player, long seed) {
-            ServerPlayNetworking.send(player, new S2CRunestoneConfiguration(seed));
+        public static void send(ServerPlayer player, boolean showDestinationWhenActivated) {
+            ServerPlayNetworking.send(player, new S2CConfiguration(showDestinationWhenActivated));
         }
 
         @Override
@@ -83,12 +83,12 @@ public final class Networking extends FeatureHolder<Runestones> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, S2CRunestoneConfiguration self) {
-            buf.writeLong(self.seed());
+        private static void encode(FriendlyByteBuf buf, S2CConfiguration self) {
+            buf.writeBoolean(self.showDestinationWhenActivated());
         }
 
-        private static S2CRunestoneConfiguration decode(FriendlyByteBuf buf) {
-            return new S2CRunestoneConfiguration(buf.readLong());
+        private static S2CConfiguration decode(FriendlyByteBuf buf) {
+            return new S2CConfiguration(buf.readBoolean());
         }
     }
 

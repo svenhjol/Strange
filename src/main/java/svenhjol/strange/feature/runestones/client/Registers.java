@@ -35,10 +35,12 @@ public final class Registers extends RegisterHolder<RunestonesClient> {
         // Receivers of packets sent by the server
         registry.packetReceiver(Networking.S2CWorldSeed.TYPE,
             () -> feature.handlers::worldSeedReceived);
+        registry.packetReceiver(Networking.S2CConfiguration.TYPE,
+            () -> feature.handlers::configurationReceived);
         registry.packetReceiver(Networking.S2CActivationWarmup.TYPE,
-            () -> feature.handlers::sacrificePositionReceived);
+            () -> feature.handlers::activationWarmupReceived);
         registry.packetReceiver(Networking.S2CActivation.TYPE,
-            () -> feature.handlers::activateRunestoneReceived);
+            () -> feature.handlers::activationReceived);
         registry.packetReceiver(Networking.S2CTeleportedLocation.TYPE,
             () -> feature.handlers::teleportedLocationReceived);
 

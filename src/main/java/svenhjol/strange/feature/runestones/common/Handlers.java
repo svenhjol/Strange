@@ -69,6 +69,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
             var serverLevel = (ServerLevel)level;
             var seed = serverLevel.getSeed();
             Networking.S2CWorldSeed.send(player, seed);
+            Networking.S2CConfiguration.send(player, feature().showDestinationWhenActivated());
         }
     }
 

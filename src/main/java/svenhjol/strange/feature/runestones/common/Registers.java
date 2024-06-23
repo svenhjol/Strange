@@ -44,6 +44,8 @@ public final class Registers extends RegisterHolder<Runestones> {
         // Server packet senders
         registry.serverPacketSender(Networking.S2CWorldSeed.TYPE,
             Networking.S2CWorldSeed.CODEC);
+        registry.serverPacketSender(Networking.S2CConfiguration.TYPE,
+            Networking.S2CConfiguration.CODEC);
         registry.serverPacketSender(Networking.S2CActivationWarmup.TYPE,
             Networking.S2CActivationWarmup.CODEC);
         registry.serverPacketSender(Networking.S2CActivation.TYPE,

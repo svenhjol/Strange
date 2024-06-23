@@ -152,7 +152,7 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
 
     static {
         B1 = Block.box(0.0d, 0.0d, 0.0d, 16.0d, 3.0d, 16.0d);
-        B2 = Block.box(4.0d, 3.0d, 4.0d, 12.0d, 13.0d, 12.0d);
+        B2 = Block.box(3.0d, 3.0d, 3.0d, 13.0d, 13.0d, 13.0d);
         B3 = Block.box(0.0d, 13.0d, 0.0d, 16.0d, 16.0d, 16.0d);
         ACTIVATED_SHAPE = Shapes.or(B1, B2, B3);
     }
