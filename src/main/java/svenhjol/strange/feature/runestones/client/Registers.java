@@ -25,9 +25,9 @@ public final class Registers extends RegisterHolder<RunestonesClient> {
         var registry = feature.registry();
         var linked = feature.linked();
 
-        registry.blockRenderType(linked.registers.stoneBlock, RenderType::cutout);
-        registry.blockRenderType(linked.registers.blackstoneBlock, RenderType::cutout);
-        registry.blockRenderType(linked.registers.obsidianBlock, RenderType::cutout);
+        registry.blockRenderType(linked.registers.stoneBlock, RenderType::cutoutMipped);
+        registry.blockRenderType(linked.registers.blackstoneBlock, RenderType::cutoutMipped);
+        registry.blockRenderType(linked.registers.obsidianBlock, RenderType::cutoutMipped);
 
         // Attach the block entity renderer to the runestone block entity.
         registry.blockEntityRenderer(linked.registers.blockEntity, () -> RunestoneRenderer::new);

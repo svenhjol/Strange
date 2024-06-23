@@ -87,6 +87,20 @@
           "up": {"uv": [0, 0, 16, 16], "texture": "#end"},
           "down": {"uv": [0, 0, 16, 16], "texture": "#end"}
         }
+      },
+      {
+        "name": "inner",
+        "from": [3, 3, 3],
+        "to": [13, 13, 13],
+        "rotation": {"angle": 0, "axis": "y", "origin": [3, 6, 4]},
+        "faces": {
+          "north": {"uv": [3, 3, 13, 13], "texture": "#pillar"},
+          "east": {"uv": [3, 3, 13, 13], "texture": "#pillar"},
+          "south": {"uv": [3, 3, 13, 13], "texture": "#pillar"},
+          "west": {"uv": [3, 3, 13, 13], "texture": "#pillar"},
+          "up": {"uv": [3, 3, 13, 13], "texture": "#pillar"},
+          "down": {"uv": [3, 3, 13, 13], "texture": "#pillar"}
+        }
       }
     ]
   },
