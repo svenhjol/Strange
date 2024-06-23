@@ -42,4 +42,9 @@ public class RunestoneRenderer<R extends RunestoneBlockEntity> implements BlockE
         vertexConsumer.addVertex(pose, g, i, l);
         vertexConsumer.addVertex(pose, f, i, m);
     }
+
+    @Override
+    public int getViewDistance() {
+        return 68;
+    }
 }
