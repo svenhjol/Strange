@@ -131,15 +131,15 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
             return;
         }
 
-        if (random.nextFloat() > 0.8f) {
+        if (random.nextFloat() > 0.85f) {
             return;
         }
 
         var particle = ParticleTypes.ENCHANT;
-        var dist = 3.0d;
+        var dist = 2.5d;
 
-        for (var i = 0; i < 4; i++) {
-            level.addParticle(particle, pos.getX() + 0.5d, pos.getY() + 1.3d, pos.getZ() + 0.5d,
+        for (var i = 0; i < 5; i++) {
+            level.addParticle(particle, pos.getX() + 0.5d, pos.getY() + 1.2d, pos.getZ() + 0.5d,
                 (dist / 2) - (random.nextDouble() * dist), random.nextDouble() - 1.65d, (dist / 2) - (random.nextDouble() * dist));
         }
     }
