@@ -25,8 +25,8 @@ public class RunestoneRenderer<R extends RunestoneBlockEntity> implements BlockE
         var pose = poseStack.last().pose();
         var vertexConsumer = multiBufferSource.getBuffer(RenderType.endGateway());
 
-        var sideMinMargin = 0.25f;
-        var sideMaxMargin = 0.75f;
+        var sideMinMargin = 0.1875f;
+        var sideMaxMargin = 0.8125f;
         var vertMinMargin = 0.1875f;
         var vertMaxMargin = 0.8125f;
 

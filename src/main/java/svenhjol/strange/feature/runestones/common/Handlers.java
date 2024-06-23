@@ -33,7 +33,8 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public final class Handlers extends FeatureHolder<Runestones> {
-    public static final int MAX_SACRIFICE_CHECKS = 10;
+    public static final int MAX_SACRIFICE_CHECKS = 8;
+    public static final int SACRIFICE_CHECK_TICKS = 10;
 
     public final Map<Block, List<RunestoneDefinition>> definitions = new HashMap<>();
     public final Map<UUID, RunestoneTeleport> teleports = new HashMap<>();
@@ -122,7 +123,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
     }
 
     public void tickRunestone(ServerLevel level, BlockPos pos, BlockState state, RunestoneBlockEntity runestone) {
-        if (!runestone.isActivated() && runestone.isValid() && level.getGameTime() % 10 == 0) {
+        if (!runestone.isActivated() && runestone.isValid() && level.getGameTime() % SACRIFICE_CHECK_TICKS == 0) {
             ItemEntity foundItem = null;
             var itemEntities = level.getEntitiesOfClass(ItemEntity.class, (new AABB(pos)).inflate(4.8d));
             for (var itemEntity : itemEntities) {
@@ -134,11 +135,11 @@ public final class Handlers extends FeatureHolder<Runestones> {
             if (foundItem != null) {
                 if (runestone.sacrificeChecks == 0) {
                     // Don't allow item to be picked up until the ritual is complete...
-                    foundItem.setPickUpDelay(100);
+                    foundItem.setPickUpDelay(MAX_SACRIFICE_CHECKS * SACRIFICE_CHECK_TICKS);
 
                     // Start the powerup sound.
                     level.playSound(null, pos, feature().registers.powerUpSound.get(), SoundSource.BLOCKS);
-                    level.playSound(null, BlockPos.containing(foundItem.position()), feature().registers.fizzleItemSound.get(), SoundSource.PLAYERS);
+                    level.playSound(null, BlockPos.containing(foundItem.position()), feature().registers.fizzleItemSound.get(), SoundSource.PLAYERS, 0.5f, 1.0f);
                 }
 
                 var itemPos = foundItem.position();

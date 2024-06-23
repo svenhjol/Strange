@@ -66,11 +66,6 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
             level.addParticle(itemParticle, itemPos.x(), itemPos.y() + 0.36d, itemPos.z(),
                 (itemDist / 2) - (random.nextDouble() * itemDist), 0, (itemDist / 2) - (random.nextDouble() * itemDist));
         }
-
-        for (var i = 0; i < 8; i++) {
-            level.addParticle(runestoneParticle, runestonePos.getX() + 0.5d, runestonePos.getY() + 0.60d, runestonePos.getZ() + 0.5d,
-                (runestoneDist / 2) - (random.nextDouble() * runestoneDist), random.nextDouble(), (runestoneDist / 2) - (random.nextDouble() * runestoneDist));
-        }
     }
 
     public void activateRunestoneReceived(Player player, Networking.S2CActivateRunestone packet) {

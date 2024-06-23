@@ -6,18 +6,19 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -28,11 +29,12 @@ import svenhjol.strange.feature.runestones.Runestones;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<Runestones> {
+public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<Runestones>, SimpleWaterloggedBlock {
     public static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
     public static final MapCodec<RunestoneBlock> CODEC = simpleCodec(RunestoneBlock::new);
     public static final VoxelShape B1, B2, B3;
     public static final VoxelShape ACTIVATED_SHAPE;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public RunestoneBlock() {
         this(Properties.ofFullCopy(Blocks.STONE)
@@ -44,7 +46,8 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
         super(properties);
 
         this.registerDefaultState(getStateDefinition().any()
-            .setValue(ACTIVATED, false));
+            .setValue(ACTIVATED, false)
+            .setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -54,7 +57,7 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(ACTIVATED);
+        builder.add(ACTIVATED, WATERLOGGED);
     }
 
     @Nullable
@@ -102,6 +105,22 @@ public class RunestoneBlock extends BaseEntityBlock implements FeatureResolver<R
             return ACTIVATED_SHAPE;
         }
         return super.getCollisionShape(state, getter, pos, context);
+    }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
+        Level levelAccessor = blockPlaceContext.getLevel();
+        boolean bl = levelAccessor.getFluidState(blockPlaceContext.getClickedPos()).getType() == Fluids.WATER;
+        return this.defaultBlockState().setValue(WATERLOGGED, bl);
+    }
+
+    @Override
+    protected FluidState getFluidState(BlockState blockState) {
+        if (blockState.getValue(WATERLOGGED)) {
+            return Fluids.WATER.getSource(false);
+        }
+        return super.getFluidState(blockState);
     }
 
     @Override
