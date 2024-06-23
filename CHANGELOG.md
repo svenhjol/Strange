@@ -19,4 +19,5 @@ Spawn point runes now take you back to overworld shared spawn point
 - Fix runestone waterlogging
 - Speed up activation warmup by 20 ticks
 - Remove rune particles until activation complete
+- Updated particle effect for activated state
 - Add view distance to activated runestone renderer
