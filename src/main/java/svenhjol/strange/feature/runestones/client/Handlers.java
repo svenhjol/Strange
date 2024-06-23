@@ -48,7 +48,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         feature().handlers.cachedRunicNames.clear();
     }
 
-    public void sacrificePositionReceived(Player player, Networking.S2CSacrificeInProgress packet) {
+    public void sacrificePositionReceived(Player player, Networking.S2CActivationWarmup packet) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
 
@@ -68,7 +68,7 @@ public final class Handlers extends FeatureHolder<RunestonesClient> {
         }
     }
 
-    public void activateRunestoneReceived(Player player, Networking.S2CActivateRunestone packet) {
+    public void activateRunestoneReceived(Player player, Networking.S2CActivation packet) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
 

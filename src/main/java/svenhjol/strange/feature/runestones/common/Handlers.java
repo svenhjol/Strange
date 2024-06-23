@@ -43,7 +43,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         super(feature);
     }
 
-    public void lookingAtRunestoneReceived(Player player, Networking.C2SLookingAtRunestone packet) {
+    public void lookingAtRunestoneReceived(Player player, Networking.C2SPlayerLooking packet) {
         var level = player.level();
         var pos = packet.pos();
         
@@ -146,7 +146,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
 
                 // Add particle effect around the item to be consumed. This needs to be done via network packet.
                 PlayerHelper.getPlayersInRange(level, pos, 8.0d)
-                    .forEach(player -> Networking.S2CSacrificeInProgress.send((ServerPlayer)player, pos, itemPos));
+                    .forEach(player -> Networking.S2CActivationWarmup.send((ServerPlayer)player, pos, itemPos));
 
                 // Increase the number of checks. If maximum, consume the item and activate the runestone.
                 runestone.sacrificeChecks++;
@@ -219,7 +219,7 @@ public final class Handlers extends FeatureHolder<Runestones> {
         // Activation effect and advancement for all nearby players.
         PlayerHelper.getPlayersInRange(level, pos, 8.0d)
             .forEach(player -> {
-                Networking.S2CActivateRunestone.send((ServerPlayer)player, pos);
+                Networking.S2CActivation.send((ServerPlayer)player, pos);
                 feature().advancements.activatedRunestone(player);
             });
 

@@ -21,13 +21,13 @@ public final class Networking extends FeatureHolder<Runestones> {
     }
 
     // Client-to-server packet that tells the server what runestone blockpos the player is looking at.
-    public record C2SLookingAtRunestone(BlockPos pos) implements CustomPacketPayload {
-        public static Type<C2SLookingAtRunestone> TYPE = new Type<>(Strange.id("looking_at_runestone"));
-        public static StreamCodec<FriendlyByteBuf, C2SLookingAtRunestone> CODEC =
-            StreamCodec.of(C2SLookingAtRunestone::encode, C2SLookingAtRunestone::decode);
+    public record C2SPlayerLooking(BlockPos pos) implements CustomPacketPayload {
+        public static Type<C2SPlayerLooking> TYPE = new Type<>(Strange.id("runestones_player_looking"));
+        public static StreamCodec<FriendlyByteBuf, C2SPlayerLooking> CODEC =
+            StreamCodec.of(C2SPlayerLooking::encode, C2SPlayerLooking::decode);
 
         public static void send(BlockPos pos) {
-            ClientPlayNetworking.send(new C2SLookingAtRunestone(pos));
+            ClientPlayNetworking.send(new C2SPlayerLooking(pos));
         }
 
         @Override
@@ -35,18 +35,18 @@ public final class Networking extends FeatureHolder<Runestones> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, C2SLookingAtRunestone self) {
+        private static void encode(FriendlyByteBuf buf, C2SPlayerLooking self) {
             buf.writeBlockPos(self.pos());
         }
 
-        private static C2SLookingAtRunestone decode(FriendlyByteBuf buf) {
-            return new C2SLookingAtRunestone(buf.readBlockPos());
+        private static C2SPlayerLooking decode(FriendlyByteBuf buf) {
+            return new C2SPlayerLooking(buf.readBlockPos());
         }
     }
 
     // Server-to-client packet that contains the current world seed.
     public record S2CWorldSeed(long seed) implements CustomPacketPayload {
-        public static Type<S2CWorldSeed> TYPE = new Type<>(Strange.id("world_seed_for_runestones"));
+        public static Type<S2CWorldSeed> TYPE = new Type<>(Strange.id("runestones_world_seed"));
         public static StreamCodec<FriendlyByteBuf, S2CWorldSeed> CODEC =
             StreamCodec.of(S2CWorldSeed::encode, S2CWorldSeed::decode);
 
@@ -68,14 +68,14 @@ public final class Networking extends FeatureHolder<Runestones> {
         }
     }
 
-    // Server-to-client packet that informs the client that a runestone wants to consume an item.
-    public record S2CSacrificeInProgress(BlockPos runestonePos, Vec3 itemPos) implements CustomPacketPayload {
-        public static Type<S2CSacrificeInProgress> TYPE = new Type<>(Strange.id("sacrifice_in_progress"));
-        public static StreamCodec<FriendlyByteBuf, S2CSacrificeInProgress> CODEC =
-            StreamCodec.of(S2CSacrificeInProgress::encode, S2CSacrificeInProgress::decode);
+    // Server-to-client packet that contains the server-side configuration.
+    public record S2CRunestoneConfiguration(long seed) implements CustomPacketPayload {
+        public static Type<S2CRunestoneConfiguration> TYPE = new Type<>(Strange.id("runestones_configuration"));
+        public static StreamCodec<FriendlyByteBuf, S2CRunestoneConfiguration> CODEC =
+            StreamCodec.of(S2CRunestoneConfiguration::encode, S2CRunestoneConfiguration::decode);
 
-        public static void send(ServerPlayer player, BlockPos runestonePos, Vec3 itemPos) {
-            ServerPlayNetworking.send(player, new S2CSacrificeInProgress(runestonePos, itemPos));
+        public static void send(ServerPlayer player, long seed) {
+            ServerPlayNetworking.send(player, new S2CRunestoneConfiguration(seed));
         }
 
         @Override
@@ -83,24 +83,48 @@ public final class Networking extends FeatureHolder<Runestones> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, S2CSacrificeInProgress self) {
+        private static void encode(FriendlyByteBuf buf, S2CRunestoneConfiguration self) {
+            buf.writeLong(self.seed());
+        }
+
+        private static S2CRunestoneConfiguration decode(FriendlyByteBuf buf) {
+            return new S2CRunestoneConfiguration(buf.readLong());
+        }
+    }
+
+    // Server-to-client packet that informs the client that a runestone wants to consume an item.
+    public record S2CActivationWarmup(BlockPos runestonePos, Vec3 itemPos) implements CustomPacketPayload {
+        public static Type<S2CActivationWarmup> TYPE = new Type<>(Strange.id("runestones_activation_warmup"));
+        public static StreamCodec<FriendlyByteBuf, S2CActivationWarmup> CODEC =
+            StreamCodec.of(S2CActivationWarmup::encode, S2CActivationWarmup::decode);
+
+        public static void send(ServerPlayer player, BlockPos runestonePos, Vec3 itemPos) {
+            ServerPlayNetworking.send(player, new S2CActivationWarmup(runestonePos, itemPos));
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        private static void encode(FriendlyByteBuf buf, S2CActivationWarmup self) {
             buf.writeBlockPos(self.runestonePos);
             buf.writeVec3(self.itemPos);
         }
 
-        private static S2CSacrificeInProgress decode(FriendlyByteBuf buf) {
-            return new S2CSacrificeInProgress(buf.readBlockPos(), buf.readVec3());
+        private static S2CActivationWarmup decode(FriendlyByteBuf buf) {
+            return new S2CActivationWarmup(buf.readBlockPos(), buf.readVec3());
         }
     }
 
     // Server-to-client packet that tells the client the position of the runestone that has just been activated.
-    public record S2CActivateRunestone(BlockPos pos) implements CustomPacketPayload{
-        public static Type<S2CActivateRunestone> TYPE = new Type<>(Strange.id("activate_runestone"));
-        public static StreamCodec<FriendlyByteBuf, S2CActivateRunestone> CODEC =
-            StreamCodec.of(S2CActivateRunestone::encode, S2CActivateRunestone::decode);
+    public record S2CActivation(BlockPos pos) implements CustomPacketPayload{
+        public static Type<S2CActivation> TYPE = new Type<>(Strange.id("runestones_activation"));
+        public static StreamCodec<FriendlyByteBuf, S2CActivation> CODEC =
+            StreamCodec.of(S2CActivation::encode, S2CActivation::decode);
 
         public static void send(ServerPlayer player, BlockPos pos) {
-            ServerPlayNetworking.send(player, new S2CActivateRunestone(pos));
+            ServerPlayNetworking.send(player, new S2CActivation(pos));
         }
 
         @Override
@@ -108,18 +132,18 @@ public final class Networking extends FeatureHolder<Runestones> {
             return TYPE;
         }
 
-        private static void encode(FriendlyByteBuf buf, S2CActivateRunestone self) {
+        private static void encode(FriendlyByteBuf buf, S2CActivation self) {
             buf.writeBlockPos(self.pos);
         }
 
-        private static S2CActivateRunestone decode(FriendlyByteBuf buf) {
-            return new S2CActivateRunestone(buf.readBlockPos());
+        private static S2CActivation decode(FriendlyByteBuf buf) {
+            return new S2CActivation(buf.readBlockPos());
         }
     }
 
     // Server-to-client packet that tells the client the location that the player has just teleported to.
     public record S2CTeleportedLocation(RunestoneLocation location) implements CustomPacketPayload{
-        public static Type<S2CTeleportedLocation> TYPE = new Type<>(Strange.id("teleported_location"));
+        public static Type<S2CTeleportedLocation> TYPE = new Type<>(Strange.id("runestones_teleported_location"));
         public static StreamCodec<FriendlyByteBuf, S2CTeleportedLocation> CODEC =
             StreamCodec.of(S2CTeleportedLocation::encode, S2CTeleportedLocation::decode);
 

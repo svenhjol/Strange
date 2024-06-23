@@ -44,19 +44,19 @@ public final class Registers extends RegisterHolder<Runestones> {
         // Server packet senders
         registry.serverPacketSender(Networking.S2CWorldSeed.TYPE,
             Networking.S2CWorldSeed.CODEC);
-        registry.serverPacketSender(Networking.S2CSacrificeInProgress.TYPE,
-            Networking.S2CSacrificeInProgress.CODEC);
-        registry.serverPacketSender(Networking.S2CActivateRunestone.TYPE,
-            Networking.S2CActivateRunestone.CODEC);
+        registry.serverPacketSender(Networking.S2CActivationWarmup.TYPE,
+            Networking.S2CActivationWarmup.CODEC);
+        registry.serverPacketSender(Networking.S2CActivation.TYPE,
+            Networking.S2CActivation.CODEC);
         registry.serverPacketSender(Networking.S2CTeleportedLocation.TYPE,
             Networking.S2CTeleportedLocation.CODEC);
         
         // Client packet senders
-        registry.clientPacketSender(Networking.C2SLookingAtRunestone.TYPE,
-            Networking.C2SLookingAtRunestone.CODEC);
+        registry.clientPacketSender(Networking.C2SPlayerLooking.TYPE,
+            Networking.C2SPlayerLooking.CODEC);
         
         // Receivers of packets sent from client
-        registry.packetReceiver(Networking.C2SLookingAtRunestone.TYPE,
+        registry.packetReceiver(Networking.C2SPlayerLooking.TYPE,
             () -> feature.handlers::lookingAtRunestoneReceived);
 
         // Sound effects

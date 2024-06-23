@@ -150,7 +150,7 @@ public class HudRenderer extends FeatureHolder<RunestonesClient> {
             }
             
             if (lastLookedAt == null || lastLookedAt != lookedAt) {
-                Networking.C2SLookingAtRunestone.send(lookedAt);
+                Networking.C2SPlayerLooking.send(lookedAt);
                 lastLookedAt = lookedAt;
             }
 
