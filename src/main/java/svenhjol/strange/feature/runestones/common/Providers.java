@@ -69,17 +69,17 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public String biomeTagPath() {
-                return "runestone/stone_runestone_biome_located";
+                return "runestone/stone/biome_located";
             }
 
             @Override
             public String structureTagPath() {
-                return "runestone/stone_runestone_structure_located";
+                return "runestone/stone/structure_located";
             }
 
             @Override
-            public String ItemTagPath() {
-                return "runestone/stone_runestone_item_sacrifices";
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/stone/common_items");
             }
         };
     }
@@ -98,17 +98,17 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public String biomeTagPath() {
-                return "runestone/stone_runestone_rare_biome_located";
+                return "runestone/stone/rare_biome_located";
             }
 
             @Override
             public String structureTagPath() {
-                return "runestone/stone_runestone_rare_structure_located";
+                return "runestone/stone/rare_structure_located";
             }
 
             @Override
-            public String ItemTagPath() {
-                return "runestone/stone_runestone_rare_item_sacrifices";
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/stone/rare_items");
             }
         };
     }
@@ -135,7 +135,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return () -> Helpers.randomItem(level, random, "runestone/stone_runestone_item_sacrifices");
+                return () -> Helpers.randomItem(level, random, "runestone/stone/spawn_point_items");
             }
         };
     }
@@ -154,17 +154,17 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public String biomeTagPath() {
-                return "runestone/blackstone_runestone_biome_located";
+                return "runestone/blackstone/biome_located";
             }
 
             @Override
             public String structureTagPath() {
-                return "runestone/blackstone_runestone_structure_located";
+                return "runestone/blackstone/structure_located";
             }
 
             @Override
-            public String ItemTagPath() {
-                return "runestone/blackstone_runestone_item_sacrifices";
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/blackstone/common_items");
             }
         };
     }
@@ -188,7 +188,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return () -> Helpers.randomItem(level, random, "runestone/blackstone_runestone_item_sacrifices");
+                return () -> Helpers.randomItem(level, random, "runestone/blackstone/spawn_point_items");
             }
         };
     }
@@ -207,17 +207,17 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public String biomeTagPath() {
-                return "runestone/obsidian_runestone_biome_located";
+                return "runestone/obsidian/biome_located";
             }
 
             @Override
             public String structureTagPath() {
-                return "runestone/obsidian_runestone_structure_located";
+                return "runestone/obsidian/structure_located";
             }
 
             @Override
-            public String ItemTagPath() {
-                return "runestone/obsidian_runestone_item_sacrifices";
+            public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
+                return () -> Helpers.randomItem(level, random, "runestone/obsidian/common_items");
             }
         };
     }
@@ -241,7 +241,7 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
 
             @Override
             public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return () -> Helpers.randomItem(level, random, "runestone/obsidian_runestone_item_sacrifices");
+                return () -> Helpers.randomItem(level, random, "runestone/obsidian/spawn_point_items");
             }
         };
     }
@@ -270,15 +270,8 @@ public final class Providers extends ProviderHolder<Runestones> implements Runes
             return Optional.empty();
         }
 
-        @Override
-        public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-            return () -> Helpers.randomItem(level, random, ItemTagPath());
-        }
-
         public abstract String biomeTagPath();
 
         public abstract String structureTagPath();
-
-        public abstract String ItemTagPath();
     }
 }

@@ -257,7 +257,7 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
 
             @Override
             public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return () -> Helpers.randomItem(level, random, "runestone/stone_runestone_item_sacrifices");
+                return () -> Helpers.randomItem(level, random, "runestone/stone/common_items");
             }
         };
     }
@@ -284,7 +284,7 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
 
             @Override
             public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return () -> Helpers.randomItem(level, random, "runestone/blackstone_runestone_item_sacrifices");
+                return () -> Helpers.randomItem(level, random, "runestone/blackstone/common_items");
             }
         };
     }
@@ -311,7 +311,7 @@ public final class Providers extends ProviderHolder<StoneCircles> implements Sto
 
             @Override
             public Supplier<ItemLike> sacrifice(LevelAccessor level, BlockPos pos, RandomSource random) {
-                return () -> Helpers.randomItem(level, random, "runestone/obsidian_runestone_item_sacrifices");
+                return () -> Helpers.randomItem(level, random, "runestone/obsidian/common_items");
             }
         };
     }
