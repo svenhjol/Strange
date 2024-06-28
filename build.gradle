@@ -4,6 +4,6 @@ plugins {
 }
 
 apply from: "https://charmony.work/gradle/fabric.build.gradle"
-apply from: "https://charmony.work/gradle/fabric-include-toml.build.gradle"
-apply from: "https://charmony.work/gradle/fabric-include-charm.build.gradle"
-apply from: "https://charmony.work/gradle/fabric-include-modmenu.build.gradle"
+apply from: "https://charmony.work/gradle/fabric-ref-charm.build.gradle"
+apply from: "https://charmony.work/gradle/fabric-ref-toml.build.gradle"
+apply from: "https://charmony.work/gradle/fabric-ref-modmenu.build.gradle"
