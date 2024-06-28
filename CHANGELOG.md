@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.16
+
+- Runestone spawn points now have their own item activation tags
+- Tidy up tag paths for all providers
+
 ## 7.0.15
 
 - Stop bundling toml libraries when Charm already contains them. Saves ~250kb!
