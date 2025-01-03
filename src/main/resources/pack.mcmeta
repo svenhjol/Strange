@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "description": "Strange resources",
+    "pack_format": ${pack_version}
+  }
+}

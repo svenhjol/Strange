@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "strange",
+  "version": "${mod_version}",
+
+  "name": "Strange",
+  "description": "Enhances exploration in vanilla Minecraft.",
+
+  "authors": [
+    "svenhjol"
+  ],
+  "icon": "assets/strange/textures/gui/sprites/icon.png",
+  "license": "MIT",
+  "environment": "*",
+  
+  
+
+  "mixins": [],
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "*",
+    "java": ">=${java_version}",
+    "fabric-api": "*",
+    "charmony": ">=${charmony_version}"
+  },
+
+  "contact": {
+    "homepage": "${homepage_link}",
+    "sources": "https://github.com/svenhjol/${mod_id}"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "${discord_link}"
+      },
+      "update_checker": true
+    }
+  }
+}

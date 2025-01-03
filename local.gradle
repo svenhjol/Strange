@@ -1,0 +1,8 @@
+def props = new Properties()
+new URL("https://charmony.work/1.22/build.properties").withInputStream { props.load(it) }
+file("gradle.properties").withInputStream { props.load(it) }
+
+dependencies {
+    embedMod "charmony-runestones", props.runestones_version
+    embedMod "charmony-travel-journal", props.travel_journal_version
+}
