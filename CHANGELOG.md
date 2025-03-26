@@ -1,6 +1,8 @@
 # Changelog
 
-## 8.0.14
+## 8.3.0
+
+- Update for Minecraft 1.21.5.
 
 ## 8.0.13
 
