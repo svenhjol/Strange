@@ -10,6 +10,7 @@ def buildUrl = "https://charmony.dev/files/main/build.gradle"
 apply from: buildFile.exists() ? buildFile : buildUrl
 
 dependencies {
+    embedMod "charmony-chorus-network", "chorus_network"
     embedMod "charmony-runestones", "runestones"
     embedMod "charmony-travel-journal", "travel_journal"
 }
