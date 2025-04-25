@@ -1,6 +1,6 @@
 # Changelog
 
-## 8.4.1
+## 8.4.2
 
 - Update mods.
 
