@@ -11,6 +11,8 @@ apply from: buildFile.exists() ? buildFile : buildUrl
 
 dependencies {
     embedMod "charmony-chorus-network", "chorus_network"
+    embedMod "charmony-relics", "relics"
     embedMod "charmony-runestones", "runestones"
+    embedMod "charmony-stone-chests", "stone_chests"
     embedMod "charmony-travel-journal", "travel_journal"
 }
