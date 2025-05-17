@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.6.1
+
+- Mixin fixes for runestones and stone chests.
+
 ## 8.6.0
 
 - Add stone chests and relics.
