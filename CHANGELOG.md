@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.6.2
+
+- Update mods.
+
 ## 8.6.1
 
 - Mixin fixes for runestones and stone chests.
